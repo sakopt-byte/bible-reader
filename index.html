@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Библия RST+">
+  <meta name="theme-color" content="#1A1D22">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>Библия RST+ Скорочтение</title>
+  <style>
+    :root {
+      --bg: #121417;
+      --panel: #1A1D22;
+      --card: #181B20;
+      --border: #2A2F37;
+      --text: #E6E1DA;
+      --muted: #7C8594;
+      --accent: #D4A359;
+      --verse-bar: #5FA8D3;
+      --word-active: #F7E8C8;
+      --word-read: #4B5260;
+      --word-next: #757F91;
+      --verse-tag: #7A623A;
+      --green: #2E8B57;
+      --green-hover: #38A869;
+      --red: #B83B44;
+      --red-hover: #D14953;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100dvh;
+      background: var(--bg);
+    }
+
+    /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
+    #top-bar {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
+      padding-left: calc(env(safe-area-inset-left, 0px) + 10px);
+      padding-right: calc(env(safe-area-inset-right, 0px) + 10px);
+      padding-bottom: 8px;
+      z-index: 30;
+      flex-shrink: 0;
+      transition: padding 0.2s ease;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .top-row + .top-row {
+      margin-top: 6px;
+    }
+
+    #top-bar.collapsed .row-secondary {
+      display: none;
+    }
+
+    select, button {
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #22262E;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      height: 34px;
+      padding: 0 8px;
+      outline: none;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    select:active, button:active {
+      transform: scale(0.97);
+    }
+
+    #book-select { flex: 1 1 auto; min-width: 110px; }
+    #chapter-select { width: 64px; flex-shrink: 0; }
+    #verse-select { width: 64px; flex-shrink: 0; }
+    #mode-select { flex: 1 1 auto; min-width: 140px; }
+
+    .toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .toggle-btn.active {
+      background: rgba(212, 163, 89, 0.18);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #collapse-btn {
+      width: 34px;
+      padding: 0;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+
+    /* --- РАБОЧАЯ ОБЛАСТЬ 1: ХОЛСТ (БЛОКИ / СЛОВА / СТИХИ) --- */
+    #workspace {
+      position: relative;
+      flex: 1 1 auto;
+      overflow: hidden;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    #workspace:active {
+      cursor: grabbing;
+    }
+
+    #canvas-root {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    /* Визуальная подсказка тапа слева / справа */
+    .tap-flash {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 28%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.22s ease-out;
+      z-index: 5;
+    }
+    #flash-left {
+      left: 0;
+      background: radial-gradient(circle at 0% 50%, rgba(212, 163, 89, 0.14), transparent 72%);
+    }
+    #flash-right {
+      right: 0;
+      background: radial-gradient(circle at 100% 50%, rgba(212, 163, 89, 0.14), transparent 72%);
+    }
+    .tap-flash.show {
+      opacity: 1;
+      transition: opacity 0.04s ease-in;
+    }
+
+    /* --- КАРТОЧКА (ДЛЯ БЛОКОВ И СТИХОВ) --- */
+    #card-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 340px;
+    }
+
+    #block-progress-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .prog-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .prog-track {
+      width: 100%;
+      height: 7px;
+      background: #1F242C;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 4px;
+      transition: width 0.16s ease-out;
+    }
+
+    .prog-fill.verse-fill {
+      background: var(--verse-bar);
+    }
+
+    #text-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 22px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .block-ref {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+
+    .block-main {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.32;
+      color: var(--text);
+      margin-bottom: 16px;
+      animation: popIn 0.12s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0.55; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .block-dots {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+    }
+
+    .dot-active { color: var(--accent); }
+    .dot-done { color: #4C566A; }
+    .dot-todo { color: #2E3440; }
+
+    .block-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0 14px;
+    }
+
+    .block-context {
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .ctx-active { color: var(--accent); font-weight: 600; }
+    .ctx-done { color: #616A78; }
+    .ctx-todo { color: #949DAB; }
+
+    .block-adj {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #4B5260;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .verse-ref {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .verse-body {
+      font-size: 21px;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .strong {
+      color: #6E7785;
+      font-size: 0.68em;
+      font-weight: 400;
+      margin-left: 2px;
+    }
+
+    /* --- РЕЖИМ "ПО СЛОВАМ": БЕСКОНЕЧНАЯ СТРОКА --- */
+    #word-stream-root {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    #word-tape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .stream-word {
+      display: inline-block;
+      margin: 0 9px;
+      font-size: 22px;
+      line-height: 1;
+      transition: color 0.1s ease;
+    }
+
+    .stream-word.read { color: var(--word-read); }
+    .stream-word.next { color: var(--word-next); }
+    .stream-word.active {
+      font-size: 46px;
+      font-weight: 700;
+      color: var(--word-active);
+      margin: 0 14px;
+      text-shadow: 0 0 18px rgba(212, 163, 89, 0.25);
+    }
+
+    .stream-vtag {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--verse-tag);
+      vertical-align: super;
+      margin-right: -4px;
+      margin-left: 6px;
+      transform: translateY(-9px);
+    }
+
+    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА ДЛЯ "ПО СЛОВАМ" --- */
+    #word-hud {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      right: 14px;
+      background: rgba(20, 23, 28, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(46, 53, 64, 0.9);
+      border-radius: 10px;
+      padding: 10px 14px;
+      z-index: 15;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .hud-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    #hud-ref {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    #hud-ch-lbl {
+      font-size: 12px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    #hud-v-lbl {
+      font-size: 12px;
+      color: var(--verse-bar);
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* --- ОВЕРЛЕИ АВТОПРОИГРЫВАНИЯ --- */
+    #autoplay-play-btn {
+      position: absolute;
+      right: 20px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--green);
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 22px rgba(46, 139, 87, 0.4);
+      z-index: 20;
+      cursor: pointer;
+      padding-left: 4px;
+    }
+
+    #autoplay-play-btn:active {
+      background: var(--green-hover);
+      transform: scale(0.94);
+    }
+
+    #autoplay-popup {
+      position: absolute;
+      right: 16px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+      width: min(300px, calc(100vw - 32px));
+      background: var(--panel);
+      border: 1px solid #3A414D;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+      z-index: 25;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pop-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pop-speed-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pop-speed-row label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    #wpm-input {
+      flex: 1;
+      height: 36px;
+      background: #121417;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0 10px;
+      font-size: 16px;
+      text-align: center;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .pop-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .pop-presets button {
+      height: 32px;
+      font-size: 13px;
+    }
+
+    #autoplay-confirm-btn {
+      background: var(--green);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      height: 38px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #autoplay-controls {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      width: min(340px, calc(100vw - 32px));
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    #autoplay-status {
+      font-size: 13px;
+      color: var(--accent);
+      text-align: center;
+      background: rgba(18, 20, 23, 0.78);
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .auto-btn-row {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+
+    #autoplay-toggle-btn {
+      flex: 1;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    #autoplay-toggle-btn.running {
+      background: #B88635;
+    }
+
+    #autoplay-exit-btn {
+      flex: 1;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ДЛЯ "ПО ГЛАВАМ" --- */
+    #chapter-scroll {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      display: none;
+      padding: 18px 14px calc(env(safe-area-inset-bottom, 0px) + 48px);
+    }
+
+    #chapter-container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 20px 28px;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .ch-title {
+      color: var(--accent);
+      font-size: 23px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .ch-verse {
+      font-size: 19px;
+      line-height: 1.65;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .ch-vnum {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    .ch-dot {
+      color: #4C566A;
+      margin: 0 5px;
+    }
+
+    .ch-nav-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ch-nav-row button {
+      flex: 1;
+      height: 40px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* --- НИЖНЯЯ СТРОКА СОСТОЯНИЯ --- */
+    #status-bar {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      padding: 5px 12px calc(env(safe-area-inset-bottom, 0px) + 5px);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    /* --- ЭКРАН ЗАГРУЗКИ --- */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 100;
+      color: var(--text);
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div id="loader-text">Загрузка Писания RST+...</div>
+  </div>
+
+  <div id="app">
+    <header id="top-bar">
+      <div class="top-row">
+        <select id="book-select" aria-label="Книга"></select>
+        <select id="chapter-select" aria-label="Глава"></select>
+        <select id="verse-select" aria-label="Стих"></select>
+        <button id="collapse-btn" title="Свернуть/развернуть панель">▲</button>
+      </div>
+      <div class="top-row row-secondary">
+        <select id="mode-select" aria-label="Режим">
+          <option value="BLOCKS">Смысловыми блоками</option>
+          <option value="WORDS">По словам</option>
+          <option value="VERSES">По стихам</option>
+          <option value="CHAPTERS">По главам</option>
+        </select>
+        <button id="strong-btn" class="toggle-btn">Стронг</button>
+        <button id="center-btn" class="toggle-btn">Центр</button>
+      </div>
+    </header>
+
+    <main id="workspace">
+      <div id="flash-left" class="tap-flash"></div>
+      <div id="flash-right" class="tap-flash"></div>
+
+      <!-- Фиксированный HUD прогресса для режима "По словам" -->
+      <div id="word-hud">
+        <div class="hud-row">
+          <span id="hud-ref">Бытие 1:1</span>
+          <span id="hud-ch-lbl">Глава 1 — 0%</span>
+        </div>
+        <div class="prog-track"><div id="hud-ch-fill" class="prog-fill"></div></div>
+        <div class="hud-row">
+          <span id="hud-v-lbl">Стих 1 — 0%</span>
+        </div>
+        <div class="prog-track" style="height:5px;"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
+      </div>
+
+      <!-- Масштабируемый и перемещаемый двумя пальцами холст -->
+      <div id="canvas-root">
+        <div id="card-stack">
+          <div id="block-progress-box">
+            <div id="block-prog-lbl" class="prog-label">Глава 1 — 0%</div>
+            <div class="prog-track"><div id="block-prog-fill" class="prog-fill"></div></div>
+          </div>
+          <div id="text-card"></div>
+        </div>
+
+        <div id="word-stream-root">
+          <div id="word-tape"></div>
+        </div>
+      </div>
+
+      <!-- Автопроигрывание (только в режиме "По словам") -->
+      <button id="autoplay-play-btn" aria-label="Автопроигрывание">▶</button>
+
+      <div id="autoplay-popup">
+        <div class="pop-title">Автопроигрывание слов</div>
+        <div class="pop-speed-row">
+          <label for="wpm-input">Слов/мин:</label>
+          <input id="wpm-input" type="number" min="40" max="1200" step="10" value="250">
+        </div>
+        <div class="pop-presets">
+          <button type="button" data-wpm="150">150</button>
+          <button type="button" data-wpm="250">250</button>
+          <button type="button" data-wpm="350">350</button>
+          <button type="button" data-wpm="500">500</button>
+        </div>
+        <button id="autoplay-confirm-btn" type="button">Подтвердить</button>
+      </div>
+
+      <div id="autoplay-controls">
+        <div id="autoplay-status">⏸ Пауза (250 сл/мин)</div>
+        <div class="auto-btn-row">
+          <button id="autoplay-toggle-btn" type="button">▶ Старт</button>
+          <button id="autoplay-exit-btn" type="button">Выйти</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Режим "По главам" с обычным свайп-скроллом -->
+    <section id="chapter-scroll">
+      <div id="chapter-container"></div>
+    </section>
+
+    <footer id="status-bar">Загрузка...</footer>
+  </div>
+
+  <script>
+    // Регистрация Service Worker для 100% офлайн-работы
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // --- СОСТОЯНИЕ ПРИЛОЖЕНИЯ (БЕЗ СОХРАНЕНИЯ ПРОГРЕССА) ---
+    const WORD_WINDOW_RADIUS = 45;
+    const WORD_MIN_ZOOM = 0.55;
+    const WORD_MAX_ZOOM = 10000.0;
+
+    let booksOrder = [];
+    let booksNames = {};
+    let bibleData = {};
+    let bookChaptersSorted = {};
+    let chapterVersesSorted = {};
+    let verseWordsCache = new Map();
+
+    let currentBook = 10;
+    let currentChapter = 1;
+    let currentVerse = 1;
+    let currentBlockIdx = 0;
+    let currentBlocks = [];
+    let currentWordIdx = 0;
+    let currentWords = [];
+    let displayMode = 'BLOCKS';
+    let showStrongs = false;
+
+    let chapterTotalBlocks = 1;
+    let chapterBlockOffsets = {};
+    let chapterTotalWords = 1;
+    let chapterWordOffsets = {};
+
+    // Камера (два пальца на телефоне / колесо + драг на ПК)
+    let canvasZoom = 1.0;
+    let canvasPanX = 0;
+    let canvasPanY = 0;
+
+    // Подрежим автопроигрывания (в режиме "По словам")
+    let autoplaySubmode = false;
+    let autoplayRunning = false;
+    let autoplayWpm = 250;
+    let autoplayLastTime = 0;
+    let autoplayAccum = 0;
+
+    // Ссылки на DOM
+    const elLoader = document.getElementById('loader');
+    const elLoaderText = document.getElementById('loader-text');
+    const elTopBar = document.getElementById('top-bar');
+    const elBookSel = document.getElementById('book-select');
+    const elChapSel = document.getElementById('chapter-select');
+    const elVerseSel = document.getElementById('verse-select');
+    const elModeSel = document.getElementById('mode-select');
+    const elStrongBtn = document.getElementById('strong-btn');
+    const elCenterBtn = document.getElementById('center-btn');
+    const elCollapseBtn = document.getElementById('collapse-btn');
+
+    const elWorkspace = document.getElementById('workspace');
+    const elCanvasRoot = document.getElementById('canvas-root');
+    const elCardStack = document.getElementById('card-stack');
+    const elBlockProgBox = document.getElementById('block-progress-box');
+    const elBlockProgLbl = document.getElementById('block-prog-lbl');
+    const elBlockProgFill = document.getElementById('block-prog-fill');
+    const elTextCard = document.getElementById('text-card');
+
+    const elWordStreamRoot = document.getElementById('word-stream-root');
+    const elWordTape = document.getElementById('word-tape');
+    const elWordHud = document.getElementById('word-hud');
+    const elHudRef = document.getElementById('hud-ref');
+    const elHudChLbl = document.getElementById('hud-ch-lbl');
+    const elHudChFill = document.getElementById('hud-ch-fill');
+    const elHudVLbl = document.getElementById('hud-v-lbl');
+    const elHudVFill = document.getElementById('hud-v-fill');
+
+    const elAutoPlayBtn = document.getElementById('autoplay-play-btn');
+    const elAutoPopup = document.getElementById('autoplay-popup');
+    const elWpmInput = document.getElementById('wpm-input');
+    const elAutoConfirmBtn = document.getElementById('autoplay-confirm-btn');
+    const elAutoControls = document.getElementById('autoplay-controls');
+    const elAutoStatus = document.getElementById('autoplay-status');
+    const elAutoToggleBtn = document.getElementById('autoplay-toggle-btn');
+    const elAutoExitBtn = document.getElementById('autoplay-exit-btn');
+
+    const elChapScroll = document.getElementById('chapter-scroll');
+    const elChapContainer = document.getElementById('chapter-container');
+    const elStatusBar = document.getElementById('status-bar');
+    const elFlashLeft = document.getElementById('flash-left');
+    const elFlashRight = document.getElementById('flash-right');
+
+    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE (1-В-1 КАК В GODOT) ---
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function cleanPlainText(raw) {
+      if (!raw) return '';
+      let s = String(raw);
+      s = s.replace(/<f>[\s\S]*?<\/f>|<n>[\s\S]*?<\/n>/g, '');
+      s = s.replace(/<S>[\s\S]*?<\/S>/g, '');
+      s = s.replace(/<[^>]+>/g, '');
+      s = s.replace(/\s+/g, ' ').trim();
+      s = s.replace(/ ([.,;:!?])/g, '$1');
+      return s;
+    }
+
+    function cleanVerseHtml(raw) {
+      if (!raw) return '';
+      let s = String(raw);
+      s = s.replace(/<f>[\s\S]*?<\/f>|<n>[\s\S]*?<\/n>/g, '');
+      if (showStrongs) {
+        s = s.replace(/<S>(.*?)<\/S>/g, '@@STR_OPEN@@$1@@STR_CLOSE@@');
+      } else {
+        s = s.replace(/<S>[\s\S]*?<\/S>/g, '');
+      }
+      s = s.replace(/<[^>]+>/g, '');
+      s = s.replace(/\s+/g, ' ').trim();
+      s = s.replace(/ ([.,;:!?])/g, '$1');
+      s = escapeHtml(s);
+      if (showStrongs) {
+        s = s.replace(/@@STR_OPEN@@(.*?)@@STR_CLOSE@@/g, ' <span class="strong">&lt;$1&gt;</span>');
+      }
+      return s;
+    }
+
+    function splitIntoWords(raw) {
+      const clean = cleanPlainText(raw);
+      if (!clean) return ['—'];
+      const arr = clean.split(' ').filter(Boolean);
+      return arr.length ? arr : ['—'];
+    }
+
+    function getVerseWordsCached(b, c, v) {
+      const key = `${b}_${c}_${v}`;
+      if (verseWordsCache.has(key)) return verseWordsCache.get(key);
+      const raw = bibleData[b]?.[c]?.[v] ?? '';
+      const words = splitIntoWords(raw);
+      verseWordsCache.set(key, words);
+      return words;
+    }
+
+    const BREAK_CONJ = new Set([
+      'и','но','а','что','чтобы','ибо','потому','когда','как',
+      'который','которая','которые','если','дабы'
+    ]);
+    const STICKY_PREP = new Set([
+      'в','во','на','над','под','к','ко','с','со','у','о','об',
+      'от','из','за','по','не','ни','да','же','для','до'
+    ]);
+
+    function splitIntoSemanticBlocks(raw) {
+      const clean = cleanPlainText(raw);
+      if (!clean) return ['—'];
+      const words = clean.split(' ').filter(Boolean);
+      const blocks = [];
+      let curWords = [];
+      let curLen = 0;
+
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        const wLower = w.toLowerCase().replace(/[,;:.]+$/, '');
+        const prevLower = curWords.length ? curWords[curWords.length - 1].toLowerCase() : '';
+
+        if (BREAK_CONJ.has(wLower) && curWords.length >= 2 && curLen >= 14 && !STICKY_PREP.has(prevLower)) {
+          blocks.push(curWords.join(' '));
+          curWords = [];
+          curLen = 0;
+        }
+
+        curWords.push(w);
+        curLen += w.length + 1;
+
+        const endsPunct = /[,;:.!?—]$/.test(w);
+        const isSticky = STICKY_PREP.has(wLower);
+
+        if (!isSticky) {
+          if (endsPunct && (curLen >= 10 || curWords.length >= 2)) {
+            blocks.push(curWords.join(' '));
+            curWords = [];
+            curLen = 0;
+          } else if (curLen >= 32 || curWords.length >= 5) {
+            blocks.push(curWords.join(' '));
+            curWords = [];
+            curLen = 0;
+          }
+        }
+      }
+
+      if (curWords.length) {
+        if (curWords.length === 1 && curLen < 10 && blocks.length) {
+          blocks[blocks.length - 1] += ' ' + curWords[0];
+        } else {
+          blocks.push(curWords.join(' '));
+        }
+      }
+      return blocks.length ? blocks : ['—'];
+    }
+
+    // --- ИНДЕКСАЦИЯ И НАВИГАЦИЯ ---
+    function buildNavigationIndex() {
+      bookChaptersSorted = {};
+      chapterVersesSorted = {};
+      for (const b of booksOrder) {
+        const chObj = bibleData[b] || {};
+        const chKeys = Object.keys(chObj).map(Number).sort((a, z) => a - z);
+        bookChaptersSorted[b] = chKeys;
+        chapterVersesSorted[b] = {};
+        for (const c of chKeys) {
+          const vObj = chObj[c] || {};
+          chapterVersesSorted[b][c] = Object.keys(vObj).map(Number).sort((a, z) => a - z);
+        }
+      }
+    }
+
+    function getNextVerseRef(b, c, v) {
+      const vList = chapterVersesSorted[b]?.[c] || [];
+      const vi = vList.indexOf(v);
+      if (vi !== -1 && vi + 1 < vList.length) return { b, c, v: vList[vi + 1] };
+
+      const cList = bookChaptersSorted[b] || [];
+      const ci = cList.indexOf(c);
+      if (ci !== -1 && ci + 1 < cList.length) {
+        const nc = cList[ci + 1];
+        const nvList = chapterVersesSorted[b]?.[nc] || [];
+        if (nvList.length) return { b, c: nc, v: nvList[0] };
+      }
+
+      const bi = booksOrder.indexOf(b);
+      if (bi !== -1 && bi + 1 < booksOrder.length) {
+        const nb = booksOrder[bi + 1];
+        const ncList = bookChaptersSorted[nb] || [];
+        if (ncList.length) {
+          const fc = ncList[0];
+          const nvList = chapterVersesSorted[nb]?.[fc] || [];
+          if (nvList.length) return { b: nb, c: fc, v: nvList[0] };
+        }
+      }
+      return null;
+    }
+
+    function getPrevVerseRef(b, c, v) {
+      const vList = chapterVersesSorted[b]?.[c] || [];
+      const vi = vList.indexOf(v);
+      if (vi > 0) return { b, c, v: vList[vi - 1] };
+
+      const cList = bookChaptersSorted[b] || [];
+      const ci = cList.indexOf(c);
+      if (ci > 0) {
+        const pc = cList[ci - 1];
+        const pvList = chapterVersesSorted[b]?.[pc] || [];
+        if (pvList.length) return { b, c: pc, v: pvList[pvList.length - 1] };
+      }
+
+      const bi = booksOrder.indexOf(b);
+      if (bi > 0) {
+        const pb = booksOrder[bi - 1];
+        const pcList = bookChaptersSorted[pb] || [];
+        if (pcList.length) {
+          const lc = pcList[pcList.length - 1];
+          const pvList = chapterVersesSorted[pb]?.[lc] || [];
+          if (pvList.length) return { b: pb, c: lc, v: pvList[pvList.length - 1] };
+        }
+      }
+      return null;
+    }
+
+    function recalculateChapterTotals() {
+      chapterBlockOffsets = {};
+      chapterWordOffsets = {};
+      chapterTotalBlocks = 0;
+      chapterTotalWords = 0;
+      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      for (const v of vList) {
+        const raw = bibleData[currentBook]?.[currentChapter]?.[v] ?? '';
+        chapterBlockOffsets[v] = chapterTotalBlocks;
+        chapterWordOffsets[v] = chapterTotalWords;
+        chapterTotalBlocks += splitIntoSemanticBlocks(raw).length;
+        chapterTotalWords += getVerseWordsCached(currentBook, currentChapter, v).length;
+      }
+      chapterTotalBlocks = Math.max(1, chapterTotalBlocks);
+      chapterTotalWords = Math.max(1, chapterTotalWords);
+    }
+
+    function populateBookSelector() {
+      elBookSel.innerHTML = '';
+      for (const b of booksOrder) {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.textContent = booksNames[b] || `Книга ${b}`;
+        elBookSel.appendChild(opt);
+      }
+      if (booksOrder.length) {
+        currentBook = booksOrder[0];
+        elBookSel.value = currentBook;
+        populateChapterSelector();
+      }
+    }
+
+    function populateChapterSelector() {
+      elChapSel.innerHTML = '';
+      const chList = bookChaptersSorted[currentBook] || [];
+      for (const c of chList) {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = `Гл. ${c}`;
+        elChapSel.appendChild(opt);
+      }
+      if (chList.length) {
+        if (!chList.includes(currentChapter)) currentChapter = chList[0];
+        elChapSel.value = currentChapter;
+        recalculateChapterTotals();
+        populateVerseSelector();
+      }
+    }
+
+    function populateVerseSelector() {
+      elVerseSel.innerHTML = '';
+      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      for (const v of vList) {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = `Ст. ${v}`;
+        elVerseSel.appendChild(opt);
+      }
+      if (vList.length) {
+        if (!vList.includes(currentVerse)) currentVerse = vList[0];
+        elVerseSel.value = currentVerse;
+      }
+      rebuildCurrentVerseUnits();
+    }
+
+    function rebuildCurrentVerseUnits() {
+      const raw = bibleData[currentBook]?.[currentChapter]?.[currentVerse] ?? '';
+      currentBlocks = splitIntoSemanticBlocks(raw);
+      currentBlockIdx = Math.max(0, Math.min(currentBlockIdx, currentBlocks.length - 1));
+      currentWords = getVerseWordsCached(currentBook, currentChapter, currentVerse);
+      currentWordIdx = Math.max(0, Math.min(currentWordIdx, currentWords.length - 1));
+    }
+
+    function advanceChapter(delta) {
+      const chList = bookChaptersSorted[currentBook] || [];
+      const pos = chList.indexOf(currentChapter);
+      if (pos === -1) return false;
+      const nextPos = pos + delta;
+      if (nextPos >= 0 && nextPos < chList.length) {
+        currentChapter = chList[nextPos];
+        elChapSel.value = currentChapter;
+        currentVerse = 1;
+        currentBlockIdx = 0;
+        currentWordIdx = 0;
+        recalculateChapterTotals();
+        populateVerseSelector();
+        return true;
+      } else if (delta > 0) {
+        const bi = booksOrder.indexOf(currentBook);
+        if (bi !== -1 && bi + 1 < booksOrder.length) {
+          currentBook = booksOrder[bi + 1];
+          elBookSel.value = currentBook;
+          currentChapter = 1;
+          currentVerse = 1;
+          currentBlockIdx = 0;
+          currentWordIdx = 0;
+          populateChapterSelector();
+          return true;
+        }
+      } else if (delta < 0) {
+        const bi = booksOrder.indexOf(currentBook);
+        if (bi > 0) {
+          currentBook = booksOrder[bi - 1];
+          elBookSel.value = currentBook;
+          const prevChList = bookChaptersSorted[currentBook] || [];
+          currentChapter = prevChList.length ? prevChList[prevChList.length - 1] : 1;
+          currentVerse = 1;
+          currentBlockIdx = 0;
+          currentWordIdx = 0;
+          populateChapterSelector();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function advanceVerse(delta) {
+      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      const pos = vList.indexOf(currentVerse);
+      if (pos === -1) return false;
+      const nextPos = pos + delta;
+      if (nextPos >= 0 && nextPos < vList.length) {
+        currentVerse = vList[nextPos];
+        elVerseSel.value = currentVerse;
+        rebuildCurrentVerseUnits();
+        return true;
+      } else if (delta > 0) {
+        return advanceChapter(1);
+      } else if (delta < 0) {
+        if (advanceChapter(-1)) {
+          const pvList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+          if (pvList.length) {
+            currentVerse = pvList[pvList.length - 1];
+            elVerseSel.value = currentVerse;
+            rebuildCurrentVerseUnits();
+          }
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function stepForward() {
+      if (displayMode === 'BLOCKS') {
+        if (currentBlockIdx + 1 < currentBlocks.length) {
+          currentBlockIdx++;
+          refreshView();
+          return true;
+        } else if (advanceVerse(1)) {
+          currentBlockIdx = 0;
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'WORDS') {
+        if (currentWordIdx + 1 < currentWords.length) {
+          currentWordIdx++;
+          refreshView();
+          return true;
+        } else if (advanceVerse(1)) {
+          currentWordIdx = 0;
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'VERSES') {
+        if (advanceVerse(1)) {
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'CHAPTERS') {
+        if (advanceChapter(1)) {
+          refreshView();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function stepBackward() {
+      if (displayMode === 'BLOCKS') {
+        if (currentBlockIdx > 0) {
+          currentBlockIdx--;
+          refreshView();
+          return true;
+        } else if (advanceVerse(-1)) {
+          currentBlockIdx = Math.max(0, currentBlocks.length - 1);
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'WORDS') {
+        if (currentWordIdx > 0) {
+          currentWordIdx--;
+          refreshView();
+          return true;
+        } else if (advanceVerse(-1)) {
+          currentWordIdx = Math.max(0, currentWords.length - 1);
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'VERSES') {
+        if (advanceVerse(-1)) {
+          refreshView();
+          return true;
+        }
+      } else if (displayMode === 'CHAPTERS') {
+        if (advanceChapter(-1)) {
+          refreshView();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // --- ОТРИСОВКА ---
+    function updateProgressBars() {
+      const bookTitle = booksNames[currentBook] || 'Книга';
+      if (displayMode === 'BLOCKS') {
+        elBlockProgBox.style.display = 'flex';
+        const passed = (chapterBlockOffsets[currentVerse] || 0) + currentBlockIdx;
+        const ratio = chapterTotalBlocks <= 1 ? 1 : passed / (chapterTotalBlocks - 1);
+        const pct = Math.max(0, Math.min(100, ratio * 100));
+        elBlockProgFill.style.width = `${pct}%`;
+        elBlockProgLbl.textContent = `Глава ${currentChapter} — ${Math.round(pct)}% (${passed + 1} / ${chapterTotalBlocks} бл.)`;
+      } else if (displayMode === 'WORDS') {
+        elBlockProgBox.style.display = 'none';
+        elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}`;
+
+        const passedCh = (chapterWordOffsets[currentVerse] || 0) + currentWordIdx;
+        const ratioCh = chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1);
+        const pctCh = Math.max(0, Math.min(100, ratioCh * 100));
+        elHudChFill.style.width = `${pctCh}%`;
+        elHudChLbl.textContent = `Глава ${currentChapter} — ${Math.round(pctCh)}% (${passedCh + 1}/${chapterTotalWords})`;
+
+        const totalV = Math.max(1, currentWords.length);
+        const ratioV = totalV <= 1 ? 1 : currentWordIdx / (totalV - 1);
+        const pctV = Math.max(0, Math.min(100, ratioV * 100));
+        elHudVFill.style.width = `${pctV}%`;
+        elHudVLbl.textContent = `Стих ${currentVerse} — ${Math.round(pctV)}% (${currentWordIdx + 1}/${totalV})`;
+      } else {
+        elBlockProgBox.style.display = 'none';
+      }
+    }
+
+    function collectWordWindow(radius) {
+      const leftItems = [];
+      let lb = currentBook, lc = currentChapter, lv = currentVerse;
+      let lwIdx = currentWordIdx - 1;
+      let lWords = currentWords;
+
+      while (leftItems.length < radius) {
+        if (lwIdx >= 0) {
+          leftItems.push({ text: lWords[lwIdx], vtag: lwIdx === 0 ? String(lv) : '' });
+          lwIdx--;
+        } else {
+          const prev = getPrevVerseRef(lb, lc, lv);
+          if (!prev) break;
+          lb = prev.b; lc = prev.c; lv = prev.v;
+          lWords = getVerseWordsCached(lb, lc, lv);
+          lwIdx = lWords.length - 1;
+        }
+      }
+      leftItems.reverse();
+
+      const rightItems = [];
+      let rb = currentBook, rc = currentChapter, rv = currentVerse;
+      let rwIdx = currentWordIdx + 1;
+      let rWords = currentWords;
+
+      while (rightItems.length < radius) {
+        if (rwIdx < rWords.length) {
+          rightItems.push({ text: rWords[rwIdx], vtag: rwIdx === 0 ? String(rv) : '' });
+          rwIdx++;
+        } else {
+          const next = getNextVerseRef(rb, rc, rv);
+          if (!next) break;
+          rb = next.b; rc = next.c; rv = next.v;
+          rWords = getVerseWordsCached(rb, rc, rv);
+          rwIdx = 0;
+        }
+      }
+
+      return {
+        left: leftItems,
+        active: currentWords[currentWordIdx] || '—',
+        activeVtag: currentWordIdx === 0 ? String(currentVerse) : '',
+        right: rightItems
+      };
+    }
+
+    function renderContinuousWordStream() {
+      const win = collectWordWindow(WORD_WINDOW_RADIUS);
+      const frag = document.createDocumentFragment();
+
+      for (const item of win.left) {
+        if (item.vtag) {
+          const t = document.createElement('span');
+          t.className = 'stream-vtag';
+          t.textContent = item.vtag;
+          frag.appendChild(t);
+        }
+        const s = document.createElement('span');
+        s.className = 'stream-word read';
+        s.textContent = item.text;
+        frag.appendChild(s);
+      }
+
+      if (win.activeVtag) {
+        const t = document.createElement('span');
+        t.className = 'stream-vtag';
+        t.textContent = win.activeVtag;
+        frag.appendChild(t);
+      }
+      const activeEl = document.createElement('span');
+      activeEl.className = 'stream-word active';
+      activeEl.textContent = win.active;
+      frag.appendChild(activeEl);
+
+      for (const item of win.right) {
+        if (item.vtag) {
+          const t = document.createElement('span');
+          t.className = 'stream-vtag';
+          t.textContent = item.vtag;
+          frag.appendChild(t);
+        }
+        const s = document.createElement('span');
+        s.className = 'stream-word next';
+        s.textContent = item.text;
+        frag.appendChild(s);
+      }
+
+      elWordTape.innerHTML = '';
+      elWordTape.appendChild(frag);
+
+      // Ставим активное слово ровно в точку (0, 0)
+      const activeCenter = activeEl.offsetLeft + activeEl.offsetWidth * 0.5;
+      elWordTape.style.transform = `translate3d(${-activeCenter}px, -50%, 0)`;
+    }
+
+    function updateAutoplayUI() {
+      const inWords = displayMode === 'WORDS';
+      if (!inWords) {
+        elAutoPlayBtn.style.display = 'none';
+        elAutoPopup.style.display = 'none';
+        elAutoControls.style.display = 'none';
+        return;
+      }
+      elAutoPlayBtn.style.display = autoplaySubmode ? 'none' : 'flex';
+      elAutoControls.style.display = autoplaySubmode ? 'flex' : 'none';
+
+      if (autoplaySubmode) {
+        if (autoplayRunning) {
+          elAutoStatus.textContent = `▶ Воспроизведение (${autoplayWpm} сл/мин)`;
+          elAutoStatus.style.color = '#5EC986';
+          elAutoToggleBtn.textContent = '⏸ Пауза';
+          elAutoToggleBtn.classList.add('running');
+        } else {
+          elAutoStatus.textContent = `⏸ Пауза (${autoplayWpm} сл/мин)`;
+          elAutoStatus.style.color = 'var(--accent)';
+          elAutoToggleBtn.textContent = '▶ Старт';
+          elAutoToggleBtn.classList.remove('running');
+        }
+      }
+    }
+
+    function updateStatusBar() {
+      const zoomPct = Math.round(canvasZoom * 100);
+      if (displayMode === 'BLOCKS') {
+        elStatusBar.textContent = `Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: шаг • 2 пальца: зум/рука`;
+      } else if (displayMode === 'WORDS') {
+        elStatusBar.textContent = `Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: слово • 2 пальца: зум/рука`;
+      } else if (displayMode === 'VERSES') {
+        elStatusBar.textContent = `Стих ${currentVerse} • Зум ${zoomPct}% • Тап слева/справа: стих • 2 пальца: зум/рука`;
+      } else {
+        elStatusBar.textContent = `Глава ${currentChapter} • Свайп вверх/вниз для чтения`;
+      }
+    }
+
+    function refreshView() {
+      const bookTitle = booksNames[currentBook] || 'Книга';
+      const vObj = bibleData[currentBook]?.[currentChapter] || {};
+      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+
+      const isChapter = displayMode === 'CHAPTERS';
+      const isWords = displayMode === 'WORDS';
+
+      elWorkspace.style.display = isChapter ? 'none' : 'block';
+      elChapScroll.style.display = isChapter ? 'block' : 'none';
+      elCenterBtn.style.display = isChapter ? 'none' : 'inline-flex';
+
+      elCardStack.style.display = (!isChapter && !isWords) ? 'flex' : 'none';
+      elWordStreamRoot.style.display = isWords ? 'block' : 'none';
+      elWordHud.style.display = isWords ? 'flex' : 'none';
+
+      // Адаптивная ширина карточки под экран телефона / планшета / ПК
+      const wsW = elWorkspace.clientWidth || window.innerWidth;
+      const cardWidth = Math.min(Math.max(300, wsW - 28), 640);
+      elCardStack.style.width = `${cardWidth}px`;
+
+      if (displayMode === 'BLOCKS') {
+        const blockStr = currentBlocks[currentBlockIdx] || '—';
+        const dotsHtml = currentBlocks.map((_, i) => {
+          if (i === currentBlockIdx) return '<span class="dot-active">●</span>';
+          if (i < currentBlockIdx) return '<span class="dot-done">•</span>';
+          return '<span class="dot-todo">•</span>';
+        }).join(' ');
+
+        const ctxHtml = currentBlocks.map((b, i) => {
+          const esc = escapeHtml(b);
+          if (i === currentBlockIdx) return `<span class="ctx-active">${esc}</span>`;
+          if (i < currentBlockIdx) return `<span class="ctx-done">${esc}</span>`;
+          return `<span class="ctx-todo">${esc}</span>`;
+        }).join(' ');
+
+        const adjParts = [];
+        if (vObj[currentVerse - 1] !== undefined) {
+          adjParts.push(`<div>${currentVerse - 1}. ${cleanVerseHtml(vObj[currentVerse - 1])}</div>`);
+        }
+        if (vObj[currentVerse + 1] !== undefined) {
+          adjParts.push(`<div>${currentVerse + 1}. ${cleanVerseHtml(vObj[currentVerse + 1])}</div>`);
+        }
+
+        elTextCard.innerHTML = `
+          <div class="block-ref">${escapeHtml(bookTitle)} ${currentChapter}:${currentVerse}</div>
+          <div class="block-main">${escapeHtml(blockStr)}</div>
+          <div class="block-dots">${dotsHtml}</div>
+          <div class="block-divider"></div>
+          <div class="block-context">${ctxHtml}</div>
+          ${adjParts.length ? `<div class="block-adj">${adjParts.join('')}</div>` : ''}
+        `;
+      } else if (displayMode === 'WORDS') {
+        renderContinuousWordStream();
+      } else if (displayMode === 'VERSES') {
+        const raw = vObj[currentVerse] ?? '';
+        elTextCard.innerHTML = `
+          <div class="verse-ref">${escapeHtml(bookTitle)} ${currentChapter}:${currentVerse}</div>
+          <div class="verse-body">${cleanVerseHtml(raw)}</div>
+        `;
+      } else if (displayMode === 'CHAPTERS') {
+        let html = `<div class="ch-title">${escapeHtml(bookTitle)} — Глава ${currentChapter}</div>`;
+        for (const v of vList) {
+          const blocks = splitIntoSemanticBlocks(vObj[v] ?? '');
+          const joined = blocks.map(escapeHtml).join('<span class="ch-dot">·</span>');
+          html += `<div class="ch-verse"><span class="ch-vnum">${v}</span>${joined}</div>`;
+        }
+        html += `
+          <div class="ch-nav-row">
+            <button type="button" id="ch-prev-btn">← Пред. глава</button>
+            <button type="button" id="ch-next-btn">След. глава →</button>
+          </div>
+        `;
+        elChapContainer.innerHTML = html;
+        elChapScroll.scrollTop = 0;
+        document.getElementById('ch-prev-btn').onclick = () => stepBackward();
+        document.getElementById('ch-next-btn').onclick = () => stepForward();
+      }
+
+      if (!isChapter) {
+        updateProgressBars();
+      }
+      updateAutoplayUI();
+      updateStatusBar();
+    }
+
+    // --- КАМЕРА (ЗУМ И ПЕРЕМЕЩЕНИЕ ДВУМЯ ПАЛЬЦАМИ) ---
+    function applyCamera() {
+      elCanvasRoot.style.transform = `translate3d(${canvasPanX}px, ${canvasPanY}px, 0) scale(${canvasZoom})`;
+      updateStatusBar();
+    }
+
+    function centerCamera(resetZoom = false) {
+      if (resetZoom) canvasZoom = 1.0;
+      requestAnimationFrame(() => {
+        const wsW = elWorkspace.clientWidth;
+        const wsH = elWorkspace.clientHeight;
+        if (displayMode === 'WORDS') {
+          canvasPanX = wsW * 0.5;
+          canvasPanY = wsH * 0.52;
+        } else {
+          const stackW = elCardStack.offsetWidth * canvasZoom;
+          const stackH = elCardStack.offsetHeight * canvasZoom;
+          canvasPanX = (wsW - stackW) * 0.5;
+          canvasPanY = Math.max(20, (wsH - stackH) * 0.42);
+        }
+        applyCamera();
+      });
+    }
+
+    function triggerTapFlash(side) {
+      const el = side === 'right' ? elFlashRight : elFlashLeft;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 140);
+    }
+
+    // --- СЕНСОРНОЕ УПРАВЛЕНИЕ (ТАПЫ 1 ПАЛЬЦЕМ + ЗУМ/РУКА 2 ПАЛЬЦАМИ) ---
+    let singleStartX = 0, singleStartY = 0, singleStartTime = 0;
+    let wasMultiTouch = false;
+    let pinchPrevDist = 0, pinchPrevMidX = 0, pinchPrevMidY = 0;
+
+    function isInteractiveTarget(target) {
+      return Boolean(target.closest('button, select, input, #autoplay-popup, #autoplay-controls, #autoplay-play-btn'));
+    }
+
+    elWorkspace.addEventListener('touchstart', (e) => {
+      if (isInteractiveTarget(e.target)) return;
+      e.preventDefault();
+
+      if (e.touches.length === 1 && !wasMultiTouch) {
+        singleStartX = e.touches[0].clientX;
+        singleStartY = e.touches[0].clientY;
+        singleStartTime = performance.now();
+      } else if (e.touches.length === 2) {
+        wasMultiTouch = true;
+        const t0 = e.touches[0], t1 = e.touches[1];
+        pinchPrevDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        const rect = elWorkspace.getBoundingClientRect();
+        pinchPrevMidX = ((t0.clientX + t1.clientX) * 0.5) - rect.left;
+        pinchPrevMidY = ((t0.clientY + t1.clientY) * 0.5) - rect.top;
+      }
+    }, { passive: false });
+
+    elWorkspace.addEventListener('touchmove', (e) => {
+      if (isInteractiveTarget(e.target)) return;
+      e.preventDefault();
+
+      if (e.touches.length === 2) {
+        wasMultiTouch = true;
+        const t0 = e.touches[0], t1 = e.touches[1];
+        const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        const rect = elWorkspace.getBoundingClientRect();
+        const midX = ((t0.clientX + t1.clientX) * 0.5) - rect.left;
+        const midY = ((t0.clientY + t1.clientY) * 0.5) - rect.top;
+
+        if (pinchPrevDist > 0) {
+          const factor = dist / pinchPrevDist;
+          const minZ = displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35;
+          const maxZ = displayMode === 'WORDS' ? WORD_MAX_ZOOM : 5.0;
+          const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
+
+          const worldX = (pinchPrevMidX - canvasPanX) / canvasZoom;
+          const worldY = (pinchPrevMidY - canvasPanY) / canvasZoom;
+
+          canvasZoom = newZoom;
+          canvasPanX = midX - worldX * canvasZoom;
+          canvasPanY = midY - worldY * canvasZoom;
+          applyCamera();
+        }
+        pinchPrevDist = dist;
+        pinchPrevMidX = midX;
+        pinchPrevMidY = midY;
+      }
+    }, { passive: false });
+
+    elWorkspace.addEventListener('touchend', (e) => {
+      if (isInteractiveTarget(e.target)) return;
+      e.preventDefault();
+
+      if (e.touches.length === 0) {
+        if (!wasMultiTouch) {
+          const t = e.changedTouches[0];
+          const moved = Math.hypot(t.clientX - singleStartX, t.clientY - singleStartY);
+          const dt = performance.now() - singleStartTime;
+          if (moved < 24 && dt < 450) {
+            if (elAutoPopup.style.display === 'flex') {
+              elAutoPopup.style.display = 'none';
+            } else {
+              const rect = elWorkspace.getBoundingClientRect();
+              const relX = t.clientX - rect.left;
+              if (relX >= rect.width * 0.5) {
+                triggerTapFlash('right');
+                stepForward();
+              } else {
+                triggerTapFlash('left');
+                stepBackward();
+              }
+            }
+          }
+        }
+        wasMultiTouch = false;
+        pinchPrevDist = 0;
+      }
+    }, { passive: false });
+
+    elWorkspace.addEventListener('touchcancel', () => {
+      wasMultiTouch = false;
+      pinchPrevDist = 0;
+    });
+
+    // Поддержка мыши и клавиатуры (если открыть на ПК / iPad)
+    let mousePanning = false, mousePrevX = 0, mousePrevY = 0;
+    elWorkspace.addEventListener('wheel', (e) => {
+      if (displayMode === 'CHAPTERS') return;
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.1 : (1 / 1.1);
+      const minZ = displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35;
+      const maxZ = displayMode === 'WORDS' ? WORD_MAX_ZOOM : 5.0;
+      const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
+      const rect = elWorkspace.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const wx = (mx - canvasPanX) / canvasZoom;
+      const wy = (my - canvasPanY) / canvasZoom;
+      canvasZoom = newZoom;
+      canvasPanX = mx - wx * canvasZoom;
+      canvasPanY = my - wy * canvasZoom;
+      applyCamera();
+    }, { passive: false });
+
+    elWorkspace.addEventListener('mousedown', (e) => {
+      if (isInteractiveTarget(e.target)) return;
+      mousePanning = true;
+      mousePrevX = e.clientX;
+      mousePrevY = e.clientY;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!mousePanning) return;
+      canvasPanX += e.clientX - mousePrevX;
+      canvasPanY += e.clientY - mousePrevY;
+      mousePrevX = e.clientX;
+      mousePrevY = e.clientY;
+      applyCamera();
+    });
+    window.addEventListener('mouseup', () => { mousePanning = false; });
+
+    window.addEventListener('keydown', (e) => {
+      if (document.activeElement === elWpmInput) return;
+      if (e.code === 'Space' && displayMode === 'WORDS' && autoplaySubmode) {
+        e.preventDefault();
+        toggleAutoplayRunning();
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        stepForward();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        stepBackward();
+      } else if (e.code === 'KeyR' && !e.ctrlKey && displayMode !== 'CHAPTERS') {
+        e.preventDefault();
+        centerCamera(true);
+      }
+    });
+
+    // --- ЦИКЛ АВТОПРОИГРЫВАНИЯ ---
+    function toggleAutoplayRunning() {
+      autoplayRunning = !autoplayRunning;
+      autoplayAccum = 0;
+      autoplayLastTime = performance.now();
+      updateAutoplayUI();
+    }
+
+    function autoplayLoop(now) {
+      if (displayMode === 'WORDS' && autoplaySubmode && autoplayRunning) {
+        if (!autoplayLastTime) autoplayLastTime = now;
+        const dt = (now - autoplayLastTime) / 1000;
+        autoplayLastTime = now;
+        autoplayAccum += dt;
+        const interval = 60.0 / Math.max(10, autoplayWpm);
+        if (autoplayAccum >= interval) {
+          autoplayAccum -= interval;
+          if (!stepForward()) {
+            autoplayRunning = false;
+            updateAutoplayUI();
+          }
+        }
+      } else {
+        autoplayLastTime = now;
+      }
+      requestAnimationFrame(autoplayLoop);
+    }
+    requestAnimationFrame(autoplayLoop);
+
+    // --- СОБЫТИЯ ЭЛЕМЕНТОВ ИНТЕРФЕЙСА ---
+    elBookSel.addEventListener('change', () => {
+      currentBook = Number(elBookSel.value);
+      currentChapter = 1; currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
+      populateChapterSelector();
+      refreshView();
+    });
+
+    elChapSel.addEventListener('change', () => {
+      currentChapter = Number(elChapSel.value);
+      currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
+      recalculateChapterTotals();
+      populateVerseSelector();
+      refreshView();
+    });
+
+    elVerseSel.addEventListener('change', () => {
+      currentVerse = Number(elVerseSel.value);
+      currentBlockIdx = 0; currentWordIdx = 0;
+      rebuildCurrentVerseUnits();
+      refreshView();
+    });
+
+    elModeSel.addEventListener('change', () => {
+      displayMode = elModeSel.value;
+      if (displayMode !== 'WORDS') {
+        autoplayRunning = false;
+        elAutoPopup.style.display = 'none';
+      } else {
+        canvasZoom = Math.max(canvasZoom, WORD_MIN_ZOOM);
+      }
+      refreshView();
+      if (displayMode !== 'CHAPTERS') centerCamera(false);
+    });
+
+    elStrongBtn.addEventListener('click', () => {
+      showStrongs = !showStrongs;
+      elStrongBtn.classList.toggle('active', showStrongs);
+      rebuildCurrentVerseUnits();
+      refreshView();
+    });
+
+    elCenterBtn.addEventListener('click', () => centerCamera(true));
+
+    elCollapseBtn.addEventListener('click', () => {
+      const collapsed = elTopBar.classList.toggle('collapsed');
+      elCollapseBtn.textContent = collapsed ? '▼' : '▲';
+      if (displayMode !== 'CHAPTERS') centerCamera(false);
+    });
+
+    elAutoPlayBtn.addEventListener('click', () => {
+      elAutoPopup.style.display = elAutoPopup.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    document.querySelectorAll('.pop-presets button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        elWpmInput.value = btn.dataset.wpm;
+      });
+    });
+
+    elAutoConfirmBtn.addEventListener('click', () => {
+      const val = parseInt(elWpmInput.value, 10);
+      autoplayWpm = isNaN(val) ? 250 : Math.max(40, Math.min(1200, val));
+      elWpmInput.value = autoplayWpm;
+      elAutoPopup.style.display = 'none';
+      autoplaySubmode = true;
+      autoplayRunning = false;
+      autoplayAccum = 0;
+      updateAutoplayUI();
+    });
+
+    elAutoToggleBtn.addEventListener('click', toggleAutoplayRunning);
+
+    elAutoExitBtn.addEventListener('click', () => {
+      autoplaySubmode = false;
+      autoplayRunning = false;
+      autoplayAccum = 0;
+      updateAutoplayUI();
+    });
+
+    window.addEventListener('resize', () => {
+      if (displayMode !== 'CHAPTERS') {
+        refreshView();
+        centerCamera(false);
+      }
+    });
+
+    // --- ЗАГРУЗКА БАЗЫ ---
+    async function init() {
+      try {
+        const resp = await fetch('./bible.json');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        booksOrder = (data.order || []).map(Number).sort((a, z) => a - z);
+        booksNames = data.books || {};
+        bibleData = data.verses || {};
+        buildNavigationIndex();
+        populateBookSelector();
+        elLoader.style.display = 'none';
+        refreshView();
+        centerCamera(true);
+      } catch (err) {
+        elLoaderText.textContent = 'Ошибка загрузки bible.json: ' + err.message;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
