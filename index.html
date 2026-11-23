@@ -19,6 +19,7 @@
       --text: #E6E1DA;
       --muted: #7C8594;
       --accent: #D4A359;
+      --ios-amber: #F59E4B;
       --verse-bar: #5FA8D3;
       --word-active: #F7E8C8;
       --word-read: #4B5260;
@@ -69,7 +70,6 @@
       padding-bottom: 8px;
       z-index: 30;
       flex-shrink: 0;
-      transition: padding 0.2s ease;
     }
 
     .top-row {
@@ -133,7 +133,7 @@
       color: var(--muted);
     }
 
-    /* --- РАБОЧАЯ ОБЛАСТЬ 1: ХОЛСТ (БЛОКИ / СЛОВА / СТИХИ) --- */
+    /* --- РАБОЧАЯ ОБЛАСТЬ 1: ХОЛСТ --- */
     #workspace {
       position: relative;
       flex: 1 1 auto;
@@ -155,7 +155,7 @@
       pointer-events: none;
     }
 
-    /* Визуальная подсказка тапа слева / справа */
+    /* Визуальная подсказка тапа слева / справа (НЕ используется в "Бегущей строке") */
     .tap-flash {
       position: absolute;
       top: 0;
@@ -355,7 +355,45 @@
       transform: translateY(-9px);
     }
 
-    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА ДЛЯ "ПО СЛОВАМ" --- */
+    /* --- РЕЖИМ "БЕГУЩАЯ СТРОКА": ПЛАВНАЯ ТВ-ЛЕНТА --- */
+    #ticker-stream-root {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    #ticker-tape {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: baseline;
+      white-space: nowrap;
+      will-change: transform;
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: baseline;
+      padding-right: 16px;
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.15;
+      color: var(--text);
+      letter-spacing: 0.2px;
+    }
+
+    .ticker-vtag {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.72;
+      margin-right: 7px;
+      transform: translateY(-10px);
+    }
+
+    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА (ДЛЯ "ПО СЛОВАМ" И "БЕГУЩЕЙ СТРОКИ") --- */
     #word-hud {
       position: absolute;
       top: 12px;
@@ -400,11 +438,11 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* --- ОВЕРЛЕИ АВТОПРОИГРЫВАНИЯ --- */
+    /* --- ОВЕРЛЕИ АВТОПРОИГРЫВАНИЯ (ДЛЯ РЕЖИМА "ПО СЛОВАМ") --- */
     #autoplay-play-btn {
       position: absolute;
       right: 20px;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+      bottom: 20px;
       width: 56px;
       height: 56px;
       border-radius: 50%;
@@ -429,7 +467,7 @@
     #autoplay-popup {
       position: absolute;
       right: 16px;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+      bottom: 88px;
       width: min(300px, calc(100vw - 32px));
       background: var(--panel);
       border: 1px solid #3A414D;
@@ -498,7 +536,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      bottom: 16px;
       width: min(340px, calc(100vw - 32px));
       display: none;
       flex-direction: column;
@@ -548,6 +586,304 @@
       font-size: 14px;
     }
 
+    /* --- СОВЕТСКИЙ ПРИБОР СКОРОСТИ (ПРИВЯЗАН К ИНТЕРФЕЙСУ СНИЗУ В "БЕГУЩЕЙ СТРОКЕ") --- */
+    #ticker-dock {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 10px 14px;
+      background: linear-gradient(180deg, #16191E 0%, #111317 100%);
+      border-top: 1px solid #2A2F37;
+      z-index: 28;
+      flex-shrink: 0;
+    }
+
+    #soviet-gauge-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 68px;
+      padding: 6px 14px 6px 10px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #242830 0%, #171A1F 100%);
+      border: 2px solid #393F4A;
+      box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.05), inset 0 -3px 8px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+    }
+
+    #soviet-gauge-btn:active {
+      transform: scale(0.98);
+      border-color: var(--accent);
+    }
+
+    .gauge-screw {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #666E7A, #262A30);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
+    }
+    .gauge-screw.tl { top: 4px; left: 4px; }
+    .gauge-screw.tr { top: 4px; right: 4px; }
+    .gauge-screw.bl { bottom: 4px; left: 4px; }
+    .gauge-screw.br { bottom: 4px; right: 4px; }
+
+    .gauge-dial-window {
+      width: 96px;
+      height: 52px;
+      background: radial-gradient(ellipse at 50% 95%, #231D15 0%, #11100E 85%);
+      border: 1.5px solid #0B0C0E;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .gauge-dial-window svg {
+      width: 94px;
+      height: 50px;
+      display: block;
+    }
+
+    #gauge-needle-group {
+      transform-origin: 50px 46px;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .gauge-readout {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      min-width: 78px;
+    }
+
+    .gauge-caption {
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      color: #88919F;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .gauge-value-box {
+      background: #0B0D10;
+      border: 1px solid #2C313A;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ios-amber);
+      text-shadow: 0 0 8px rgba(245, 158, 75, 0.35);
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .gauge-unit {
+      font-size: 10px;
+      color: #7C8594;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    #ticker-play-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid #3A4D40;
+      background: linear-gradient(180deg, #32945E 0%, #236E45 100%);
+      color: #fff;
+      font-size: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      flex-shrink: 0;
+      padding-left: 3px;
+    }
+
+    #ticker-play-btn.running {
+      border-color: #6B532C;
+      background: linear-gradient(180deg, #C78D38 0%, #966622 100%);
+      padding-left: 0;
+    }
+
+    /* --- ВЫДВИЖНОЙ ВЫБОР СКОРОСТИ В СТИЛЕ ТАЙМЕРА iOS --- */
+    #ios-speed-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.52);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 60;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px 14px calc(env(safe-area-inset-bottom, 0px) + 20px);
+    }
+
+    #ios-speed-backdrop.open {
+      display: flex;
+      animation: fadeBackdrop 0.16s ease-out;
+    }
+
+    @keyframes fadeBackdrop {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #ios-speed-sheet {
+      width: min(410px, 100%);
+      background: #090A0C;
+      border: 1px solid #23272F;
+      border-radius: 26px;
+      padding: 20px 18px 18px;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      animation: slideUpSheet 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes slideUpSheet {
+      from { transform: translateY(28px); opacity: 0.6; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    #ios-ruler-viewport {
+      position: relative;
+      width: 100%;
+      height: 82px;
+      overflow: hidden;
+      touch-action: none;
+      cursor: ew-resize;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
+    }
+
+    #ios-ruler-track {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      will-change: transform;
+    }
+
+    .ios-tick {
+      position: relative;
+      width: 14px;
+      height: 100%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 6px;
+    }
+
+    .ios-tick-num {
+      position: absolute;
+      top: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(245, 158, 75, 0.72);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .ios-tick-bar {
+      width: 3px;
+      height: 36px;
+      border-radius: 2px;
+      background: rgba(245, 158, 75, 0.45);
+      transition: background 0.08s ease, height 0.08s ease;
+    }
+
+    .ios-tick.major .ios-tick-bar {
+      height: 44px;
+      background: rgba(245, 158, 75, 0.78);
+    }
+
+    .ios-tick.selected .ios-tick-bar {
+      background: #FFB266;
+      height: 46px;
+      box-shadow: 0 0 10px rgba(245, 158, 75, 0.7);
+    }
+
+    .ios-tick.selected .ios-tick-num {
+      color: #FFB266;
+    }
+
+    .ios-pointer-row {
+      display: flex;
+      justify-content: center;
+      margin-top: -2px;
+      margin-bottom: 8px;
+    }
+
+    .ios-triangle {
+      width: 0;
+      height: 0;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-bottom: 10px solid var(--ios-amber);
+      filter: drop-shadow(0 0 6px rgba(245, 158, 75, 0.5));
+    }
+
+    .ios-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    #ios-confirm-btn {
+      height: 46px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(245, 158, 75, 0.18);
+      color: var(--ios-amber);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #ios-confirm-btn:active {
+      background: rgba(245, 158, 75, 0.32);
+    }
+
+    .ios-big-readout {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      color: var(--ios-amber);
+      font-variant-numeric: tabular-nums;
+    }
+
+    #ios-big-wpm {
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .ios-big-unit {
+      font-size: 15px;
+      opacity: 0.75;
+    }
+
     /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ДЛЯ "ПО ГЛАВАМ" --- */
     #chapter-scroll {
       flex: 1 1 auto;
@@ -555,7 +891,7 @@
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
       display: none;
-      padding: 18px 14px calc(env(safe-area-inset-bottom, 0px) + 48px);
+      padding: 18px 14px 48px;
     }
 
     #chapter-container {
@@ -668,6 +1004,7 @@
         <select id="mode-select" aria-label="Режим">
           <option value="BLOCKS">Смысловыми блоками</option>
           <option value="WORDS">По словам</option>
+          <option value="TICKER">Бегущая строка</option>
           <option value="VERSES">По стихам</option>
           <option value="CHAPTERS">По главам</option>
         </select>
@@ -680,7 +1017,7 @@
       <div id="flash-left" class="tap-flash"></div>
       <div id="flash-right" class="tap-flash"></div>
 
-      <!-- Фиксированный HUD прогресса для режима "По словам" -->
+      <!-- Фиксированный HUD прогресса (для "По словам" и "Бегущей строки") -->
       <div id="word-hud">
         <div class="hud-row">
           <span id="hud-ref">Бытие 1:1</span>
@@ -705,6 +1042,10 @@
 
         <div id="word-stream-root">
           <div id="word-tape"></div>
+        </div>
+
+        <div id="ticker-stream-root">
+          <div id="ticker-tape"></div>
         </div>
       </div>
 
@@ -735,6 +1076,50 @@
       </div>
     </main>
 
+    <!-- Советский прибор скорости (привязан к интерфейсу снизу, только в режиме "Бегущая строка") -->
+    <div id="ticker-dock">
+      <div id="soviet-gauge-btn" role="button" aria-label="Настроить скорость">
+        <span class="gauge-screw tl"></span>
+        <span class="gauge-screw tr"></span>
+        <span class="gauge-screw bl"></span>
+        <span class="gauge-screw br"></span>
+
+        <div class="gauge-dial-window">
+          <svg viewBox="0 0 100 54">
+            <!-- Основная шкала дуги -->
+            <path d="M 10 46 A 40 40 0 0 1 90 46" fill="none" stroke="#5A5042" stroke-width="2"/>
+            <!-- Красная зона высоких скоростей -->
+            <path d="M 78 18 A 40 40 0 0 1 90 46" fill="none" stroke="#B83B44" stroke-width="2.5"/>
+            <!-- Риски советской шкалы -->
+            <g stroke="#C9B08A" stroke-width="1.2">
+              <line x1="10" y1="46" x2="17" y2="46"/>
+              <line x1="15" y1="26" x2="21" y2="29"/>
+              <line x1="30" y1="11" x2="33" y2="17"/>
+              <line x1="50" y1="6" x2="50" y2="13"/>
+              <line x1="70" y1="11" x2="67" y2="17"/>
+              <line x1="85" y1="26" x2="79" y2="29" stroke="#D14953"/>
+              <line x1="90" y1="46" x2="83" y2="46" stroke="#D14953"/>
+            </g>
+            <!-- Подпись на шкале -->
+            <text x="50" y="34" text-anchor="middle" fill="#6F6556" font-size="6.5" font-family="monospace">ТХ-800</text>
+            <!-- Стрелка прибора -->
+            <g id="gauge-needle-group">
+              <line x1="50" y1="46" x2="50" y2="11" stroke="#F59E4B" stroke-width="2" stroke-linecap="round"/>
+            </g>
+            <circle cx="50" cy="46" r="4.5" fill="#464D58" stroke="#181B20" stroke-width="1"/>
+          </svg>
+        </div>
+
+        <div class="gauge-readout">
+          <span class="gauge-caption">СКОРОСТЬ</span>
+          <span id="gauge-wpm-val" class="gauge-value-box">220</span>
+          <span class="gauge-unit">СЛ/МИН</span>
+        </div>
+      </div>
+
+      <button id="ticker-play-btn" type="button" aria-label="Старт/Пауза бегущей строки">▶</button>
+    </div>
+
     <!-- Режим "По главам" с обычным свайп-скроллом -->
     <section id="chapter-scroll">
       <div id="chapter-container"></div>
@@ -743,19 +1128,45 @@
     <footer id="status-bar">Загрузка...</footer>
   </div>
 
+  <!-- Выдвижная панель настройки скорости в стиле таймера iOS -->
+  <div id="ios-speed-backdrop">
+    <div id="ios-speed-sheet">
+      <div id="ios-ruler-viewport">
+        <div id="ios-ruler-track"></div>
+      </div>
+      <div class="ios-pointer-row">
+        <div class="ios-triangle"></div>
+      </div>
+      <div class="ios-bottom-row">
+        <button id="ios-confirm-btn" type="button">Подтвердить</button>
+        <div class="ios-big-readout">
+          <span id="ios-big-wpm">220</span>
+          <span class="ios-big-unit">сл/мин</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Регистрация Service Worker для 100% офлайн-работы
+    // Регистрация Service Worker для офлайн-работы
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
 
-    // --- СОСТОЯНИЕ ПРИЛОЖЕНИЯ (БЕЗ СОХРАНЕНИЯ ПРОГРЕССА) ---
+    // --- КОНСТАНТЫ ---
     const WORD_WINDOW_RADIUS = 45;
     const WORD_MIN_ZOOM = 0.55;
     const WORD_MAX_ZOOM = 10000.0;
 
+    const TICKER_MIN_WPM = 30;
+    const TICKER_MAX_WPM = 800;
+    const TICKER_STEP_WPM = 10;
+    const TICKER_BUFFER_PX = 2400;
+    const RULER_TICK_PX = 14;
+
+    // --- СОСТОЯНИЕ ---
     let booksOrder = [];
     let booksNames = {};
     let bibleData = {};
@@ -778,19 +1189,38 @@
     let chapterTotalWords = 1;
     let chapterWordOffsets = {};
 
-    // Камера (два пальца на телефоне / колесо + драг на ПК)
+    // Камера
     let canvasZoom = 1.0;
     let canvasPanX = 0;
     let canvasPanY = 0;
 
-    // Подрежим автопроигрывания (в режиме "По словам")
+    // Автопроигрывание в режиме "По словам"
     let autoplaySubmode = false;
     let autoplayRunning = false;
     let autoplayWpm = 250;
     let autoplayLastTime = 0;
     let autoplayAccum = 0;
 
-    // Ссылки на DOM
+    // Состояние режима "Бегущая строка" (TICKER)
+    let tickerWpm = 220;
+    let tickerAutoRunning = false;
+    let manualTickerDir = 0; // +1 (держим справа), -1 (держим слева), 0 (отпущено)
+    let keyTickerDir = 0; // Для клавиатуры на ПК
+    let tickerItems = []; // [{ b, c, v, wIdx, el, width }]
+    let tickerScrollX = 0;
+    let tickerTotalWidth = 0;
+    let tickerAvgWordPx = 135; // Калибруется по реальному шрифту
+    let tickerLastTime = 0;
+
+    // Состояние iOS-рулетки скорости
+    let rulerTempWpm = 220;
+    let rulerOffset = 0;
+    let rulerDragging = false;
+    let rulerStartX = 0;
+    let rulerStartOffset = 0;
+    let rulerTickEls = [];
+
+    // --- DOM ---
     const elLoader = document.getElementById('loader');
     const elLoaderText = document.getElementById('loader-text');
     const elTopBar = document.getElementById('top-bar');
@@ -812,6 +1242,9 @@
 
     const elWordStreamRoot = document.getElementById('word-stream-root');
     const elWordTape = document.getElementById('word-tape');
+    const elTickerStreamRoot = document.getElementById('ticker-stream-root');
+    const elTickerTape = document.getElementById('ticker-tape');
+
     const elWordHud = document.getElementById('word-hud');
     const elHudRef = document.getElementById('hud-ref');
     const elHudChLbl = document.getElementById('hud-ch-lbl');
@@ -828,18 +1261,27 @@
     const elAutoToggleBtn = document.getElementById('autoplay-toggle-btn');
     const elAutoExitBtn = document.getElementById('autoplay-exit-btn');
 
+    const elTickerDock = document.getElementById('ticker-dock');
+    const elSovietGaugeBtn = document.getElementById('soviet-gauge-btn');
+    const elGaugeNeedle = document.getElementById('gauge-needle-group');
+    const elGaugeWpmVal = document.getElementById('gauge-wpm-val');
+    const elTickerPlayBtn = document.getElementById('ticker-play-btn');
+
+    const elIosBackdrop = document.getElementById('ios-speed-backdrop');
+    const elIosRulerViewport = document.getElementById('ios-ruler-viewport');
+    const elIosRulerTrack = document.getElementById('ios-ruler-track');
+    const elIosBigWpm = document.getElementById('ios-big-wpm');
+    const elIosConfirmBtn = document.getElementById('ios-confirm-btn');
+
     const elChapScroll = document.getElementById('chapter-scroll');
     const elChapContainer = document.getElementById('chapter-container');
     const elStatusBar = document.getElementById('status-bar');
     const elFlashLeft = document.getElementById('flash-left');
     const elFlashRight = document.getElementById('flash-right');
 
-    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE (1-В-1 КАК В GODOT) ---
+    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE ---
     function escapeHtml(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     function cleanPlainText(raw) {
@@ -1011,6 +1453,24 @@
         }
       }
       return null;
+    }
+
+    function getNextWordPos(b, c, v, wIdx) {
+      const words = getVerseWordsCached(b, c, v);
+      if (wIdx + 1 < words.length) return { b, c, v, wIdx: wIdx + 1, text: words[wIdx + 1] };
+      const nv = getNextVerseRef(b, c, v);
+      if (!nv) return null;
+      const nWords = getVerseWordsCached(nv.b, nv.c, nv.v);
+      return { b: nv.b, c: nv.c, v: nv.v, wIdx: 0, text: nWords[0] };
+    }
+
+    function getPrevWordPos(b, c, v, wIdx) {
+      const words = getVerseWordsCached(b, c, v);
+      if (wIdx > 0) return { b, c, v, wIdx: wIdx - 1, text: words[wIdx - 1] };
+      const pv = getPrevVerseRef(b, c, v);
+      if (!pv) return null;
+      const pWords = getVerseWordsCached(pv.b, pv.c, pv.v);
+      return { b: pv.b, c: pv.c, v: pv.v, wIdx: pWords.length - 1, text: pWords[pWords.length - 1] };
     }
 
     function recalculateChapterTotals() {
@@ -1225,6 +1685,286 @@
       return false;
     }
 
+    // --- ДВИЖОК БЕСКОНЕЧНОЙ БЕГУЩЕЙ СТРОКИ (TICKER) ---
+    function createTickerSpan(pos) {
+      const span = document.createElement('span');
+      span.className = 'ticker-item';
+      if (pos.wIdx === 0) {
+        const tag = document.createElement('span');
+        tag.className = 'ticker-vtag';
+        tag.textContent = String(pos.v);
+        span.appendChild(tag);
+      }
+      span.appendChild(document.createTextNode(pos.text));
+      return span;
+    }
+
+    function calibrateTickerWordPx() {
+      const probe = document.createElement('span');
+      probe.className = 'ticker-item';
+      probe.style.visibility = 'hidden';
+      probe.style.position = 'absolute';
+      probe.textContent = 'словом';
+      elTickerTape.appendChild(probe);
+      const w = probe.offsetWidth;
+      probe.remove();
+      if (w > 40) tickerAvgWordPx = w;
+    }
+
+    function rebuildTickerFromCurrent() {
+      elTickerTape.innerHTML = '';
+      tickerItems = [];
+      tickerTotalWidth = 0;
+
+      calibrateTickerWordPx();
+
+      const startText = currentWords[currentWordIdx] || '—';
+      const centerPos = {
+        b: currentBook,
+        c: currentChapter,
+        v: currentVerse,
+        wIdx: currentWordIdx,
+        text: startText
+      };
+
+      const centerEl = createTickerSpan(centerPos);
+      elTickerTape.appendChild(centerEl);
+      const centerW = centerEl.offsetWidth;
+      tickerItems.push({ ...centerPos, el: centerEl, width: centerW });
+      tickerTotalWidth = centerW;
+      // Ставим текущее слово ровно в центр экрана (x = 0)
+      tickerScrollX = -centerW * 0.5;
+
+      fillTickerBuffers();
+      elTickerTape.style.transform = `translate3d(${tickerScrollX}px, -50%, 0)`;
+    }
+
+    function fillTickerBuffers() {
+      if (!tickerItems.length) return;
+
+      // 1. Добираем слова справа вне поля зрения
+      while ((tickerTotalWidth + tickerScrollX) < TICKER_BUFFER_PX) {
+        const last = tickerItems[tickerItems.length - 1];
+        const nextPos = getNextWordPos(last.b, last.c, last.v, last.wIdx);
+        if (!nextPos) break;
+        const el = createTickerSpan(nextPos);
+        elTickerTape.appendChild(el);
+        const w = el.offsetWidth;
+        tickerItems.push({ ...nextPos, el, width: w });
+        tickerTotalWidth += w;
+      }
+
+      // 2. Добираем слова слева вне поля зрения
+      while ((-tickerScrollX) < TICKER_BUFFER_PX) {
+        const first = tickerItems[0];
+        const prevPos = getPrevWordPos(first.b, first.c, first.v, first.wIdx);
+        if (!prevPos) break;
+        const el = createTickerSpan(prevPos);
+        elTickerTape.insertBefore(el, elTickerTape.firstChild);
+        const w = el.offsetWidth;
+        tickerItems.unshift({ ...prevPos, el, width: w });
+        tickerTotalWidth += w;
+        tickerScrollX -= w;
+      }
+
+      // 3. Удаляем ушедшие далеко влево слова
+      while (tickerItems.length > 16 && ((-tickerScrollX) - tickerItems[0].width) > TICKER_BUFFER_PX + 600) {
+        const removed = tickerItems.shift();
+        removed.el.remove();
+        tickerScrollX += removed.width;
+        tickerTotalWidth -= removed.width;
+      }
+
+      // 4. Удаляем ушедшие далеко вправо слова (при обратной перемотке)
+      while (tickerItems.length > 16 && ((tickerTotalWidth + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > TICKER_BUFFER_PX + 600) {
+        const removed = tickerItems.pop();
+        removed.el.remove();
+        tickerTotalWidth -= removed.width;
+      }
+    }
+
+    function syncCurrentFromTickerCenter() {
+      if (!tickerItems.length) return;
+      let acc = tickerScrollX;
+      let found = tickerItems[tickerItems.length - 1];
+      for (let i = 0; i < tickerItems.length; i++) {
+        const item = tickerItems[i];
+        if (acc + item.width >= 0) {
+          found = item;
+          break;
+        }
+        acc += item.width;
+      }
+
+      if (
+        found.b === currentBook &&
+        found.c === currentChapter &&
+        found.v === currentVerse &&
+        found.wIdx === currentWordIdx
+      ) {
+        return;
+      }
+
+      const bookChanged = found.b !== currentBook;
+      const chapChanged = bookChanged || found.c !== currentChapter;
+      const verseChanged = chapChanged || found.v !== currentVerse;
+
+      currentBook = found.b;
+      currentChapter = found.c;
+      currentVerse = found.v;
+      currentWordIdx = found.wIdx;
+
+      if (bookChanged) {
+        elBookSel.value = currentBook;
+        elChapSel.innerHTML = '';
+        for (const c of (bookChaptersSorted[currentBook] || [])) {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = `Гл. ${c}`;
+          elChapSel.appendChild(opt);
+        }
+      }
+      if (chapChanged) {
+        elChapSel.value = currentChapter;
+        recalculateChapterTotals();
+        elVerseSel.innerHTML = '';
+        for (const v of (chapterVersesSorted[currentBook]?.[currentChapter] || [])) {
+          const opt = document.createElement('option');
+          opt.value = v;
+          opt.textContent = `Ст. ${v}`;
+          elVerseSel.appendChild(opt);
+        }
+      }
+      if (verseChanged) {
+        elVerseSel.value = currentVerse;
+        currentWords = getVerseWordsCached(currentBook, currentChapter, currentVerse);
+      }
+
+      updateProgressBars();
+      updateStatusBar();
+    }
+
+    function updateSovietGaugeUI() {
+      elGaugeWpmVal.textContent = String(tickerWpm);
+      const t = (tickerWpm - TICKER_MIN_WPM) / (TICKER_MAX_WPM - TICKER_MIN_WPM);
+      const deg = -82 + t * 164;
+      elGaugeNeedle.style.transform = `rotate(${deg.toFixed(1)}deg)`;
+
+      if (tickerAutoRunning) {
+        elTickerPlayBtn.textContent = '⏸';
+        elTickerPlayBtn.classList.add('running');
+      } else {
+        elTickerPlayBtn.textContent = '▶';
+        elTickerPlayBtn.classList.remove('running');
+      }
+    }
+
+    // --- iOS-РУЛЕТКА СКОРОСТИ (ШАГ 10 СЛ/МИН) ---
+    function buildIosSpeedRuler() {
+      elIosRulerTrack.innerHTML = '';
+      rulerTickEls = [];
+      for (let w = TICKER_MIN_WPM; w <= TICKER_MAX_WPM; w += TICKER_STEP_WPM) {
+        const tick = document.createElement('div');
+        const isMajor = (w % 50 === 0);
+        tick.className = 'ios-tick' + (isMajor ? ' major' : '');
+        if (isMajor) {
+          const num = document.createElement('span');
+          num.className = 'ios-tick-num';
+          num.textContent = String(w);
+          tick.appendChild(num);
+        }
+        const bar = document.createElement('div');
+        bar.className = 'ios-tick-bar';
+        tick.appendChild(bar);
+        elIosRulerTrack.appendChild(tick);
+        rulerTickEls.push({ wpm: w, el: tick });
+      }
+    }
+
+    function setRulerPositionFromWpm(wpm, smooth = false) {
+      const clamped = Math.max(TICKER_MIN_WPM, Math.min(TICKER_MAX_WPM, Math.round(wpm / TICKER_STEP_WPM) * TICKER_STEP_WPM));
+      rulerTempWpm = clamped;
+      const idx = (clamped - TICKER_MIN_WPM) / TICKER_STEP_WPM;
+      rulerOffset = -(idx * RULER_TICK_PX + RULER_TICK_PX * 0.5);
+      elIosRulerTrack.style.transition = smooth ? 'transform 0.14s ease-out' : 'none';
+      elIosRulerTrack.style.transform = `translate3d(${rulerOffset}px, 0, 0)`;
+      highlightRulerTick(idx);
+    }
+
+    function highlightRulerTick(activeIdx) {
+      elIosBigWpm.textContent = String(rulerTempWpm);
+      for (let i = 0; i < rulerTickEls.length; i++) {
+        rulerTickEls[i].el.classList.toggle('selected', i === activeIdx);
+      }
+    }
+
+    function openIosSpeedPicker() {
+      elIosBackdrop.classList.add('open');
+      setRulerPositionFromWpm(tickerWpm, false);
+    }
+
+    function closeIosSpeedPicker() {
+      elIosBackdrop.classList.remove('open');
+    }
+
+    function handleRulerStart(clientX) {
+      rulerDragging = true;
+      rulerStartX = clientX;
+      rulerStartOffset = rulerOffset;
+      elIosRulerTrack.style.transition = 'none';
+    }
+
+    function handleRulerMove(clientX) {
+      if (!rulerDragging) return;
+      const dx = clientX - rulerStartX;
+      const maxIdx = rulerTickEls.length - 1;
+      const minOff = -(maxIdx * RULER_TICK_PX + RULER_TICK_PX * 0.5);
+      const maxOff = -(RULER_TICK_PX * 0.5);
+      rulerOffset = Math.max(minOff, Math.min(maxOff, rulerStartOffset + dx));
+      elIosRulerTrack.style.transform = `translate3d(${rulerOffset}px, 0, 0)`;
+
+      const idx = Math.max(0, Math.min(maxIdx, Math.round((-rulerOffset - RULER_TICK_PX * 0.5) / RULER_TICK_PX)));
+      rulerTempWpm = TICKER_MIN_WPM + idx * TICKER_STEP_WPM;
+      highlightRulerTick(idx);
+    }
+
+    function handleRulerEnd() {
+      if (!rulerDragging) return;
+      rulerDragging = false;
+      setRulerPositionFromWpm(rulerTempWpm, true);
+    }
+
+    elIosRulerViewport.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (e.touches.length) handleRulerStart(e.touches[0].clientX);
+    }, { passive: false });
+    elIosRulerViewport.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (e.touches.length) handleRulerMove(e.touches[0].clientX);
+    }, { passive: false });
+    elIosRulerViewport.addEventListener('touchend', () => handleRulerEnd());
+
+    elIosRulerViewport.addEventListener('mousedown', (e) => handleRulerStart(e.clientX));
+    window.addEventListener('mousemove', (e) => { if (rulerDragging) handleRulerMove(e.clientX); });
+    window.addEventListener('mouseup', () => handleRulerEnd());
+
+    elSovietGaugeBtn.addEventListener('click', openIosSpeedPicker);
+    elIosBackdrop.addEventListener('click', (e) => {
+      if (e.target === elIosBackdrop) closeIosSpeedPicker();
+    });
+    elIosConfirmBtn.addEventListener('click', () => {
+      tickerWpm = rulerTempWpm;
+      updateSovietGaugeUI();
+      updateStatusBar();
+      closeIosSpeedPicker();
+    });
+
+    elTickerPlayBtn.addEventListener('click', () => {
+      tickerAutoRunning = !tickerAutoRunning;
+      updateSovietGaugeUI();
+      updateStatusBar();
+    });
+
     // --- ОТРИСОВКА ---
     function updateProgressBars() {
       const bookTitle = booksNames[currentBook] || 'Книга';
@@ -1235,7 +1975,7 @@
         const pct = Math.max(0, Math.min(100, ratio * 100));
         elBlockProgFill.style.width = `${pct}%`;
         elBlockProgLbl.textContent = `Глава ${currentChapter} — ${Math.round(pct)}% (${passed + 1} / ${chapterTotalBlocks} бл.)`;
-      } else if (displayMode === 'WORDS') {
+      } else if (displayMode === 'WORDS' || displayMode === 'TICKER') {
         elBlockProgBox.style.display = 'none';
         elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}`;
 
@@ -1345,7 +2085,6 @@
       elWordTape.innerHTML = '';
       elWordTape.appendChild(frag);
 
-      // Ставим активное слово ровно в точку (0, 0)
       const activeCenter = activeEl.offsetLeft + activeEl.offsetWidth * 0.5;
       elWordTape.style.transform = `translate3d(${-activeCenter}px, -50%, 0)`;
     }
@@ -1379,11 +2118,14 @@
     function updateStatusBar() {
       const zoomPct = Math.round(canvasZoom * 100);
       if (displayMode === 'BLOCKS') {
-        elStatusBar.textContent = `Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: шаг • 2 пальца: зум/рука`;
+        elStatusBar.textContent = `Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: шаг • 2 пальца: зум`;
       } else if (displayMode === 'WORDS') {
-        elStatusBar.textContent = `Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: слово • 2 пальца: зум/рука`;
+        elStatusBar.textContent = `Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: слово`;
+      } else if (displayMode === 'TICKER') {
+        const st = tickerAutoRunning ? `Авто ${tickerWpm} сл/мин` : `Удерживай справа/слева (${tickerWpm} сл/мин)`;
+        elStatusBar.textContent = `${st} • Зум ${zoomPct}% • 2 пальца: масштаб`;
       } else if (displayMode === 'VERSES') {
-        elStatusBar.textContent = `Стих ${currentVerse} • Зум ${zoomPct}% • Тап слева/справа: стих • 2 пальца: зум/рука`;
+        elStatusBar.textContent = `Стих ${currentVerse} • Зум ${zoomPct}% • Тап слева/справа: стих`;
       } else {
         elStatusBar.textContent = `Глава ${currentChapter} • Свайп вверх/вниз для чтения`;
       }
@@ -1396,16 +2138,18 @@
 
       const isChapter = displayMode === 'CHAPTERS';
       const isWords = displayMode === 'WORDS';
+      const isTicker = displayMode === 'TICKER';
 
       elWorkspace.style.display = isChapter ? 'none' : 'block';
       elChapScroll.style.display = isChapter ? 'block' : 'none';
       elCenterBtn.style.display = isChapter ? 'none' : 'inline-flex';
 
-      elCardStack.style.display = (!isChapter && !isWords) ? 'flex' : 'none';
+      elCardStack.style.display = (!isChapter && !isWords && !isTicker) ? 'flex' : 'none';
       elWordStreamRoot.style.display = isWords ? 'block' : 'none';
-      elWordHud.style.display = isWords ? 'flex' : 'none';
+      elTickerStreamRoot.style.display = isTicker ? 'block' : 'none';
+      elWordHud.style.display = (isWords || isTicker) ? 'flex' : 'none';
+      elTickerDock.style.display = isTicker ? 'flex' : 'none';
 
-      // Адаптивная ширина карточки под экран телефона / планшета / ПК
       const wsW = elWorkspace.clientWidth || window.innerWidth;
       const cardWidth = Math.min(Math.max(300, wsW - 28), 640);
       elCardStack.style.width = `${cardWidth}px`;
@@ -1443,6 +2187,9 @@
         `;
       } else if (displayMode === 'WORDS') {
         renderContinuousWordStream();
+      } else if (displayMode === 'TICKER') {
+        rebuildTickerFromCurrent();
+        updateSovietGaugeUI();
       } else if (displayMode === 'VERSES') {
         const raw = vObj[currentVerse] ?? '';
         elTextCard.innerHTML = `
@@ -1486,9 +2233,9 @@
       requestAnimationFrame(() => {
         const wsW = elWorkspace.clientWidth;
         const wsH = elWorkspace.clientHeight;
-        if (displayMode === 'WORDS') {
+        if (displayMode === 'WORDS' || displayMode === 'TICKER') {
           canvasPanX = wsW * 0.5;
-          canvasPanY = wsH * 0.52;
+          canvasPanY = wsH * 0.54;
         } else {
           const stackW = elCardStack.offsetWidth * canvasZoom;
           const stackH = elCardStack.offsetHeight * canvasZoom;
@@ -1500,12 +2247,13 @@
     }
 
     function triggerTapFlash(side) {
+      if (displayMode === 'TICKER') return;
       const el = side === 'right' ? elFlashRight : elFlashLeft;
       el.classList.add('show');
       setTimeout(() => el.classList.remove('show'), 140);
     }
 
-    // --- СЕНСОРНОЕ УПРАВЛЕНИЕ (ТАПЫ 1 ПАЛЬЦЕМ + ЗУМ/РУКА 2 ПАЛЬЦАМИ) ---
+    // --- СЕНСОРНОЕ УПРАВЛЕНИЕ ---
     let singleStartX = 0, singleStartY = 0, singleStartTime = 0;
     let wasMultiTouch = false;
     let pinchPrevDist = 0, pinchPrevMidX = 0, pinchPrevMidY = 0;
@@ -1519,11 +2267,18 @@
       e.preventDefault();
 
       if (e.touches.length === 1 && !wasMultiTouch) {
+        const rect = elWorkspace.getBoundingClientRect();
+        const relX = e.touches[0].clientX - rect.left;
         singleStartX = e.touches[0].clientX;
         singleStartY = e.touches[0].clientY;
         singleStartTime = performance.now();
+
+        if (displayMode === 'TICKER') {
+          manualTickerDir = relX >= rect.width * 0.5 ? 1 : -1;
+        }
       } else if (e.touches.length === 2) {
         wasMultiTouch = true;
+        manualTickerDir = 0;
         const t0 = e.touches[0], t1 = e.touches[1];
         pinchPrevDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
         const rect = elWorkspace.getBoundingClientRect();
@@ -1538,6 +2293,7 @@
 
       if (e.touches.length === 2) {
         wasMultiTouch = true;
+        manualTickerDir = 0;
         const t0 = e.touches[0], t1 = e.touches[1];
         const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
         const rect = elWorkspace.getBoundingClientRect();
@@ -1546,8 +2302,8 @@
 
         if (pinchPrevDist > 0) {
           const factor = dist / pinchPrevDist;
-          const minZ = displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35;
-          const maxZ = displayMode === 'WORDS' ? WORD_MAX_ZOOM : 5.0;
+          const minZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MIN_ZOOM : 0.35;
+          const maxZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MAX_ZOOM : 5.0;
           const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
 
           const worldX = (pinchPrevMidX - canvasPanX) / canvasZoom;
@@ -1569,7 +2325,8 @@
       e.preventDefault();
 
       if (e.touches.length === 0) {
-        if (!wasMultiTouch) {
+        manualTickerDir = 0;
+        if (!wasMultiTouch && displayMode !== 'TICKER') {
           const t = e.changedTouches[0];
           const moved = Math.hypot(t.clientX - singleStartX, t.clientY - singleStartY);
           const dt = performance.now() - singleStartTime;
@@ -1595,18 +2352,19 @@
     }, { passive: false });
 
     elWorkspace.addEventListener('touchcancel', () => {
+      manualTickerDir = 0;
       wasMultiTouch = false;
       pinchPrevDist = 0;
     });
 
-    // Поддержка мыши и клавиатуры (если открыть на ПК / iPad)
+    // Поддержка мыши и клавиатуры (на ПК)
     let mousePanning = false, mousePrevX = 0, mousePrevY = 0;
     elWorkspace.addEventListener('wheel', (e) => {
       if (displayMode === 'CHAPTERS') return;
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.1 : (1 / 1.1);
-      const minZ = displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35;
-      const maxZ = displayMode === 'WORDS' ? WORD_MAX_ZOOM : 5.0;
+      const minZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MIN_ZOOM : 0.35;
+      const maxZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MAX_ZOOM : 5.0;
       const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
       const rect = elWorkspace.getBoundingClientRect();
       const mx = e.clientX - rect.left;
@@ -1621,6 +2379,11 @@
 
     elWorkspace.addEventListener('mousedown', (e) => {
       if (isInteractiveTarget(e.target)) return;
+      if (displayMode === 'TICKER' && e.button === 0) {
+        const rect = elWorkspace.getBoundingClientRect();
+        manualTickerDir = (e.clientX - rect.left) >= rect.width * 0.5 ? 1 : -1;
+        return;
+      }
       mousePanning = true;
       mousePrevX = e.clientX;
       mousePrevY = e.clientY;
@@ -1633,26 +2396,43 @@
       mousePrevY = e.clientY;
       applyCamera();
     });
-    window.addEventListener('mouseup', () => { mousePanning = false; });
+    window.addEventListener('mouseup', () => {
+      mousePanning = false;
+      manualTickerDir = 0;
+    });
 
     window.addEventListener('keydown', (e) => {
       if (document.activeElement === elWpmInput) return;
-      if (e.code === 'Space' && displayMode === 'WORDS' && autoplaySubmode) {
-        e.preventDefault();
-        toggleAutoplayRunning();
+      if (e.code === 'Space') {
+        if (displayMode === 'WORDS' && autoplaySubmode) {
+          e.preventDefault();
+          toggleAutoplayRunning();
+        } else if (displayMode === 'TICKER') {
+          e.preventDefault();
+          tickerAutoRunning = !tickerAutoRunning;
+          updateSovietGaugeUI();
+          updateStatusBar();
+        }
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        stepForward();
+        if (displayMode === 'TICKER') keyTickerDir = 1;
+        else stepForward();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        stepBackward();
+        if (displayMode === 'TICKER') keyTickerDir = -1;
+        else stepBackward();
       } else if (e.code === 'KeyR' && !e.ctrlKey && displayMode !== 'CHAPTERS') {
         e.preventDefault();
         centerCamera(true);
       }
     });
 
-    // --- ЦИКЛ АВТОПРОИГРЫВАНИЯ ---
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowRight' && keyTickerDir === 1) keyTickerDir = 0;
+      if (e.code === 'ArrowLeft' && keyTickerDir === -1) keyTickerDir = 0;
+    });
+
+    // --- ГЛАВНЫЙ ЦИКЛ АНИМАЦИИ (АВТОПРОИГРЫВАНИЕ + БЕГУЩАЯ СТРОКА) ---
     function toggleAutoplayRunning() {
       autoplayRunning = !autoplayRunning;
       autoplayAccum = 0;
@@ -1660,10 +2440,11 @@
       updateAutoplayUI();
     }
 
-    function autoplayLoop(now) {
+    function mainAnimLoop(now) {
+      // 1. Автопроигрывание в режиме "По словам"
       if (displayMode === 'WORDS' && autoplaySubmode && autoplayRunning) {
         if (!autoplayLastTime) autoplayLastTime = now;
-        const dt = (now - autoplayLastTime) / 1000;
+        const dt = Math.min(0.1, (now - autoplayLastTime) / 1000);
         autoplayLastTime = now;
         autoplayAccum += dt;
         const interval = 60.0 / Math.max(10, autoplayWpm);
@@ -1677,9 +2458,46 @@
       } else {
         autoplayLastTime = now;
       }
-      requestAnimationFrame(autoplayLoop);
+
+      // 2. Плавное движение в режиме "Бегущая строка"
+      if (displayMode === 'TICKER') {
+        if (!tickerLastTime) tickerLastTime = now;
+        const dt = Math.min(0.05, (now - tickerLastTime) / 1000);
+        tickerLastTime = now;
+
+        const dir = manualTickerDir !== 0 ? manualTickerDir : (keyTickerDir !== 0 ? keyTickerDir : (tickerAutoRunning ? 1 : 0));
+        if (dir !== 0 && tickerItems.length) {
+          const pxPerSec = (tickerWpm / 60.0) * tickerAvgWordPx;
+          tickerScrollX -= dir * pxPerSec * dt;
+
+          // Проверка границ самого начала (Быт 1:1) и самого конца (Откр)
+          const first = tickerItems[0];
+          const last = tickerItems[tickerItems.length - 1];
+          const atAbsoluteStart = !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
+          const atAbsoluteEnd = !getNextWordPos(last.b, last.c, last.v, last.wIdx);
+
+          if (atAbsoluteStart && tickerScrollX > -first.width * 0.5) {
+            tickerScrollX = -first.width * 0.5;
+          }
+          if (atAbsoluteEnd && tickerScrollX < -(tickerTotalWidth - last.width * 0.5)) {
+            tickerScrollX = -(tickerTotalWidth - last.width * 0.5);
+            if (tickerAutoRunning) {
+              tickerAutoRunning = false;
+              updateSovietGaugeUI();
+            }
+          }
+
+          fillTickerBuffers();
+          elTickerTape.style.transform = `translate3d(${tickerScrollX}px, -50%, 0)`;
+          syncCurrentFromTickerCenter();
+        }
+      } else {
+        tickerLastTime = now;
+      }
+
+      requestAnimationFrame(mainAnimLoop);
     }
-    requestAnimationFrame(autoplayLoop);
+    requestAnimationFrame(mainAnimLoop);
 
     // --- СОБЫТИЯ ЭЛЕМЕНТОВ ИНТЕРФЕЙСА ---
     elBookSel.addEventListener('change', () => {
@@ -1709,7 +2527,14 @@
       if (displayMode !== 'WORDS') {
         autoplayRunning = false;
         elAutoPopup.style.display = 'none';
-      } else {
+      }
+      if (displayMode !== 'TICKER') {
+        tickerAutoRunning = false;
+        manualTickerDir = 0;
+        keyTickerDir = 0;
+        closeIosSpeedPicker();
+      }
+      if (displayMode === 'WORDS' || displayMode === 'TICKER') {
         canvasZoom = Math.max(canvasZoom, WORD_MIN_ZOOM);
       }
       refreshView();
@@ -1763,13 +2588,15 @@
 
     window.addEventListener('resize', () => {
       if (displayMode !== 'CHAPTERS') {
-        refreshView();
+        if (displayMode !== 'TICKER') refreshView();
         centerCamera(false);
       }
     });
 
     // --- ЗАГРУЗКА БАЗЫ ---
     async function init() {
+      buildIosSpeedRuler();
+      updateSovietGaugeUI();
       try {
         const resp = await fetch('./bible.json');
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
