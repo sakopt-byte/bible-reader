@@ -29,6 +29,8 @@
       --green-hover: #38A869;
       --red: #B83B44;
       --red-hover: #D14953;
+      --neon-green: #22E584;
+      --neon-red: #FF3B5C;
       --app-h: 100vh;
       --top-extra: 18px;
     }
@@ -107,9 +109,14 @@
       transform: scale(0.97);
     }
 
-    #book-select { flex: 1 1 auto; min-width: 100px; }
-    #chapter-select { width: 64px; flex-shrink: 0; }
-    #verse-select { width: 64px; flex-shrink: 0; }
+    #book-select { flex: 1 1 auto; min-width: 96px; }
+    #chapter-select,
+    #verse-select {
+      width: 82px;
+      flex-shrink: 0;
+      padding: 0 4px 0 6px;
+      font-size: 13px;
+    }
     #mode-select { flex: 1 1 auto; min-width: 135px; }
 
     .toggle-btn {
@@ -124,9 +131,10 @@
     }
 
     .toggle-btn.active {
-      background: rgba(212, 163, 89, 0.18);
-      border-color: var(--accent);
-      color: var(--accent);
+      background: rgba(34, 229, 132, 0.14);
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+      box-shadow: 0 0 10px rgba(34, 229, 132, 0.22);
     }
 
     #collapse-btn {
@@ -134,9 +142,11 @@
       padding: 0;
       flex-shrink: 0;
       color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Кнопка возврата панели, когда в альбомном режиме она полностью скрыта */
     #restore-bar-btn {
       position: absolute;
       top: 8px;
@@ -242,11 +252,63 @@
     }
 
     #text-card {
+      position: relative;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 24px 22px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+    }
+
+    /* Неоновые границы карточки для начала и конца диапазона графика */
+    #text-card.bound-start {
+      border-color: rgba(34, 229, 132, 0.72);
+      box-shadow:
+        inset 4px 0 0 var(--neon-green),
+        0 0 22px rgba(34, 229, 132, 0.22),
+        0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    #text-card.bound-end {
+      border-color: rgba(255, 59, 92, 0.75);
+      box-shadow:
+        inset -4px 0 0 var(--neon-red),
+        0 0 24px rgba(255, 59, 92, 0.24),
+        0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .card-bound-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .card-bound-pill.start {
+      color: var(--neon-green);
+      background: rgba(34, 229, 132, 0.12);
+      border: 1px solid rgba(34, 229, 132, 0.5);
+      box-shadow: 0 0 12px rgba(34, 229, 132, 0.28);
+    }
+
+    .card-bound-pill.end {
+      color: var(--neon-red);
+      background: rgba(255, 59, 92, 0.12);
+      border: 1px solid rgba(255, 59, 92, 0.55);
+      box-shadow: 0 0 12px rgba(255, 59, 92, 0.28);
+    }
+
+    .bound-pill-wrap {
+      text-align: center;
     }
 
     .block-ref {
@@ -323,11 +385,49 @@
       color: var(--text);
     }
 
-    .strong {
-      color: #6E7785;
-      font-size: 0.68em;
-      font-weight: 400;
-      margin-left: 2px;
+    /* --- НЕОНОВЫЕ ПОЛОСЫ-ГРАНИЦЫ В ЛЕНТАХ ("ПО СЛОВАМ" И "БЕГУЩАЯ СТРОКА") --- */
+    .neon-gate {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      margin: 0 22px;
+      flex-shrink: 0;
+    }
+
+    .neon-gate-line {
+      width: 4px;
+      height: 76px;
+      border-radius: 4px;
+    }
+
+    .neon-gate-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    .neon-gate.start .neon-gate-line {
+      background: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green), 0 0 20px rgba(34, 229, 132, 0.75);
+    }
+
+    .neon-gate.start .neon-gate-tag {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px rgba(34, 229, 132, 0.7);
+    }
+
+    .neon-gate.end .neon-gate-line {
+      background: var(--neon-red);
+      box-shadow: 0 0 8px var(--neon-red), 0 0 20px rgba(255, 59, 92, 0.78);
+    }
+
+    .neon-gate.end .neon-gate-tag {
+      color: var(--neon-red);
+      text-shadow: 0 0 8px rgba(255, 59, 92, 0.7);
     }
 
     /* --- РЕЖИМ "ПО СЛОВАМ" --- */
@@ -389,7 +489,7 @@
       top: 0;
       left: 0;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       white-space: nowrap;
       will-change: transform;
     }
@@ -414,7 +514,7 @@
       transform: translateY(-10px);
     }
 
-    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА (ДЛЯ "ПО СЛОВАМ" И "БЕГУЩЕЙ СТРОКИ") --- */
+    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА --- */
     #word-hud {
       position: absolute;
       top: 10px;
@@ -475,18 +575,23 @@
       bottom: 18px;
       width: 54px;
       height: 54px;
+      padding: 0;
       border-radius: 50%;
       background: var(--green);
       border: none;
       color: #fff;
-      font-size: 22px;
       display: none;
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 22px rgba(46, 139, 87, 0.4);
       z-index: 20;
       cursor: pointer;
-      padding-left: 4px;
+    }
+
+    #autoplay-play-btn svg {
+      width: 24px;
+      height: 24px;
+      display: block;
     }
 
     #autoplay-play-btn:active {
@@ -574,8 +679,13 @@
       color: #fff;
       font-weight: 600;
       font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
+    #autoplay-toggle-btn svg { width: 16px; height: 16px; display: block; }
     #autoplay-toggle-btn.running { background: #B88635; }
 
     #autoplay-exit-btn {
@@ -698,24 +808,192 @@
     #ticker-play-btn {
       width: 54px;
       height: 54px;
+      padding: 0;
       border-radius: 50%;
       border: 2px solid #3A4D40;
       background: linear-gradient(180deg, #32945E 0%, #236E45 100%);
       color: #fff;
-      font-size: 21px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
       cursor: pointer;
       flex-shrink: 0;
-      padding-left: 3px;
+    }
+
+    #ticker-play-btn svg {
+      width: 24px;
+      height: 24px;
+      display: block;
     }
 
     #ticker-play-btn.running {
       border-color: #6B532C;
       background: linear-gradient(180deg, #C78D38 0%, #966622 100%);
-      padding-left: 0;
+    }
+
+    /* --- МОДАЛЬНОЕ ОКНО ВЫБОРА ДНЯ ГРАФИКА --- */
+    #plan-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 70;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 18px) 14px calc(env(safe-area-inset-bottom, 0px) + 18px);
+    }
+
+    #plan-modal-backdrop.open {
+      display: flex;
+      animation: fadeBackdrop 0.16s ease-out;
+    }
+
+    #plan-modal {
+      width: min(460px, 100%);
+      max-height: 100%;
+      background: #14171C;
+      border: 1px solid #2E3440;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+    }
+
+    .plan-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+
+    .plan-modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .plan-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #plan-exit-btn {
+      display: none;
+      height: 30px;
+      padding: 0 10px;
+      background: rgba(184, 59, 68, 0.22);
+      border-color: rgba(255, 59, 92, 0.5);
+      color: #FF6B84;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    #plan-close-btn {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    #plan-days-list {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .plan-day-card {
+      width: 100%;
+      height: auto;
+      padding: 10px 12px;
+      background: #1A1E25;
+      border: 1px solid #282E38;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .plan-day-card.active {
+      border-color: var(--neon-green);
+      background: rgba(34, 229, 132, 0.08);
+      box-shadow: 0 0 14px rgba(34, 229, 132, 0.16);
+    }
+
+    .plan-day-num {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: #12151A;
+      border: 1px solid #2C333F;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .plan-day-card.active .plan-day-num {
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+    }
+
+    .plan-day-num span:first-child {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .plan-day-num span:last-child {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .plan-day-info {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .plan-line-row {
+      font-size: 13px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .plan-line-row.wisdom {
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .plan-line-badge {
+      display: inline-block;
+      font-size: 10px;
+      color: var(--muted);
+      margin-right: 5px;
+      text-transform: uppercase;
     }
 
     /* --- ВЫДВИЖНОЙ ВЫБОР СКОРОСТИ В СТИЛЕ ТАЙМЕРА iOS --- */
@@ -906,6 +1184,20 @@
     .ch-vnum { color: var(--muted); font-size: 14px; font-weight: 700; margin-right: 6px; }
     .ch-dot { color: #4C566A; margin: 0 5px; }
 
+    .ch-neon-banner {
+      height: 3px;
+      border-radius: 3px;
+      margin: 14px 0;
+    }
+    .ch-neon-banner.start {
+      background: var(--neon-green);
+      box-shadow: 0 0 12px var(--neon-green);
+    }
+    .ch-neon-banner.end {
+      background: var(--neon-red);
+      box-shadow: 0 0 12px var(--neon-red);
+    }
+
     .ch-nav-row {
       display: flex;
       gap: 10px;
@@ -930,7 +1222,7 @@
     }
 
     /* =====================================================================
-       КОМПАКТНЫЙ АЛЬБОМНЫЙ РЕЖИМ (АВТО-АДАПТАЦИЯ ПОД НИЗКИЙ ЭКРАН ТЕЛЕФОНА)
+       КОМПАКТНЫЙ АЛЬБОМНЫЙ РЕЖИМ
        ===================================================================== */
     body.landscape-compact #top-bar {
       flex-direction: row;
@@ -950,17 +1242,9 @@
       display: flex;
     }
 
-    body.landscape-compact .top-row {
-      gap: 5px;
-    }
-
-    body.landscape-compact .row-primary {
-      flex: 1 1 auto;
-    }
-
-    body.landscape-compact .row-secondary {
-      flex: 0 1 auto;
-    }
+    body.landscape-compact .top-row { gap: 5px; }
+    body.landscape-compact .row-primary { flex: 1 1 auto; }
+    body.landscape-compact .row-secondary { flex: 0 1 auto; }
 
     body.landscape-compact #top-bar select,
     body.landscape-compact #top-bar button {
@@ -971,12 +1255,11 @@
     }
 
     body.landscape-compact #book-select { min-width: 90px; max-width: 170px; }
-    body.landscape-compact #chapter-select { width: 58px; }
-    body.landscape-compact #verse-select { width: 58px; }
+    body.landscape-compact #chapter-select,
+    body.landscape-compact #verse-select { width: 72px; padding: 0 3px 0 5px; }
     body.landscape-compact #mode-select { min-width: 130px; max-width: 170px; }
-    body.landscape-compact #collapse-btn { width: 30px; }
+    body.landscape-compact #collapse-btn { width: 30px; padding: 0; }
 
-    /* Тонкий однострочный HUD прогресса в альбомной ориентации */
     body.landscape-compact #word-hud {
       top: 6px;
       padding: 5px 12px;
@@ -986,17 +1269,12 @@
       gap: 14px;
     }
 
-    body.landscape-compact #word-hud .hud-section {
-      flex: 1 1 0;
-      gap: 3px;
-    }
-
+    body.landscape-compact #word-hud .hud-section { flex: 1 1 0; gap: 3px; }
     body.landscape-compact #hud-ref { font-size: 12px; }
     body.landscape-compact #hud-ch-lbl,
     body.landscape-compact #hud-v-lbl { font-size: 11px; }
     body.landscape-compact #word-hud .prog-track { height: 4px !important; }
 
-    /* Компактный советский прибор в альбомной ориентации */
     body.landscape-compact #ticker-dock {
       padding: 5px 12px calc(env(safe-area-inset-bottom, 0px) + 5px);
       gap: 10px;
@@ -1018,28 +1296,18 @@
     body.landscape-compact .gauge-value-box { font-size: 16px; padding: 1px 6px; }
     body.landscape-compact .gauge-unit { font-size: 10px; margin-top: 0; }
 
-    body.landscape-compact #ticker-play-btn {
-      width: 40px;
-      height: 40px;
-      font-size: 16px;
-    }
+    body.landscape-compact #ticker-play-btn { width: 40px; height: 40px; }
+    body.landscape-compact #ticker-play-btn svg { width: 18px; height: 18px; }
 
-    /* Убираем лишнюю нижнюю строку подсказок в альбомной ориентации */
-    body.landscape-compact #status-bar {
-      display: none;
-    }
+    body.landscape-compact #status-bar { display: none; }
 
-    /* Компактная карточка для Блоков/Стихов в альбомной ориентации */
-    body.landscape-compact #text-card {
-      padding: 14px 18px;
-    }
+    body.landscape-compact #text-card { padding: 14px 18px; }
     body.landscape-compact .block-ref { margin-bottom: 8px; }
     body.landscape-compact .block-main { font-size: 22px; margin-bottom: 10px; }
     body.landscape-compact .block-dots { margin-bottom: 6px; }
     body.landscape-compact .block-divider { margin: 8px 0; }
     body.landscape-compact .block-adj { display: none; }
 
-    /* Компактный iOS-пикер в альбомной ориентации */
     body.landscape-compact #ios-speed-sheet {
       padding: 12px 16px 12px;
       border-radius: 20px;
@@ -1097,7 +1365,7 @@
           <option value="VERSES">По стихам</option>
           <option value="CHAPTERS">По главам</option>
         </select>
-        <button id="strong-btn" class="toggle-btn">Стронг</button>
+        <button id="plan-btn" class="toggle-btn">График</button>
         <button id="center-btn" class="toggle-btn">Центр</button>
       </div>
     </header>
@@ -1107,18 +1375,18 @@
       <div id="flash-left" class="tap-flash"></div>
       <div id="flash-right" class="tap-flash"></div>
 
-      <!-- Фиксированный HUD прогресса (для "По словам" и "Бегущей строки") -->
+      <!-- Фиксированный HUD прогресса -->
       <div id="word-hud">
         <div class="hud-section">
           <div class="hud-row">
             <span id="hud-ref">Бытие 1:1</span>
-            <span id="hud-ch-lbl">Глава 1 — 0%</span>
+            <span id="hud-ch-lbl">Гл. 1 — 0%</span>
           </div>
           <div class="prog-track"><div id="hud-ch-fill" class="prog-fill"></div></div>
         </div>
         <div class="hud-section">
           <div class="hud-row">
-            <span id="hud-v-lbl">Стих 1 — 0%</span>
+            <span id="hud-v-lbl">Ст. 1 — 0%</span>
           </div>
           <div class="prog-track" style="height:5px;"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
         </div>
@@ -1143,8 +1411,10 @@
         </div>
       </div>
 
-      <!-- Автопроигрывание (только в режиме "По словам") -->
-      <button id="autoplay-play-btn" aria-label="Автопроигрывание">▶</button>
+      <!-- Автопроигрывание ("По словам") -->
+      <button id="autoplay-play-btn" aria-label="Автопроигрывание">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+      </button>
 
       <div id="autoplay-popup">
         <div class="pop-title">Автопроигрывание слов</div>
@@ -1162,9 +1432,9 @@
       </div>
 
       <div id="autoplay-controls">
-        <div id="autoplay-status">⏸ Пауза (250 сл/мин)</div>
+        <div id="autoplay-status">Пауза (250 сл/мин)</div>
         <div class="auto-btn-row">
-          <button id="autoplay-toggle-btn" type="button">▶ Старт</button>
+          <button id="autoplay-toggle-btn" type="button"></button>
           <button id="autoplay-exit-btn" type="button">Выйти</button>
         </div>
       </div>
@@ -1206,7 +1476,7 @@
         </div>
       </div>
 
-      <button id="ticker-play-btn" type="button" aria-label="Старт/Пауза бегущей строки">▶</button>
+      <button id="ticker-play-btn" type="button" aria-label="Старт/Пауза бегущей строки"></button>
     </div>
 
     <!-- Режим "По главам" -->
@@ -1215,6 +1485,20 @@
     </section>
 
     <footer id="status-bar">Загрузка...</footer>
+  </div>
+
+  <!-- Модальное окно выбора дня графика -->
+  <div id="plan-modal-backdrop">
+    <div id="plan-modal">
+      <div class="plan-modal-header">
+        <div class="plan-modal-title">График чтения (35 дней)</div>
+        <div class="plan-header-actions">
+          <button id="plan-exit-btn" type="button">Выйти из графика</button>
+          <button id="plan-close-btn" type="button" aria-label="Закрыть">✕</button>
+        </div>
+      </div>
+      <div id="plan-days-list"></div>
+    </div>
   </div>
 
   <!-- Выдвижная панель настройки скорости в стиле таймера iOS -->
@@ -1243,6 +1527,10 @@
       });
     }
 
+    // --- SVG ИКОНКИ (ИДЕАЛЬНО ПО ЦЕНТРУ, БЕЗ СИСТЕМНЫХ ЭМОДЗИ) ---
+    const SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
+    const SVG_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
+
     // --- КОНСТАНТЫ ---
     const WORD_WINDOW_RADIUS = 45;
     const WORD_MIN_ZOOM = 0.55;
@@ -1254,6 +1542,65 @@
     const TICKER_BUFFER_PX = 2400;
     const RULER_TICK_PX = 14;
 
+    // Стандартные номера книг MyBible RST+
+    const STD_BOOK_IDS = {
+      'Быт': 10, 'Исх': 20, 'Лев': 30, 'Чис': 40, 'Втор': 50,
+      'Нав': 60, 'Суд': 70, 'Руф': 80, '1Цар': 90, '2Цар': 100,
+      '3Цар': 110, '4Цар': 120, '1Пар': 130, '2Пар': 140, 'Ездр': 150,
+      'Неем': 160, 'Есф': 190, 'Иов': 220, 'Пс': 230, 'Прит': 240,
+      'Еккл': 250, 'Песн': 260, 'Ис': 290, 'Иер': 300, 'Плач': 310,
+      'Иез': 330, 'Дан': 340, 'Ос': 350, 'Иоил': 360, 'Ам': 370,
+      'Авд': 380, 'Ион': 390, 'Мих': 400, 'Наум': 410, 'Авв': 420,
+      'Соф': 430, 'Агг': 440, 'Зах': 450, 'Мал': 460,
+      'Мат': 470, 'Мар': 480, 'Лук': 490, 'Ин': 500, 'Деян': 510,
+      'Рим': 520, '1Кор': 530, '2Кор': 540, 'Гал': 550, 'Еф': 560,
+      'Флп': 570, 'Кол': 580, '1Фес': 590, '2Фес': 600, '1Тим': 610,
+      '2Тим': 620, 'Тит': 630, 'Флм': 640, 'Евр': 650, 'Иак': 660,
+      '1Пет': 670, '2Пет': 680, '1Ин': 690, '2Ин': 700, '3Ин': 710,
+      'Иуд': 720, 'Откр': 730
+    };
+
+    const WISDOM_BOOK_IDS = [230, 240, 250]; // Псалтирь, Притчи, Екклесиаст
+
+    // --- ПОЛНЫЙ 35-ДНЕВНЫЙ ПЛАН ЧТЕНИЯ ---
+    const READING_PLAN = [
+      { day: 1, m: ['Быт',1,1, 'Быт',30,6], w: ['Пс',1,1, 'Пс',28,5], ml: 'Быт. 1:1 – 30:6', wl: 'Пс. 1:1 – 28:5' },
+      { day: 2, m: ['Быт',30,7, 'Исх',4,14], w: ['Пс',28,6, 'Пс',49,22], ml: 'Быт. 30:7 – Исх. 4:14', wl: 'Пс. 28:6 – 49:22' },
+      { day: 3, m: ['Исх',4,15, 'Исх',30,10], w: ['Пс',49,23, 'Пс',73,14], ml: 'Исх. 4:15 – 30:10', wl: 'Пс. 49:23 – 73:14' },
+      { day: 4, m: ['Исх',30,11, 'Лев',15,18], w: ['Пс',73,15, 'Пс',96,5], ml: 'Исх. 30:11 – Лев. 15:18',wl: 'Пс. 73:15 – 96:5' },
+      { day: 5, m: ['Лев',15,19, 'Чис',10,35], w: ['Пс',96,6, 'Пс',118,41], ml: 'Лев. 15:19 – Чис. 10:35',wl: 'Пс. 96:6 – 118:41' },
+      { day: 6, m: ['Чис',10,36, 'Чис',35,22], w: ['Пс',118,42, 'Пс',148,14], ml: 'Чис. 10:36 – 35:22', wl: 'Пс. 118:42 – 148:14' },
+      { day: 7, m: ['Чис',35,23, 'Втор',24,20], w: ['Пс',149,1, 'Прит',15,32], ml: 'Чис. 35:23 – Втор. 24:20',wl: 'Пс. 149:1 – Прит. 15:32' },
+      { day: 8, m: ['Втор',24,21, 'Нав',15,52], w: ['Прит',15,33, 'Прит',30,15],ml: 'Втор. 24:21 – Нав. 15:52',wl: 'Прит. 15:33 – 30:15' },
+      { day: 9, m: ['Нав',15,53, 'Суд',16,28], w: ['Прит',30,16, 'Пс',3,7], ml: 'Нав. 15:53 – Суд. 16:28',wl: 'Прит. 30:16 – Пс. 3:7' },
+      { day: 10, m: ['Суд',16,29, '1Цар',17,28], w: ['Пс',3,8, 'Пс',30,6], ml: 'Суд. 16:29 – 1Цар. 17:28',wl: 'Пс. 3:8 – 30:6' },
+      { day: 11, m: ['1Цар',17,29, '2Цар',12,20], w: ['Пс',30,7, 'Пс',51,3], ml: '1Цар. 17:29 – 2Цар. 12:20',wl: 'Пс. 30:7 – 51:3' },
+      { day: 12, m: ['2Цар',12,21, '3Цар',8,26], w: ['Пс',51,4, 'Пс',75,8], ml: '2Цар. 12:21 – 3Цар. 8:26',wl: 'Пс. 51:4 – 75:8' },
+      { day: 13, m: ['3Цар',8,27, '4Цар',5,21], w: ['Пс',75,9, 'Пс',98,9], ml: '3Цар. 8:27 – 4Цар. 5:21',wl: 'Пс. 75:9 – 98:9' },
+      { day: 14, m: ['4Цар',5,22, '1Пар',4,18], w: ['Пс',99,1, 'Пс',118,72], ml: '4Цар. 5:22 – 1Пар. 4:18',wl: 'Пс. 99:1 – 118:72' },
+      { day: 15, m: ['1Пар',4,19, '2Пар',6,15], w: ['Пс',118,73, 'Прит',1,14], ml: '1Пар. 4:19 – 2Пар. 6:15',wl: 'Пс. 118:73 – Прит. 1:14' },
+      { day: 16, m: ['2Пар',6,16, '2Пар',34,12], w: ['Прит',1,15, 'Прит',16,26], ml: '2Пар. 6:16 – 34:12', wl: 'Прит. 1:15 – 16:26' },
+      { day: 17, m: ['2Пар',34,13, 'Есф',1,21], w: ['Прит',16,27, 'Прит',31,7], ml: '2Пар. 34:13 – Есф. 1:21',wl: 'Прит. 16:27 – 31:7' },
+      { day: 18, m: ['Есф',1,22, 'Иов',36,20], w: ['Прит',31,8, 'Пс',5,11], ml: 'Есф. 1:22 – Иов. 36:20', wl: 'Прит. 31:8 – Пс. 5:11' },
+      { day: 19, m: ['Иов',36,21, 'Ис',30,20], w: ['Пс',5,12, 'Пс',30,25], ml: 'Иов. 36:21 – Ис. 30:20', wl: 'Пс. 5:12 – 30:25' },
+      { day: 20, m: ['Ис',30,21, 'Иер',1,10], w: ['Пс',31,1, 'Пс',53,6], ml: 'Ис. 30:21 – Иер. 1:10', wl: 'Пс. 31:1 – 53:6' },
+      { day: 21, m: ['Иер',1,11, 'Иер',29,1], w: ['Пс',53,7, 'Пс',76,20], ml: 'Иер. 1:11 – 29:1', wl: 'Пс. 53:7 – 76:20' },
+      { day: 22, m: ['Иер',29,2, 'Иер',52,25], w: ['Пс',76,21, 'Пс',101,7], ml: 'Иер. 29:2 – 52:25', wl: 'Пс. 76:21 – 101:7' },
+      { day: 23, m: ['Иер',52,26, 'Иез',23,23], w: ['Пс',101,8, 'Пс',118,97], ml: 'Иер. 52:26 – Иез. 23:23',wl: 'Пс. 101:8 – 118:97' },
+      { day: 24, m: ['Иез',23,24, 'Иез',47,17], w: ['Пс',118,98, 'Прит',2,3], ml: 'Иез. 23:24 – 47:17', wl: 'Пс. 118:98 – Прит. 2:3' },
+      { day: 25, m: ['Иез',47,18, 'Ам',3,2], w: ['Прит',2,4, 'Прит',17,19], ml: 'Иез. 47:18 – Ам. 3:2', wl: 'Прит. 2:4 – 17:19' },
+      { day: 26, m: ['Ам',3,3, 'Мал',3,2], w: ['Прит',17,20, 'Еккл',1,2], ml: 'Ам. 3:3 – Мал. 3:2', wl: 'Прит. 17:20 – Еккл. 1:2' },
+      { day: 27, m: ['Мал',3,3, 'Мат',25,45], w: ['Еккл',1,3, 'Пс',7,8], ml: 'Мал. 3:3 – Мат. 25:45', wl: 'Еккл. 1:3 – Пс. 7:8' },
+      { day: 28, m: ['Мат',25,46, 'Лук',3,8], w: ['Пс',7,9, 'Пс',32,12], ml: 'Мат. 25:46 – Лук. 3:8', wl: 'Пс. 7:9 – 32:12' },
+      { day: 29, m: ['Лук',3,9, 'Лук',23,26], w: ['Пс',32,13, 'Пс',54,19], ml: 'Лук. 3:9 – 23:26', wl: 'Пс. 32:13 – 54:19' },
+      { day: 30, m: ['Лук',23,27, 'Ин',20,25], w: ['Пс',54,20, 'Пс',77,21], ml: 'Лук. 23:27 – Ин. 20:25', wl: 'Пс. 54:20 – 77:21' },
+      { day: 31, m: ['Ин',20,26, 'Деян',23,29], w: ['Пс',77,22, 'Пс',102,3], ml: 'Ин. 20:26 – Деян. 23:29',wl: 'Пс. 77:22 – 102:3' },
+      { day: 32, m: ['Деян',23,30, '1Кор',14,23], w: ['Пс',102,4, 'Пс',118,123], ml: 'Деян. 23:30 – 1Кор. 14:23',wl: 'Пс. 102:4 – 118:123' },
+      { day: 33, m: ['1Кор',14,24, '2Фес',2,9], w: ['Пс',118,124, 'Прит',3,7], ml: '1Кор. 14:24 – 2Фес. 2:9',wl: 'Пс. 118:124 – Прит. 3:7' },
+      { day: 34, m: ['2Фес',2,10, '1Ин',4,18], w: ['Прит',3,8, 'Прит',18,19], ml: '2Фес. 2:10 – 1Ин. 4:18', wl: 'Прит. 3:8 – 18:19' },
+      { day: 35, m: ['1Ин',4,19, 'Откр',22,21], w: ['Прит',18,20, 'Еккл',12,14],ml: '1Ин. 4:19 – Откр. 22:21',wl: 'Прит. 18:20 – Еккл. 12:14' }
+    ];
+
     // --- СОСТОЯНИЕ ---
     let booksOrder = [];
     let booksNames = {};
@@ -1261,6 +1608,12 @@
     let bookChaptersSorted = {};
     let chapterVersesSorted = {};
     let verseWordsCache = new Map();
+
+    // Состояние графика чтения
+    let planActive = false;
+    let planDayNum = 0; // 1..35
+    let planActiveLine = 'main';// 'main' | 'wisdom'
+    let planDayData = null; // { main: { verses, indexMap, books, chaptersByBook, versesByBookChap }, wisdom: {...} }
 
     let currentBook = 10;
     let currentChapter = 1;
@@ -1270,7 +1623,6 @@
     let currentWordIdx = 0;
     let currentWords = [];
     let displayMode = 'BLOCKS';
-    let showStrongs = false;
 
     let chapterTotalBlocks = 1;
     let chapterBlockOffsets = {};
@@ -1296,6 +1648,10 @@
     let tickerTotalWidth = 0;
     let tickerAvgWordPx = 135;
     let tickerLastTime = 0;
+    let tickerStartGateEl = null;
+    let tickerEndGateEl = null;
+    let tickerStartGateW = 0;
+    let tickerEndGateW = 0;
 
     let rulerTempWpm = 220;
     let rulerOffset = 0;
@@ -1313,7 +1669,7 @@
     const elChapSel = document.getElementById('chapter-select');
     const elVerseSel = document.getElementById('verse-select');
     const elModeSel = document.getElementById('mode-select');
-    const elStrongBtn = document.getElementById('strong-btn');
+    const elPlanBtn = document.getElementById('plan-btn');
     const elCenterBtn = document.getElementById('center-btn');
     const elCollapseBtn = document.getElementById('collapse-btn');
 
@@ -1352,6 +1708,11 @@
     const elGaugeWpmVal = document.getElementById('gauge-wpm-val');
     const elTickerPlayBtn = document.getElementById('ticker-play-btn');
 
+    const elPlanModalBackdrop = document.getElementById('plan-modal-backdrop');
+    const elPlanDaysList = document.getElementById('plan-days-list');
+    const elPlanExitBtn = document.getElementById('plan-exit-btn');
+    const elPlanCloseBtn = document.getElementById('plan-close-btn');
+
     const elIosBackdrop = document.getElementById('ios-speed-backdrop');
     const elIosRulerViewport = document.getElementById('ios-ruler-viewport');
     const elIosRulerTrack = document.getElementById('ios-ruler-track');
@@ -1365,7 +1726,7 @@
     const elFlashRight = document.getElementById('flash-right');
 
     // =========================================================================
-    // АДАПТИВНЫЙ АЛГОРИТМ ПОД ЭКРАН, ОРИЕНТАЦИЮ И iOS STANDALONE (DYNAMIC ISLAND)
+    // АДАПТИВНЫЙ АЛГОРИТМ ПОД ЭКРАН И ОРИЕНТАЦИЮ
     // =========================================================================
     function syncViewportLayout() {
       const w = window.innerWidth;
@@ -1373,7 +1734,6 @@
       const isLandscape = w > h;
       const isStandaloneIOS = window.navigator.standalone === true;
 
-      // Исправляем баг iOS black-translucent PWA (недосчёт ~59px снизу экрана)
       if (isStandaloneIOS) {
         const trueScreenH = isLandscape
           ? Math.min(window.screen.width, window.screen.height)
@@ -1385,12 +1745,10 @@
 
       document.documentElement.style.setProperty('--app-h', `${h}px`);
 
-      // Дополнительный отступ сверху под камеру/Dynamic Island на высоких вертикальных экранах
       const hasIslandRatio = !isLandscape && (h / Math.max(1, w) > 2.0);
       const topExtra = isLandscape ? 6 : (hasIslandRatio ? 22 : 12);
       document.documentElement.style.setProperty('--top-extra', `${topExtra}px`);
 
-      // Компактный альбомный режим для телефонов на боку (низкая высота экрана)
       const isCompactLandscape = isLandscape && h <= 540;
       document.body.classList.toggle('landscape-compact', isCompactLandscape);
 
@@ -1401,7 +1759,7 @@
       }
     }
 
-    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE ---
+    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE (100% ТОЧНОСТЬ ТЕКСТА) ---
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
@@ -1418,22 +1776,7 @@
     }
 
     function cleanVerseHtml(raw) {
-      if (!raw) return '';
-      let s = String(raw);
-      s = s.replace(/<f>[\s\S]*?<\/f>|<n>[\s\S]*?<\/n>/g, '');
-      if (showStrongs) {
-        s = s.replace(/<S>(.*?)<\/S>/g, '@@STR_OPEN@@$1@@STR_CLOSE@@');
-      } else {
-        s = s.replace(/<S>[\s\S]*?<\/S>/g, '');
-      }
-      s = s.replace(/<[^>]+>/g, '');
-      s = s.replace(/\s+/g, ' ').trim();
-      s = s.replace(/ ([.,;:!?])/g, '$1');
-      s = escapeHtml(s);
-      if (showStrongs) {
-        s = s.replace(/@@STR_OPEN@@(.*?)@@STR_CLOSE@@/g, ' <span class="strong">&lt;$1&gt;</span>');
-      }
-      return s;
+      return escapeHtml(cleanPlainText(raw));
     }
 
     function splitIntoWords(raw) {
@@ -1509,6 +1852,183 @@
       return blocks.length ? blocks : ['—'];
     }
 
+    // =========================================================================
+    // ЛОГИКА ГРАФИКА ЧТЕНИЯ (35 ДНЕЙ, ОСНОВНАЯ ЛИНИЯ + ЛИНИЯ МУДРОСТИ)
+    // =========================================================================
+    function buildLineRangeData(bookSeq, startBook, startCh, startV, endBook, endCh, endV, allowWrap) {
+      const verses = [];
+      const indexMap = new Map();
+      const books = [];
+      const chaptersByBook = {};
+      const versesByBookChap = {};
+
+      const startIdx = bookSeq.indexOf(startBook);
+      const endIdx = bookSeq.indexOf(endBook);
+      if (startIdx === -1 || endIdx === -1) {
+        return { verses, indexMap, books, chaptersByBook, versesByBookChap };
+      }
+
+      const spanBooks = [];
+      if (startIdx < endIdx) {
+        for (let i = startIdx; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
+      } else if (startIdx === endIdx) {
+        const sameBookWrap = allowWrap && (startCh > endCh || (startCh === endCh && startV > endV));
+        if (sameBookWrap) {
+          for (let i = startIdx; i < bookSeq.length; i++) spanBooks.push(bookSeq[i]);
+          for (let i = 0; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
+        } else {
+          spanBooks.push(bookSeq[startIdx]);
+        }
+      } else if (allowWrap) {
+        for (let i = startIdx; i < bookSeq.length; i++) spanBooks.push(bookSeq[i]);
+        for (let i = 0; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
+      }
+
+      for (let bi = 0; bi < spanBooks.length; bi++) {
+        const b = spanBooks[bi];
+        const isFirstBook = (bi === 0);
+        const isLastBook = (bi === spanBooks.length - 1);
+        const chList = bookChaptersSorted[b] || [];
+
+        for (const c of chList) {
+          if (isFirstBook && c < startCh) continue;
+          if (isLastBook && c > endCh) break;
+          const vList = chapterVersesSorted[b]?.[c] || [];
+
+          for (const v of vList) {
+            if (isFirstBook && c === startCh && v < startV) continue;
+            if (isLastBook && c === endCh && v > endV) break;
+
+            const key = `${b}_${c}_${v}`;
+            indexMap.set(key, verses.length);
+            verses.push({ b, c, v });
+
+            if (!books.includes(b)) books.push(b);
+            if (!chaptersByBook[b]) chaptersByBook[b] = [];
+            if (!chaptersByBook[b].includes(c)) chaptersByBook[b].push(c);
+            const bcKey = `${b}_${c}`;
+            if (!versesByBookChap[bcKey]) versesByBookChap[bcKey] = [];
+            versesByBookChap[bcKey].push(v);
+          }
+        }
+      }
+
+      return { verses, indexMap, books, chaptersByBook, versesByBookChap };
+    }
+
+    function getActivePlanLineObj() {
+      if (!planActive || !planDayData) return null;
+      return planDayData[planActiveLine];
+    }
+
+    function isAtPlanLineStartVerse() {
+      const line = getActivePlanLineObj();
+      if (!line || !line.verses.length) return false;
+      const first = line.verses[0];
+      return currentBook === first.b && currentChapter === first.c && currentVerse === first.v;
+    }
+
+    function isAtPlanLineEndVerse() {
+      const line = getActivePlanLineObj();
+      if (!line || !line.verses.length) return false;
+      const last = line.verses[line.verses.length - 1];
+      return currentBook === last.b && currentChapter === last.c && currentVerse === last.v;
+    }
+
+    function activatePlanDay(dayNum) {
+      const entry = READING_PLAN.find((d) => d.day === dayNum);
+      if (!entry) return;
+
+      const mainBookSeq = booksOrder.filter((b) => !WISDOM_BOOK_IDS.includes(b));
+      const wisdomBookSeq = WISDOM_BOOK_IDS.filter((b) => booksOrder.includes(b));
+
+      const mStartB = STD_BOOK_IDS[entry.m[0]];
+      const mEndB = STD_BOOK_IDS[entry.m[3]];
+      const wStartB = STD_BOOK_IDS[entry.w[0]];
+      const wEndB = STD_BOOK_IDS[entry.w[3]];
+
+      planDayData = {
+        main: buildLineRangeData(mainBookSeq, mStartB, entry.m[1], entry.m[2], mEndB, entry.m[4], entry.m[5], false),
+        wisdom: buildLineRangeData(wisdomBookSeq, wStartB, entry.w[1], entry.w[2], wEndB, entry.w[4], entry.w[5], true)
+      };
+
+      planActive = true;
+      planDayNum = dayNum;
+      planActiveLine = 'main';
+      tickerAutoRunning = false;
+      autoplayRunning = false;
+
+      const firstV = planDayData.main.verses[0] || planDayData.wisdom.verses[0];
+      if (firstV) {
+        currentBook = firstV.b;
+        currentChapter = firstV.c;
+        currentVerse = firstV.v;
+        currentBlockIdx = 0;
+        currentWordIdx = 0;
+      }
+
+      updatePlanButtonUI();
+      populateBookSelector();
+      closePlanModal();
+      refreshView();
+      if (displayMode !== 'CHAPTERS') centerCamera(false);
+    }
+
+    function deactivatePlanMode() {
+      planActive = false;
+      planDayNum = 0;
+      planDayData = null;
+      tickerAutoRunning = false;
+      autoplayRunning = false;
+      updatePlanButtonUI();
+      populateBookSelector();
+      closePlanModal();
+      refreshView();
+      if (displayMode !== 'CHAPTERS') centerCamera(false);
+    }
+
+    function updatePlanButtonUI() {
+      if (planActive) {
+        elPlanBtn.classList.add('active');
+        elPlanBtn.textContent = `День ${String(planDayNum).padStart(2, '0')}`;
+        elPlanExitBtn.style.display = 'inline-flex';
+      } else {
+        elPlanBtn.classList.remove('active');
+        elPlanBtn.textContent = 'График';
+        elPlanExitBtn.style.display = 'none';
+      }
+    }
+
+    function openPlanModal() {
+      elPlanDaysList.innerHTML = '';
+      for (const item of READING_PLAN) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'plan-day-card' + (planActive && planDayNum === item.day ? ' active' : '');
+        btn.innerHTML = `
+          <div class="plan-day-num">
+            <span>ДЕНЬ</span>
+            <span>${String(item.day).padStart(2, '0')}</span>
+          </div>
+          <div class="plan-day-info">
+            <div class="plan-line-row"><span class="plan-line-badge">Осн.</span>${escapeHtml(item.ml)}</div>
+            <div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>${escapeHtml(item.wl)}</div>
+          </div>
+        `;
+        btn.addEventListener('click', () => activatePlanDay(item.day));
+        elPlanDaysList.appendChild(btn);
+      }
+      elPlanModalBackdrop.classList.add('open');
+      if (planActive) {
+        const activeCard = elPlanDaysList.querySelector('.plan-day-card.active');
+        if (activeCard) activeCard.scrollIntoView({ block: 'center' });
+      }
+    }
+
+    function closePlanModal() {
+      elPlanModalBackdrop.classList.remove('open');
+    }
+
     // --- ИНДЕКСАЦИЯ И НАВИГАЦИЯ ---
     function buildNavigationIndex() {
       bookChaptersSorted = {};
@@ -1526,6 +2046,14 @@
     }
 
     function getNextVerseRef(b, c, v) {
+      if (planActive) {
+        const line = getActivePlanLineObj();
+        if (!line) return null;
+        const idx = line.indexMap.get(`${b}_${c}_${v}`);
+        if (idx === undefined || idx + 1 >= line.verses.length) return null;
+        return line.verses[idx + 1];
+      }
+
       const vList = chapterVersesSorted[b]?.[c] || [];
       const vi = vList.indexOf(v);
       if (vi !== -1 && vi + 1 < vList.length) return { b, c, v: vList[vi + 1] };
@@ -1552,6 +2080,14 @@
     }
 
     function getPrevVerseRef(b, c, v) {
+      if (planActive) {
+        const line = getActivePlanLineObj();
+        if (!line) return null;
+        const idx = line.indexMap.get(`${b}_${c}_${v}`);
+        if (idx === undefined || idx <= 0) return null;
+        return line.verses[idx - 1];
+      }
+
       const vList = chapterVersesSorted[b]?.[c] || [];
       const vi = vList.indexOf(v);
       if (vi > 0) return { b, c, v: vList[vi - 1] };
@@ -1595,12 +2131,28 @@
       return { b: pv.b, c: pv.c, v: pv.v, wIdx: pWords.length - 1, text: pWords[pWords.length - 1] };
     }
 
+    function getAllowedChapters(bookId) {
+      if (planActive) {
+        const line = getActivePlanLineObj();
+        return line?.chaptersByBook[bookId] || [];
+      }
+      return bookChaptersSorted[bookId] || [];
+    }
+
+    function getAllowedVerses(bookId, chapNum) {
+      if (planActive) {
+        const line = getActivePlanLineObj();
+        return line?.versesByBookChap[`${bookId}_${chapNum}`] || [];
+      }
+      return chapterVersesSorted[bookId]?.[chapNum] || [];
+    }
+
     function recalculateChapterTotals() {
       chapterBlockOffsets = {};
       chapterWordOffsets = {};
       chapterTotalBlocks = 0;
       chapterTotalWords = 0;
-      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      const vList = getAllowedVerses(currentBook, currentChapter);
       for (const v of vList) {
         const raw = bibleData[currentBook]?.[currentChapter]?.[v] ?? '';
         chapterBlockOffsets[v] = chapterTotalBlocks;
@@ -1614,22 +2166,47 @@
 
     function populateBookSelector() {
       elBookSel.innerHTML = '';
-      for (const b of booksOrder) {
-        const opt = document.createElement('option');
-        opt.value = b;
-        opt.textContent = booksNames[b] || `Книга ${b}`;
-        elBookSel.appendChild(opt);
-      }
-      if (booksOrder.length) {
-        currentBook = booksOrder[0];
-        elBookSel.value = currentBook;
+      if (planActive && planDayData) {
+        const gMain = document.createElement('optgroup');
+        gMain.label = 'Основная линия';
+        for (const b of planDayData.main.books) {
+          const opt = document.createElement('option');
+          opt.value = `main:${b}`;
+          opt.textContent = booksNames[b] || `Книга ${b}`;
+          gMain.appendChild(opt);
+        }
+        if (planDayData.main.books.length) elBookSel.appendChild(gMain);
+
+        const gWis = document.createElement('optgroup');
+        gWis.label = 'Линия мудрости';
+        for (const b of planDayData.wisdom.books) {
+          const opt = document.createElement('option');
+          opt.value = `wisdom:${b}`;
+          opt.textContent = booksNames[b] || `Книга ${b}`;
+          gWis.appendChild(opt);
+        }
+        if (planDayData.wisdom.books.length) elBookSel.appendChild(gWis);
+
+        elBookSel.value = `${planActiveLine}:${currentBook}`;
         populateChapterSelector();
+      } else {
+        for (const b of booksOrder) {
+          const opt = document.createElement('option');
+          opt.value = String(b);
+          opt.textContent = booksNames[b] || `Книга ${b}`;
+          elBookSel.appendChild(opt);
+        }
+        if (booksOrder.length) {
+          if (!booksOrder.includes(currentBook)) currentBook = booksOrder[0];
+          elBookSel.value = String(currentBook);
+          populateChapterSelector();
+        }
       }
     }
 
     function populateChapterSelector() {
       elChapSel.innerHTML = '';
-      const chList = bookChaptersSorted[currentBook] || [];
+      const chList = getAllowedChapters(currentBook);
       for (const c of chList) {
         const opt = document.createElement('option');
         opt.value = c;
@@ -1646,7 +2223,7 @@
 
     function populateVerseSelector() {
       elVerseSel.innerHTML = '';
-      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      const vList = getAllowedVerses(currentBook, currentChapter);
       for (const v of vList) {
         const opt = document.createElement('option');
         opt.value = v;
@@ -1668,73 +2245,81 @@
       currentWordIdx = Math.max(0, Math.min(currentWordIdx, currentWords.length - 1));
     }
 
+    function syncSelectorsToCurrent() {
+      const targetBookVal = planActive ? `${planActiveLine}:${currentBook}` : String(currentBook);
+      if (elBookSel.value !== targetBookVal) {
+        elBookSel.value = targetBookVal;
+      }
+      populateChapterSelector();
+    }
+
     function advanceChapter(delta) {
-      const chList = bookChaptersSorted[currentBook] || [];
+      const chList = getAllowedChapters(currentBook);
       const pos = chList.indexOf(currentChapter);
       if (pos === -1) return false;
       const nextPos = pos + delta;
       if (nextPos >= 0 && nextPos < chList.length) {
         currentChapter = chList[nextPos];
         elChapSel.value = currentChapter;
-        currentVerse = 1;
+        const nextVList = getAllowedVerses(currentBook, currentChapter);
+        currentVerse = nextVList.length ? nextVList[0] : 1;
         currentBlockIdx = 0;
         currentWordIdx = 0;
         recalculateChapterTotals();
         populateVerseSelector();
         return true;
-      } else if (delta > 0) {
-        const bi = booksOrder.indexOf(currentBook);
-        if (bi !== -1 && bi + 1 < booksOrder.length) {
-          currentBook = booksOrder[bi + 1];
-          elBookSel.value = currentBook;
-          currentChapter = 1;
-          currentVerse = 1;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-          populateChapterSelector();
-          return true;
-        }
-      } else if (delta < 0) {
-        const bi = booksOrder.indexOf(currentBook);
-        if (bi > 0) {
-          currentBook = booksOrder[bi - 1];
-          elBookSel.value = currentBook;
-          const prevChList = bookChaptersSorted[currentBook] || [];
-          currentChapter = prevChList.length ? prevChList[prevChList.length - 1] : 1;
-          currentVerse = 1;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-          populateChapterSelector();
-          return true;
-        }
+      }
+
+      const bookList = planActive ? (getActivePlanLineObj()?.books || []) : booksOrder;
+      const bi = bookList.indexOf(currentBook);
+      if (delta > 0 && bi !== -1 && bi + 1 < bookList.length) {
+        currentBook = bookList[bi + 1];
+        const ncList = getAllowedChapters(currentBook);
+        currentChapter = ncList.length ? ncList[0] : 1;
+        const nvList = getAllowedVerses(currentBook, currentChapter);
+        currentVerse = nvList.length ? nvList[0] : 1;
+        currentBlockIdx = 0;
+        currentWordIdx = 0;
+        syncSelectorsToCurrent();
+        return true;
+      } else if (delta < 0 && bi > 0) {
+        currentBook = bookList[bi - 1];
+        const pcList = getAllowedChapters(currentBook);
+        currentChapter = pcList.length ? pcList[pcList.length - 1] : 1;
+        const pvList = getAllowedVerses(currentBook, currentChapter);
+        currentVerse = pvList.length ? pvList[0] : 1;
+        currentBlockIdx = 0;
+        currentWordIdx = 0;
+        syncSelectorsToCurrent();
+        return true;
       }
       return false;
     }
 
     function advanceVerse(delta) {
-      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
-      const pos = vList.indexOf(currentVerse);
-      if (pos === -1) return false;
-      const nextPos = pos + delta;
-      if (nextPos >= 0 && nextPos < vList.length) {
-        currentVerse = vList[nextPos];
+      const nextRef = delta > 0
+        ? getNextVerseRef(currentBook, currentChapter, currentVerse)
+        : getPrevVerseRef(currentBook, currentChapter, currentVerse);
+      if (!nextRef) return false;
+
+      const bookChanged = nextRef.b !== currentBook;
+      const chapChanged = bookChanged || nextRef.c !== currentChapter;
+
+      currentBook = nextRef.b;
+      currentChapter = nextRef.c;
+      currentVerse = nextRef.v;
+
+      if (bookChanged) {
+        syncSelectorsToCurrent();
+      } else if (chapChanged) {
+        elChapSel.value = currentChapter;
+        recalculateChapterTotals();
+        populateVerseSelector();
+      } else {
         elVerseSel.value = currentVerse;
         rebuildCurrentVerseUnits();
-        return true;
-      } else if (delta > 0) {
-        return advanceChapter(1);
-      } else if (delta < 0) {
-        if (advanceChapter(-1)) {
-          const pvList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
-          if (pvList.length) {
-            currentVerse = pvList[pvList.length - 1];
-            elVerseSel.value = currentVerse;
-            rebuildCurrentVerseUnits();
-          }
-          return true;
-        }
       }
-      return false;
+      return true;
     }
 
     function stepForward() {
@@ -1807,6 +2392,14 @@
       return false;
     }
 
+    // --- НЕОНОВЫЕ ГРАНИЦЫ ДЛЯ ЛЕНТ ---
+    function createNeonGateEl(type) {
+      const gate = document.createElement('span');
+      gate.className = `neon-gate ${type}`;
+      gate.innerHTML = `<span class="neon-gate-line"></span><span class="neon-gate-tag">${type === 'start' ? 'СТАРТ' : 'ФИНИШ'}</span>`;
+      return gate;
+    }
+
     // --- ДВИЖОК БЕСКОНЕЧНОЙ БЕГУЩЕЙ СТРОКИ (TICKER) ---
     function createTickerSpan(pos) {
       const span = document.createElement('span');
@@ -1837,6 +2430,10 @@
       elTickerTape.innerHTML = '';
       tickerItems = [];
       tickerTotalWidth = 0;
+      tickerStartGateEl = null;
+      tickerEndGateEl = null;
+      tickerStartGateW = 0;
+      tickerEndGateW = 0;
 
       calibrateTickerWordPx();
 
@@ -1860,49 +2457,87 @@
       elTickerTape.style.transform = `translate3d(${tickerScrollX}px, -50%, 0)`;
     }
 
+    function updateTickerGates() {
+      if (!tickerItems.length) return;
+      const first = tickerItems[0];
+      const last = tickerItems[tickerItems.length - 1];
+      const atStart = planActive && !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
+      const atEnd = planActive && !getNextWordPos(last.b, last.c, last.v, last.wIdx);
+
+      if (atStart && !tickerStartGateEl) {
+        tickerStartGateEl = createNeonGateEl('start');
+        elTickerTape.insertBefore(tickerStartGateEl, elTickerTape.firstChild);
+        tickerStartGateW = tickerStartGateEl.offsetWidth + 44;
+        tickerScrollX -= tickerStartGateW;
+      } else if (!atStart && tickerStartGateEl) {
+        tickerStartGateEl.remove();
+        tickerStartGateEl = null;
+        tickerScrollX += tickerStartGateW;
+        tickerStartGateW = 0;
+      }
+
+      if (atEnd && !tickerEndGateEl) {
+        tickerEndGateEl = createNeonGateEl('end');
+        elTickerTape.appendChild(tickerEndGateEl);
+        tickerEndGateW = tickerEndGateEl.offsetWidth + 44;
+      } else if (!atEnd && tickerEndGateEl) {
+        tickerEndGateEl.remove();
+        tickerEndGateEl = null;
+        tickerEndGateW = 0;
+      }
+    }
+
     function fillTickerBuffers() {
       if (!tickerItems.length) return;
 
-      while ((tickerTotalWidth + tickerScrollX) < TICKER_BUFFER_PX) {
+      // 1. Добираем слова справа
+      while ((tickerTotalWidth + tickerStartGateW + tickerScrollX) < TICKER_BUFFER_PX) {
         const last = tickerItems[tickerItems.length - 1];
         const nextPos = getNextWordPos(last.b, last.c, last.v, last.wIdx);
         if (!nextPos) break;
         const el = createTickerSpan(nextPos);
-        elTickerTape.appendChild(el);
+        if (tickerEndGateEl) elTickerTape.insertBefore(el, tickerEndGateEl);
+        else elTickerTape.appendChild(el);
         const w = el.offsetWidth;
         tickerItems.push({ ...nextPos, el, width: w });
         tickerTotalWidth += w;
       }
 
-      while ((-tickerScrollX) < TICKER_BUFFER_PX) {
+      // 2. Добираем слова слева
+      while ((-(tickerScrollX + tickerStartGateW)) < TICKER_BUFFER_PX) {
         const first = tickerItems[0];
         const prevPos = getPrevWordPos(first.b, first.c, first.v, first.wIdx);
         if (!prevPos) break;
         const el = createTickerSpan(prevPos);
-        elTickerTape.insertBefore(el, elTickerTape.firstChild);
+        if (tickerStartGateEl) elTickerTape.insertBefore(el, tickerStartGateEl.nextSibling);
+        else elTickerTape.insertBefore(el, elTickerTape.firstChild);
         const w = el.offsetWidth;
         tickerItems.unshift({ ...prevPos, el, width: w });
         tickerTotalWidth += w;
         tickerScrollX -= w;
       }
 
-      while (tickerItems.length > 16 && ((-tickerScrollX) - tickerItems[0].width) > TICKER_BUFFER_PX + 600) {
+      // 3. Чистим ушедшие далеко влево
+      while (tickerItems.length > 16 && ((-(tickerScrollX + tickerStartGateW)) - tickerItems[0].width) > TICKER_BUFFER_PX + 600) {
         const removed = tickerItems.shift();
         removed.el.remove();
         tickerScrollX += removed.width;
         tickerTotalWidth -= removed.width;
       }
 
-      while (tickerItems.length > 16 && ((tickerTotalWidth + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > TICKER_BUFFER_PX + 600) {
+      // 4. Чистим ушедшие далеко вправо
+      while (tickerItems.length > 16 && ((tickerTotalWidth + tickerStartGateW + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > TICKER_BUFFER_PX + 600) {
         const removed = tickerItems.pop();
         removed.el.remove();
         tickerTotalWidth -= removed.width;
       }
+
+      updateTickerGates();
     }
 
     function syncCurrentFromTickerCenter() {
       if (!tickerItems.length) return;
-      let acc = tickerScrollX;
+      let acc = tickerScrollX + tickerStartGateW;
       let found = tickerItems[tickerItems.length - 1];
       for (let i = 0; i < tickerItems.length; i++) {
         const item = tickerItems[i];
@@ -1932,9 +2567,9 @@
       currentWordIdx = found.wIdx;
 
       if (bookChanged) {
-        elBookSel.value = currentBook;
+        elBookSel.value = planActive ? `${planActiveLine}:${currentBook}` : String(currentBook);
         elChapSel.innerHTML = '';
-        for (const c of (bookChaptersSorted[currentBook] || [])) {
+        for (const c of getAllowedChapters(currentBook)) {
           const opt = document.createElement('option');
           opt.value = c;
           opt.textContent = `Гл. ${c}`;
@@ -1945,7 +2580,7 @@
         elChapSel.value = currentChapter;
         recalculateChapterTotals();
         elVerseSel.innerHTML = '';
-        for (const v of (chapterVersesSorted[currentBook]?.[currentChapter] || [])) {
+        for (const v of getAllowedVerses(currentBook, currentChapter)) {
           const opt = document.createElement('option');
           opt.value = v;
           opt.textContent = `Ст. ${v}`;
@@ -1968,10 +2603,10 @@
       elGaugeNeedle.style.transform = `rotate(${deg.toFixed(1)}deg)`;
 
       if (tickerAutoRunning) {
-        elTickerPlayBtn.textContent = '⏸';
+        elTickerPlayBtn.innerHTML = SVG_PAUSE;
         elTickerPlayBtn.classList.add('running');
       } else {
-        elTickerPlayBtn.textContent = '▶';
+        elTickerPlayBtn.innerHTML = SVG_PLAY;
         elTickerPlayBtn.classList.remove('running');
       }
     }
@@ -2085,6 +2720,7 @@
     // --- ОТРИСОВКА ---
     function updateProgressBars() {
       const bookTitle = booksNames[currentBook] || 'Книга';
+      const planTag = planActive ? ` • День ${String(planDayNum).padStart(2, '0')} (${planActiveLine === 'main' ? 'Осн.' : 'Мудр.'})` : '';
       if (displayMode === 'BLOCKS') {
         elBlockProgBox.style.display = 'flex';
         const passed = (chapterBlockOffsets[currentVerse] || 0) + currentBlockIdx;
@@ -2094,7 +2730,7 @@
         elBlockProgLbl.textContent = `Глава ${currentChapter} — ${Math.round(pct)}% (${passed + 1} / ${chapterTotalBlocks} бл.)`;
       } else if (displayMode === 'WORDS' || displayMode === 'TICKER') {
         elBlockProgBox.style.display = 'none';
-        elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}`;
+        elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}${planTag}`;
 
         const passedCh = (chapterWordOffsets[currentVerse] || 0) + currentWordIdx;
         const ratioCh = chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1);
@@ -2117,6 +2753,7 @@
       let lb = currentBook, lc = currentChapter, lv = currentVerse;
       let lwIdx = currentWordIdx - 1;
       let lWords = currentWords;
+      let hitStart = false;
 
       while (leftItems.length < radius) {
         if (lwIdx >= 0) {
@@ -2124,18 +2761,20 @@
           lwIdx--;
         } else {
           const prev = getPrevVerseRef(lb, lc, lv);
-          if (!prev) break;
+          if (!prev) { hitStart = true; break; }
           lb = prev.b; lc = prev.c; lv = prev.v;
           lWords = getVerseWordsCached(lb, lc, lv);
           lwIdx = lWords.length - 1;
         }
       }
+      if (!hitStart && lwIdx < 0 && !getPrevVerseRef(lb, lc, lv)) hitStart = true;
       leftItems.reverse();
 
       const rightItems = [];
       let rb = currentBook, rc = currentChapter, rv = currentVerse;
       let rwIdx = currentWordIdx + 1;
       let rWords = currentWords;
+      let hitEnd = false;
 
       while (rightItems.length < radius) {
         if (rwIdx < rWords.length) {
@@ -2143,24 +2782,31 @@
           rwIdx++;
         } else {
           const next = getNextVerseRef(rb, rc, rv);
-          if (!next) break;
+          if (!next) { hitEnd = true; break; }
           rb = next.b; rc = next.c; rv = next.v;
           rWords = getVerseWordsCached(rb, rc, rv);
           rwIdx = 0;
         }
       }
+      if (!hitEnd && rwIdx >= rWords.length && !getNextVerseRef(rb, rc, rv)) hitEnd = true;
 
       return {
         left: leftItems,
         active: currentWords[currentWordIdx] || '—',
         activeVtag: currentWordIdx === 0 ? String(currentVerse) : '',
-        right: rightItems
+        right: rightItems,
+        hitStart,
+        hitEnd
       };
     }
 
     function renderContinuousWordStream() {
       const win = collectWordWindow(WORD_WINDOW_RADIUS);
       const frag = document.createDocumentFragment();
+
+      if (planActive && win.hitStart) {
+        frag.appendChild(createNeonGateEl('start'));
+      }
 
       for (const item of win.left) {
         if (item.vtag) {
@@ -2199,6 +2845,10 @@
         frag.appendChild(s);
       }
 
+      if (planActive && win.hitEnd) {
+        frag.appendChild(createNeonGateEl('end'));
+      }
+
       elWordTape.innerHTML = '';
       elWordTape.appendChild(frag);
 
@@ -2219,14 +2869,14 @@
 
       if (autoplaySubmode) {
         if (autoplayRunning) {
-          elAutoStatus.textContent = `▶ Воспроизведение (${autoplayWpm} сл/мин)`;
+          elAutoStatus.textContent = `Воспроизведение (${autoplayWpm} сл/мин)`;
           elAutoStatus.style.color = '#5EC986';
-          elAutoToggleBtn.textContent = '⏸ Пауза';
+          elAutoToggleBtn.innerHTML = `${SVG_PAUSE}<span>Пауза</span>`;
           elAutoToggleBtn.classList.add('running');
         } else {
-          elAutoStatus.textContent = `⏸ Пауза (${autoplayWpm} сл/мин)`;
+          elAutoStatus.textContent = `Пауза (${autoplayWpm} сл/мин)`;
           elAutoStatus.style.color = 'var(--accent)';
-          elAutoToggleBtn.textContent = '▶ Старт';
+          elAutoToggleBtn.innerHTML = `${SVG_PLAY}<span>Старт</span>`;
           elAutoToggleBtn.classList.remove('running');
         }
       }
@@ -2234,24 +2884,25 @@
 
     function updateStatusBar() {
       const zoomPct = Math.round(canvasZoom * 100);
+      const planInfo = planActive ? `День ${String(planDayNum).padStart(2, '0')} (${planActiveLine === 'main' ? 'Осн.' : 'Мудр.'}) • ` : '';
       if (displayMode === 'BLOCKS') {
-        elStatusBar.textContent = `Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: шаг • 2 пальца: зум`;
+        elStatusBar.textContent = `${planInfo}Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}%`;
       } else if (displayMode === 'WORDS') {
-        elStatusBar.textContent = `Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}% • Тап слева/справа: слово`;
+        elStatusBar.textContent = `${planInfo}Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}%`;
       } else if (displayMode === 'TICKER') {
         const st = tickerAutoRunning ? `Авто ${tickerWpm} сл/мин` : `Удерживай справа/слева (${tickerWpm} сл/мин)`;
-        elStatusBar.textContent = `${st} • Зум ${zoomPct}% • 2 пальца: масштаб`;
+        elStatusBar.textContent = `${planInfo}${st} • Зум ${zoomPct}%`;
       } else if (displayMode === 'VERSES') {
-        elStatusBar.textContent = `Стих ${currentVerse} • Зум ${zoomPct}% • Тап слева/справа: стих`;
+        elStatusBar.textContent = `${planInfo}Стих ${currentVerse} • Зум ${zoomPct}%`;
       } else {
-        elStatusBar.textContent = `Глава ${currentChapter} • Свайп вверх/вниз для чтения`;
+        elStatusBar.textContent = `${planInfo}Глава ${currentChapter} • Свайп вверх/вниз для чтения`;
       }
     }
 
     function refreshView() {
       const bookTitle = booksNames[currentBook] || 'Книга';
       const vObj = bibleData[currentBook]?.[currentChapter] || {};
-      const vList = chapterVersesSorted[currentBook]?.[currentChapter] || [];
+      const vList = getAllowedVerses(currentBook, currentChapter);
 
       const isChapter = displayMode === 'CHAPTERS';
       const isWords = displayMode === 'WORDS';
@@ -2271,8 +2922,21 @@
       const cardWidth = Math.min(Math.max(300, wsW - 28), 640);
       elCardStack.style.width = `${cardWidth}px`;
 
+      // Сброс неоновых рамок карточки
+      elTextCard.classList.remove('bound-start', 'bound-end');
+
       if (displayMode === 'BLOCKS') {
         const blockStr = currentBlocks[currentBlockIdx] || '—';
+        const atPlanStart = planActive && isAtPlanLineStartVerse() && currentBlockIdx === 0;
+        const atPlanEnd = planActive && isAtPlanLineEndVerse() && currentBlockIdx === currentBlocks.length - 1;
+
+        if (atPlanStart) elTextCard.classList.add('bound-start');
+        if (atPlanEnd) elTextCard.classList.add('bound-end');
+
+        const boundBadgeHtml = atPlanStart
+          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт линии • День ${String(planDayNum).padStart(2, '0')}</span></div>`
+          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш линии • День ${String(planDayNum).padStart(2, '0')}</span></div>` : '');
+
         const dotsHtml = currentBlocks.map((_, i) => {
           if (i === currentBlockIdx) return '<span class="dot-active">●</span>';
           if (i < currentBlockIdx) return '<span class="dot-done">•</span>';
@@ -2287,14 +2951,17 @@
         }).join(' ');
 
         const adjParts = [];
-        if (vObj[currentVerse - 1] !== undefined) {
-          adjParts.push(`<div>${currentVerse - 1}. ${cleanVerseHtml(vObj[currentVerse - 1])}</div>`);
+        const prevRef = getPrevVerseRef(currentBook, currentChapter, currentVerse);
+        const nextRef = getNextVerseRef(currentBook, currentChapter, currentVerse);
+        if (prevRef && prevRef.b === currentBook && prevRef.c === currentChapter) {
+          adjParts.push(`<div>${prevRef.v}. ${cleanVerseHtml(vObj[prevRef.v])}</div>`);
         }
-        if (vObj[currentVerse + 1] !== undefined) {
-          adjParts.push(`<div>${currentVerse + 1}. ${cleanVerseHtml(vObj[currentVerse + 1])}</div>`);
+        if (nextRef && nextRef.b === currentBook && nextRef.c === currentChapter) {
+          adjParts.push(`<div>${nextRef.v}. ${cleanVerseHtml(vObj[nextRef.v])}</div>`);
         }
 
         elTextCard.innerHTML = `
+          ${boundBadgeHtml}
           <div class="block-ref">${escapeHtml(bookTitle)} ${currentChapter}:${currentVerse}</div>
           <div class="block-main">${escapeHtml(blockStr)}</div>
           <div class="block-dots">${dotsHtml}</div>
@@ -2308,17 +2975,37 @@
         rebuildTickerFromCurrent();
         updateSovietGaugeUI();
       } else if (displayMode === 'VERSES') {
+        const atPlanStart = planActive && isAtPlanLineStartVerse();
+        const atPlanEnd = planActive && isAtPlanLineEndVerse();
+        if (atPlanStart) elTextCard.classList.add('bound-start');
+        if (atPlanEnd) elTextCard.classList.add('bound-end');
+
+        const boundBadgeHtml = atPlanStart
+          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт линии</span></div>`
+          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш линии</span></div>` : '');
+
         const raw = vObj[currentVerse] ?? '';
         elTextCard.innerHTML = `
+          ${boundBadgeHtml}
           <div class="verse-ref">${escapeHtml(bookTitle)} ${currentChapter}:${currentVerse}</div>
           <div class="verse-body">${cleanVerseHtml(raw)}</div>
         `;
       } else if (displayMode === 'CHAPTERS') {
         let html = `<div class="ch-title">${escapeHtml(bookTitle)} — Глава ${currentChapter}</div>`;
+        const line = getActivePlanLineObj();
+        const firstLineV = line?.verses[0];
+        const lastLineV = line?.verses[line.verses.length - 1];
+
+        if (planActive && firstLineV && firstLineV.b === currentBook && firstLineV.c === currentChapter) {
+          html += `<div class="ch-neon-banner start"></div>`;
+        }
         for (const v of vList) {
           const blocks = splitIntoSemanticBlocks(vObj[v] ?? '');
           const joined = blocks.map(escapeHtml).join('<span class="ch-dot">·</span>');
           html += `<div class="ch-verse"><span class="ch-vnum">${v}</span>${joined}</div>`;
+        }
+        if (planActive && lastLineV && lastLineV.b === currentBook && lastLineV.c === currentChapter) {
+          html += `<div class="ch-neon-banner end"></div>`;
         }
         html += `
           <div class="ch-nav-row">
@@ -2588,14 +3275,17 @@
 
           const first = tickerItems[0];
           const last = tickerItems[tickerItems.length - 1];
-          const atAbsoluteStart = !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
-          const atAbsoluteEnd = !getNextWordPos(last.b, last.c, last.v, last.wIdx);
+          const atStart = !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
+          const atEnd = !getNextWordPos(last.b, last.c, last.v, last.wIdx);
 
-          if (atAbsoluteStart && tickerScrollX > -first.width * 0.5) {
-            tickerScrollX = -first.width * 0.5;
+          const maxStartX = -(tickerStartGateW + first.width * 0.5);
+          const minEndX = -(tickerStartGateW + tickerTotalWidth - last.width * 0.5);
+
+          if (atStart && tickerScrollX > maxStartX) {
+            tickerScrollX = maxStartX;
           }
-          if (atAbsoluteEnd && tickerScrollX < -(tickerTotalWidth - last.width * 0.5)) {
-            tickerScrollX = -(tickerTotalWidth - last.width * 0.5);
+          if (atEnd && tickerScrollX < minEndX) {
+            tickerScrollX = minEndX;
             if (tickerAutoRunning) {
               tickerAutoRunning = false;
               updateSovietGaugeUI();
@@ -2616,15 +3306,33 @@
 
     // --- СОБЫТИЯ ЭЛЕМЕНТОВ ИНТЕРФЕЙСА ---
     elBookSel.addEventListener('change', () => {
-      currentBook = Number(elBookSel.value);
-      currentChapter = 1; currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
-      populateChapterSelector();
-      refreshView();
+      if (planActive && planDayData) {
+        const [lineKey, bStr] = elBookSel.value.split(':');
+        planActiveLine = lineKey;
+        currentBook = Number(bStr);
+        const line = planDayData[planActiveLine];
+        const firstInBook = line.verses.find((x) => x.b === currentBook);
+        if (firstInBook) {
+          currentChapter = firstInBook.c;
+          currentVerse = firstInBook.v;
+        }
+        currentBlockIdx = 0;
+        currentWordIdx = 0;
+        populateChapterSelector();
+        refreshView();
+      } else {
+        currentBook = Number(elBookSel.value);
+        currentChapter = 1; currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
+        populateChapterSelector();
+        refreshView();
+      }
     });
 
     elChapSel.addEventListener('change', () => {
       currentChapter = Number(elChapSel.value);
-      currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
+      const vList = getAllowedVerses(currentBook, currentChapter);
+      currentVerse = vList.length ? vList[0] : 1;
+      currentBlockIdx = 0; currentWordIdx = 0;
       recalculateChapterTotals();
       populateVerseSelector();
       refreshView();
@@ -2656,11 +3364,11 @@
       if (displayMode !== 'CHAPTERS') centerCamera(false);
     });
 
-    elStrongBtn.addEventListener('click', () => {
-      showStrongs = !showStrongs;
-      elStrongBtn.classList.toggle('active', showStrongs);
-      rebuildCurrentVerseUnits();
-      refreshView();
+    elPlanBtn.addEventListener('click', openPlanModal);
+    elPlanCloseBtn.addEventListener('click', closePlanModal);
+    elPlanExitBtn.addEventListener('click', deactivatePlanMode);
+    elPlanModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === elPlanModalBackdrop) closePlanModal();
     });
 
     elCenterBtn.addEventListener('click', () => centerCamera(true));
@@ -2726,6 +3434,7 @@
       syncViewportLayout();
       buildIosSpeedRuler();
       updateSovietGaugeUI();
+      updatePlanButtonUI();
       try {
         const resp = await fetch('./bible.json');
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
