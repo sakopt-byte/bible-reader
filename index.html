@@ -262,7 +262,6 @@
       overflow: hidden;
     }
 
-    /* Неоновые границы карточки для начала и конца диапазона графика */
     #text-card.bound-start {
       border-color: rgba(34, 229, 132, 0.72);
       box-shadow:
@@ -307,9 +306,7 @@
       box-shadow: 0 0 12px rgba(255, 59, 92, 0.28);
     }
 
-    .bound-pill-wrap {
-      text-align: center;
-    }
+    .bound-pill-wrap { text-align: center; }
 
     .block-ref {
       text-align: center;
@@ -385,7 +382,7 @@
       color: var(--text);
     }
 
-    /* --- НЕОНОВЫЕ ПОЛОСЫ-ГРАНИЦЫ В ЛЕНТАХ ("ПО СЛОВАМ" И "БЕГУЩАЯ СТРОКА") --- */
+    /* --- НЕОНОВЫЕ ПОЛОСЫ-ГРАНИЦЫ В ЛЕНТАХ --- */
     .neon-gate {
       display: inline-flex;
       flex-direction: column;
@@ -588,16 +585,8 @@
       cursor: pointer;
     }
 
-    #autoplay-play-btn svg {
-      width: 24px;
-      height: 24px;
-      display: block;
-    }
-
-    #autoplay-play-btn:active {
-      background: var(--green-hover);
-      transform: scale(0.94);
-    }
+    #autoplay-play-btn svg { width: 24px; height: 24px; display: block; }
+    #autoplay-play-btn:active { background: var(--green-hover); transform: scale(0.94); }
 
     #autoplay-popup {
       position: absolute;
@@ -704,21 +693,50 @@
       display: none;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      padding: 10px 14px;
+      gap: 12px;
+      padding: 10px 12px;
       background: linear-gradient(180deg, #16191E 0%, #111317 100%);
       border-top: 1px solid #2A2F37;
       z-index: 28;
       flex-shrink: 0;
     }
 
+    #ticker-invert-btn {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1.5px solid #353B46;
+      background: linear-gradient(180deg, #242932 0%, #171B21 100%);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #ticker-invert-btn svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    #ticker-invert-btn.active {
+      border-color: var(--ios-amber);
+      background: rgba(245, 158, 75, 0.16);
+      color: var(--ios-amber);
+      box-shadow: 0 0 14px rgba(245, 158, 75, 0.3);
+    }
+
     #soviet-gauge-btn {
       position: relative;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       height: 66px;
-      padding: 6px 14px 6px 10px;
+      padding: 6px 12px 6px 10px;
       border-radius: 12px;
       background: linear-gradient(180deg, #242830 0%, #171A1F 100%);
       border: 2px solid #393F4A;
@@ -745,7 +763,7 @@
     .gauge-screw.br { bottom: 4px; right: 4px; }
 
     .gauge-dial-window {
-      width: 92px;
+      width: 88px;
       height: 50px;
       background: radial-gradient(ellipse at 50% 95%, #231D15 0%, #11100E 85%);
       border: 1.5px solid #0B0C0E;
@@ -758,7 +776,7 @@
     }
 
     .gauge-dial-window svg {
-      width: 90px;
+      width: 86px;
       height: 48px;
       display: block;
     }
@@ -773,7 +791,7 @@
       flex-direction: column;
       align-items: flex-end;
       justify-content: center;
-      min-width: 74px;
+      min-width: 70px;
     }
 
     .gauge-caption {
@@ -821,18 +839,13 @@
       flex-shrink: 0;
     }
 
-    #ticker-play-btn svg {
-      width: 24px;
-      height: 24px;
-      display: block;
-    }
-
+    #ticker-play-btn svg { width: 24px; height: 24px; display: block; }
     #ticker-play-btn.running {
       border-color: #6B532C;
       background: linear-gradient(180deg, #C78D38 0%, #966622 100%);
     }
 
-    /* --- МОДАЛЬНОЕ ОКНО ВЫБОРА ДНЯ ГРАФИКА --- */
+    /* --- МОДАЛЬНОЕ ОКНО ВЫБОРА ГРАФИКА И ДНЯ --- */
     #plan-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -867,9 +880,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 16px;
+      padding: 14px 16px 10px;
       background: var(--panel);
-      border-bottom: 1px solid var(--border);
       gap: 10px;
     }
 
@@ -905,6 +917,32 @@
       justify-content: center;
       color: var(--muted);
       font-size: 16px;
+    }
+
+    .plan-tabs-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 16px 12px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .plan-tab-btn {
+      height: 34px;
+      border-radius: 9px;
+      background: #12151A;
+      border: 1px solid #2A303B;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .plan-tab-btn.active {
+      background: rgba(212, 163, 89, 0.16);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     #plan-days-list {
@@ -955,17 +993,8 @@
       color: var(--neon-green);
     }
 
-    .plan-day-num span:first-child {
-      font-size: 9px;
-      color: var(--muted);
-      letter-spacing: 0.5px;
-    }
-
-    .plan-day-num span:last-child {
-      font-size: 17px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
+    .plan-day-num span:first-child { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; }
+    .plan-day-num span:last-child { font-size: 17px; font-weight: 700; line-height: 1.1; }
 
     .plan-day-info {
       flex: 1 1 auto;
@@ -983,11 +1012,8 @@
       text-overflow: ellipsis;
     }
 
-    .plan-line-row.wisdom {
-      font-size: 12px;
-      color: var(--accent);
-    }
-
+    .plan-line-row.wisdom { font-size: 12px; color: var(--accent); }
+    .plan-line-row.sub { font-size: 11.5px; color: var(--muted); }
     .plan-line-badge {
       display: inline-block;
       font-size: 10px;
@@ -1090,26 +1116,15 @@
       transition: background 0.08s ease, height 0.08s ease;
     }
 
-    .ios-tick.major .ios-tick-bar {
-      height: 42px;
-      background: rgba(245, 158, 75, 0.78);
-    }
-
+    .ios-tick.major .ios-tick-bar { height: 42px; background: rgba(245, 158, 75, 0.78); }
     .ios-tick.selected .ios-tick-bar {
       background: #FFB266;
       height: 44px;
       box-shadow: 0 0 10px rgba(245, 158, 75, 0.7);
     }
-
     .ios-tick.selected .ios-tick-num { color: #FFB266; }
 
-    .ios-pointer-row {
-      display: flex;
-      justify-content: center;
-      margin-top: -2px;
-      margin-bottom: 6px;
-    }
-
+    .ios-pointer-row { display: flex; justify-content: center; margin-top: -2px; margin-bottom: 6px; }
     .ios-triangle {
       width: 0;
       height: 0;
@@ -1149,13 +1164,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    #ios-big-wpm {
-      font-size: 38px;
-      font-weight: 400;
-      line-height: 1;
-      letter-spacing: -0.5px;
-    }
-
+    #ios-big-wpm { font-size: 38px; font-weight: 400; line-height: 1; letter-spacing: -0.5px; }
     .ios-big-unit { font-size: 15px; opacity: 0.75; }
 
     /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ("ПО ГЛАВАМ") --- */
@@ -1184,19 +1193,9 @@
     .ch-vnum { color: var(--muted); font-size: 14px; font-weight: 700; margin-right: 6px; }
     .ch-dot { color: #4C566A; margin: 0 5px; }
 
-    .ch-neon-banner {
-      height: 3px;
-      border-radius: 3px;
-      margin: 14px 0;
-    }
-    .ch-neon-banner.start {
-      background: var(--neon-green);
-      box-shadow: 0 0 12px var(--neon-green);
-    }
-    .ch-neon-banner.end {
-      background: var(--neon-red);
-      box-shadow: 0 0 12px var(--neon-red);
-    }
+    .ch-neon-banner { height: 3px; border-radius: 3px; margin: 14px 0; }
+    .ch-neon-banner.start { background: var(--neon-green); box-shadow: 0 0 12px var(--neon-green); }
+    .ch-neon-banner.end { background: var(--neon-red); box-shadow: 0 0 12px var(--neon-red); }
 
     .ch-nav-row {
       display: flex;
@@ -1234,13 +1233,8 @@
       padding-right: calc(env(safe-area-inset-right, 0px) + 12px);
     }
 
-    body.landscape-compact #top-bar.collapsed {
-      display: none;
-    }
-
-    body.landscape-compact.bar-hidden #restore-bar-btn {
-      display: flex;
-    }
+    body.landscape-compact #top-bar.collapsed { display: none; }
+    body.landscape-compact.bar-hidden #restore-bar-btn { display: flex; }
 
     body.landscape-compact .top-row { gap: 5px; }
     body.landscape-compact .row-primary { flex: 1 1 auto; }
@@ -1279,6 +1273,9 @@
       padding: 5px 12px calc(env(safe-area-inset-bottom, 0px) + 5px);
       gap: 10px;
     }
+
+    body.landscape-compact #ticker-invert-btn { width: 38px; height: 38px; }
+    body.landscape-compact #ticker-invert-btn svg { width: 18px; height: 18px; }
 
     body.landscape-compact #soviet-gauge-btn {
       height: 44px;
@@ -1442,6 +1439,15 @@
 
     <!-- Советский прибор скорости ("Бегущая строка") -->
     <div id="ticker-dock">
+      <button id="ticker-invert-btn" type="button" title="Инверсия управления (лево/право)" aria-label="Инверсия управления">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 3l4 4-4 4"/>
+          <path d="M3 7h18"/>
+          <path d="M7 21l-4-4 4-4"/>
+          <path d="M21 17H3"/>
+        </svg>
+      </button>
+
       <div id="soviet-gauge-btn" role="button" aria-label="Настроить скорость">
         <span class="gauge-screw tl"></span>
         <span class="gauge-screw tr"></span>
@@ -1487,15 +1493,19 @@
     <footer id="status-bar">Загрузка...</footer>
   </div>
 
-  <!-- Модальное окно выбора дня графика -->
+  <!-- Модальное окно выбора графика и дня -->
   <div id="plan-modal-backdrop">
     <div id="plan-modal">
       <div class="plan-modal-header">
-        <div class="plan-modal-title">График чтения (35 дней)</div>
+        <div class="plan-modal-title">График чтения</div>
         <div class="plan-header-actions">
-          <button id="plan-exit-btn" type="button">Выйти из графика</button>
+          <button id="plan-exit-btn" type="button">Выйти</button>
           <button id="plan-close-btn" type="button" aria-label="Закрыть">✕</button>
         </div>
+      </div>
+      <div class="plan-tabs-bar">
+        <button id="plan-tab-35" class="plan-tab-btn active" type="button">План на 35 дней</button>
+        <button id="plan-tab-20" class="plan-tab-btn" type="button">План на 20 дней</button>
       </div>
       <div id="plan-days-list"></div>
     </div>
@@ -1527,19 +1537,18 @@
       });
     }
 
-    // --- SVG ИКОНКИ (ИДЕАЛЬНО ПО ЦЕНТРУ, БЕЗ СИСТЕМНЫХ ЭМОДЗИ) ---
     const SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
     const SVG_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
 
     // --- КОНСТАНТЫ ---
     const WORD_WINDOW_RADIUS = 45;
     const WORD_MIN_ZOOM = 0.55;
+    const TICKER_MIN_ZOOM = 0.25; // Можно отдалять заметно дальше
     const WORD_MAX_ZOOM = 10000.0;
 
     const TICKER_MIN_WPM = 30;
     const TICKER_MAX_WPM = 800;
     const TICKER_STEP_WPM = 10;
-    const TICKER_BUFFER_PX = 2400;
     const RULER_TICK_PX = 14;
 
     // Стандартные номера книг MyBible RST+
@@ -1560,10 +1569,10 @@
       'Иуд': 720, 'Откр': 730
     };
 
-    const WISDOM_BOOK_IDS = [230, 240, 250]; // Псалтирь, Притчи, Екклесиаст
+    const WISDOM_BOOK_IDS = [230, 240, 250];
 
-    // --- ПОЛНЫЙ 35-ДНЕВНЫЙ ПЛАН ЧТЕНИЯ ---
-    const READING_PLAN = [
+    // --- ПЛАН 1: 35 ДНЕЙ (ОСНОВНАЯ ЛИНИЯ + ЛИНИЯ МУДРОСТИ) ---
+    const READING_PLAN_35 = [
       { day: 1, m: ['Быт',1,1, 'Быт',30,6], w: ['Пс',1,1, 'Пс',28,5], ml: 'Быт. 1:1 – 30:6', wl: 'Пс. 1:1 – 28:5' },
       { day: 2, m: ['Быт',30,7, 'Исх',4,14], w: ['Пс',28,6, 'Пс',49,22], ml: 'Быт. 30:7 – Исх. 4:14', wl: 'Пс. 28:6 – 49:22' },
       { day: 3, m: ['Исх',4,15, 'Исх',30,10], w: ['Пс',49,23, 'Пс',73,14], ml: 'Исх. 4:15 – 30:10', wl: 'Пс. 49:23 – 73:14' },
@@ -1601,6 +1610,30 @@
       { day: 35, m: ['1Ин',4,19, 'Откр',22,21], w: ['Прит',18,20, 'Еккл',12,14],ml: '1Ин. 4:19 – Откр. 22:21',wl: 'Прит. 18:20 – Еккл. 12:14' }
     ];
 
+    // --- ПЛАН 2: 20 ДНЕЙ (ВСЯ БИБЛИЯ ПОДРЯД, 4 ПОДХОДА В ДЕНЬ) ---
+    const READING_PLAN_20 = [
+      { day: 1, m: ['Быт',1,1, 'Быт',50,19], ml: 'Быт. 1:1 – 50:19', sub: '4 подхода: 1:1 • 17:20 • 28:15 • 39:16' },
+      { day: 2, m: ['Быт',50,19, 'Лев',11,8], ml: 'Быт. 50:19 – Лев. 11:8', sub: '4 подхода: Быт 50:19 • Исх 13:9 • 26:16 • 37:26' },
+      { day: 3, m: ['Лев',11,8, 'Чис',26,56], ml: 'Лев. 11:8 – Чис. 26:56', sub: '4 подхода: Лев 11:8 • 21:17 • Чис 4:23 • 15:14' },
+      { day: 4, m: ['Чис',26,56, 'Нав',4,4], ml: 'Чис. 26:56 – Нав. 4:4', sub: '4 подхода: Чис 26:56 • Втор 2:14 • 12:27 • 26:17' },
+      { day: 5, m: ['Нав',4,4, '1Цар',2,15], ml: 'Нав. 4:4 – 1Цар. 2:15', sub: '4 подхода: Нав 4:4 • 15:50 • Суд 4:15 • 15:12' },
+      { day: 6, m: ['1Цар',2,15, '2Цар',18,14], ml: '1Цар. 2:15 – 2Цар. 18:14', sub: '4 подхода: 1Цар 2:15 • 14:52 • 25:14 • 2Цар 7:8' },
+      { day: 7, m: ['2Цар',18,14, '4Цар',9,17], ml: '2Цар. 18:14 – 4Цар. 9:17', sub: '4 подхода: 2Цар 18:14 • 3Цар 3:13 • 12:10 • 21:22' },
+      { day: 8, m: ['4Цар',9,17, '2Пар',7,3], ml: '4Цар. 9:17 – 2Пар. 7:3', sub: '4 подхода: 4Цар 9:17 • 19:25 • 1Пар 6:78 • 22:1' },
+      { day: 9, m: ['2Пар',7,3, 'Неем',13,14], ml: '2Пар. 7:3 – Неем. 13:14', sub: '4 подхода: 2Пар 7:3 • 22:2 • 34:10 • Неем 1:3' },
+      { day: 10, m: ['Неем',13,14, 'Пс',50,6], ml: 'Неем. 13:14 – Пс. 50:6', sub: '4 подхода: Неем 13:14 • Иов 8:2 • 31:25 • Пс 17:50' },
+      { day: 11, m: ['Пс',50,6, 'Прит',25,18], ml: 'Пс. 50:6 – Прит. 25:18', sub: '4 подхода: Пс 50:6 • 81:7 • 114:8 • Прит 4:7' },
+      { day: 12, m: ['Прит',25,18, 'Ис',51,9], ml: 'Прит. 25:18 – Ис. 51:9', sub: '4 подхода: Прит 25:18 • Песн 4:1 • Ис 16:4 • 36:9' },
+      { day: 13, m: ['Ис',51,9, 'Иер',40,5], ml: 'Ис. 51:9 – Иер. 40:5', sub: '4 подхода: Ис 51:9 • Иер 3:5 • 15:20 • 29:12' },
+      { day: 14, m: ['Иер',40,5, 'Иез',33,8], ml: 'Иер. 40:5 – Иез. 33:8', sub: '4 подхода: Иер 40:5 • 51:59 • Иез 9:8 • 21:7' },
+      { day: 15, m: ['Иез',33,8, 'Ион',4,9], ml: 'Иез. 33:8 – Ион. 4:9', sub: '4 подхода: Иез 33:8 • 43:25 • Дан 5:24 • Ос 9:14' },
+      { day: 16, m: ['Ион',4,9, 'Мат',27,55], ml: 'Ион. 4:9 – Мат. 27:55', sub: '4 подхода: Ион 4:9 • Зах 4:9 • Мат 6:8 • 18:3' },
+      { day: 17, m: ['Мат',27,55, 'Лук',23,36], ml: 'Мат. 27:55 – Лук. 23:36', sub: '4 подхода: Мат 27:55 • Мар 10:44 • Лук 5:2 • 12:52' },
+      { day: 18, m: ['Лук',23,36, 'Деян',21,11], ml: 'Лук. 23:36 – Деян. 21:11', sub: '4 подхода: Лук 23:36 • Ин 8:42 • 19:24 • Деян 10:2' },
+      { day: 19, m: ['Деян',21,11, 'Флп',4,15], ml: 'Деян. 21:11 – Флп. 4:15', sub: '4 подхода: Деян 21:11 • Рим 7:3 • 1Кор 8:13 • 2Кор 11:1' },
+      { day: 20, m: ['Флп',4,15, 'Откр',22,21], ml: 'Флп. 4:15 – Откр. 22:21', sub: '4 подхода: Флп 4:15 • Тит 3:4 • 1Пет 1:5 • Откр 4:2' }
+    ];
+
     // --- СОСТОЯНИЕ ---
     let booksOrder = [];
     let booksNames = {};
@@ -1611,9 +1644,11 @@
 
     // Состояние графика чтения
     let planActive = false;
-    let planDayNum = 0; // 1..35
-    let planActiveLine = 'main';// 'main' | 'wisdom'
-    let planDayData = null; // { main: { verses, indexMap, books, chaptersByBook, versesByBookChap }, wisdom: {...} }
+    let planType = '35'; // '35' | '20'
+    let planModalTab = '35'; // Какая вкладка открыта в модальном окне
+    let planDayNum = 0;
+    let planActiveLine = 'main';
+    let planDayData = null;
 
     let currentBook = 10;
     let currentChapter = 1;
@@ -1639,8 +1674,10 @@
     let autoplayLastTime = 0;
     let autoplayAccum = 0;
 
+    // Бегущая строка
     let tickerWpm = 220;
     let tickerAutoRunning = false;
+    let tickerInverted = false; // Инверсия управления лево/право
     let manualTickerDir = 0;
     let keyTickerDir = 0;
     let tickerItems = [];
@@ -1703,6 +1740,7 @@
     const elAutoExitBtn = document.getElementById('autoplay-exit-btn');
 
     const elTickerDock = document.getElementById('ticker-dock');
+    const elTickerInvertBtn = document.getElementById('ticker-invert-btn');
     const elSovietGaugeBtn = document.getElementById('soviet-gauge-btn');
     const elGaugeNeedle = document.getElementById('gauge-needle-group');
     const elGaugeWpmVal = document.getElementById('gauge-wpm-val');
@@ -1710,6 +1748,8 @@
 
     const elPlanModalBackdrop = document.getElementById('plan-modal-backdrop');
     const elPlanDaysList = document.getElementById('plan-days-list');
+    const elPlanTab35 = document.getElementById('plan-tab-35');
+    const elPlanTab20 = document.getElementById('plan-tab-20');
     const elPlanExitBtn = document.getElementById('plan-exit-btn');
     const elPlanCloseBtn = document.getElementById('plan-close-btn');
 
@@ -1759,7 +1799,7 @@
       }
     }
 
-    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE (100% ТОЧНОСТЬ ТЕКСТА) ---
+    // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE ---
     function escapeHtml(str) {
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
@@ -1853,7 +1893,7 @@
     }
 
     // =========================================================================
-    // ЛОГИКА ГРАФИКА ЧТЕНИЯ (35 ДНЕЙ, ОСНОВНАЯ ЛИНИЯ + ЛИНИЯ МУДРОСТИ)
+    // ЛОГИКА ГРАФИКОВ ЧТЕНИЯ (35 ДНЕЙ И 20 ДНЕЙ)
     // =========================================================================
     function buildLineRangeData(bookSeq, startBook, startCh, startV, endBook, endCh, endV, allowWrap) {
       const verses = [];
@@ -1935,24 +1975,31 @@
       return currentBook === last.b && currentChapter === last.c && currentVerse === last.v;
     }
 
-    function activatePlanDay(dayNum) {
-      const entry = READING_PLAN.find((d) => d.day === dayNum);
+    function activatePlanDay(type, dayNum) {
+      const list = type === '20' ? READING_PLAN_20 : READING_PLAN_35;
+      const entry = list.find((d) => d.day === dayNum);
       if (!entry) return;
 
-      const mainBookSeq = booksOrder.filter((b) => !WISDOM_BOOK_IDS.includes(b));
-      const wisdomBookSeq = WISDOM_BOOK_IDS.filter((b) => booksOrder.includes(b));
+      const emptyLine = { verses: [], indexMap: new Map(), books: [], chaptersByBook: {}, versesByBookChap: {} };
 
-      const mStartB = STD_BOOK_IDS[entry.m[0]];
-      const mEndB = STD_BOOK_IDS[entry.m[3]];
-      const wStartB = STD_BOOK_IDS[entry.w[0]];
-      const wEndB = STD_BOOK_IDS[entry.w[3]];
-
-      planDayData = {
-        main: buildLineRangeData(mainBookSeq, mStartB, entry.m[1], entry.m[2], mEndB, entry.m[4], entry.m[5], false),
-        wisdom: buildLineRangeData(wisdomBookSeq, wStartB, entry.w[1], entry.w[2], wEndB, entry.w[4], entry.w[5], true)
-      };
+      if (type === '35') {
+        const mainBookSeq = booksOrder.filter((b) => !WISDOM_BOOK_IDS.includes(b));
+        const wisdomBookSeq = WISDOM_BOOK_IDS.filter((b) => booksOrder.includes(b));
+        planDayData = {
+          main: buildLineRangeData(mainBookSeq, STD_BOOK_IDS[entry.m[0]], entry.m[1], entry.m[2], STD_BOOK_IDS[entry.m[3]], entry.m[4], entry.m[5], false),
+          wisdom: buildLineRangeData(wisdomBookSeq, STD_BOOK_IDS[entry.w[0]], entry.w[1], entry.w[2], STD_BOOK_IDS[entry.w[3]], entry.w[4], entry.w[5], true)
+        };
+      } else {
+        // 20-дневный план идёт подряд по всем 66 книгам единой линией
+        planDayData = {
+          main: buildLineRangeData(booksOrder, STD_BOOK_IDS[entry.m[0]], entry.m[1], entry.m[2], STD_BOOK_IDS[entry.m[3]], entry.m[4], entry.m[5], false),
+          wisdom: emptyLine
+        };
+      }
 
       planActive = true;
+      planType = type;
+      planModalTab = type;
       planDayNum = dayNum;
       planActiveLine = 'main';
       tickerAutoRunning = false;
@@ -1990,7 +2037,7 @@
     function updatePlanButtonUI() {
       if (planActive) {
         elPlanBtn.classList.add('active');
-        elPlanBtn.textContent = `День ${String(planDayNum).padStart(2, '0')}`;
+        elPlanBtn.textContent = `Д${String(planDayNum).padStart(2, '0')}/${planType}`;
         elPlanExitBtn.style.display = 'inline-flex';
       } else {
         elPlanBtn.classList.remove('active');
@@ -1999,30 +2046,55 @@
       }
     }
 
-    function openPlanModal() {
+    function renderPlanDaysList() {
+      elPlanTab35.classList.toggle('active', planModalTab === '35');
+      elPlanTab20.classList.toggle('active', planModalTab === '20');
       elPlanDaysList.innerHTML = '';
-      for (const item of READING_PLAN) {
+
+      const list = planModalTab === '20' ? READING_PLAN_20 : READING_PLAN_35;
+      for (const item of list) {
+        const isCurrent = planActive && planType === planModalTab && planDayNum === item.day;
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'plan-day-card' + (planActive && planDayNum === item.day ? ' active' : '');
-        btn.innerHTML = `
-          <div class="plan-day-num">
-            <span>ДЕНЬ</span>
-            <span>${String(item.day).padStart(2, '0')}</span>
-          </div>
-          <div class="plan-day-info">
-            <div class="plan-line-row"><span class="plan-line-badge">Осн.</span>${escapeHtml(item.ml)}</div>
-            <div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>${escapeHtml(item.wl)}</div>
-          </div>
-        `;
-        btn.addEventListener('click', () => activatePlanDay(item.day));
+        btn.className = 'plan-day-card' + (isCurrent ? ' active' : '');
+
+        if (planModalTab === '35') {
+          btn.innerHTML = `
+            <div class="plan-day-num">
+              <span>ДЕНЬ</span>
+              <span>${String(item.day).padStart(2, '0')}</span>
+            </div>
+            <div class="plan-day-info">
+              <div class="plan-line-row"><span class="plan-line-badge">Осн.</span>${escapeHtml(item.ml)}</div>
+              <div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>${escapeHtml(item.wl)}</div>
+            </div>
+          `;
+        } else {
+          btn.innerHTML = `
+            <div class="plan-day-num">
+              <span>ДЕНЬ</span>
+              <span>${String(item.day).padStart(2, '0')}</span>
+            </div>
+            <div class="plan-day-info">
+              <div class="plan-line-row">${escapeHtml(item.ml)}</div>
+              <div class="plan-line-row sub">${escapeHtml(item.sub)}</div>
+            </div>
+          `;
+        }
+
+        btn.addEventListener('click', () => activatePlanDay(planModalTab, item.day));
         elPlanDaysList.appendChild(btn);
       }
+
+      const activeCard = elPlanDaysList.querySelector('.plan-day-card.active');
+      if (activeCard) activeCard.scrollIntoView({ block: 'center' });
+      else elPlanDaysList.scrollTop = 0;
+    }
+
+    function openPlanModal() {
+      if (planActive) planModalTab = planType;
+      renderPlanDaysList();
       elPlanModalBackdrop.classList.add('open');
-      if (planActive) {
-        const activeCard = elPlanDaysList.querySelector('.plan-day-card.active');
-        if (activeCard) activeCard.scrollIntoView({ block: 'center' });
-      }
     }
 
     function closePlanModal() {
@@ -2167,26 +2239,35 @@
     function populateBookSelector() {
       elBookSel.innerHTML = '';
       if (planActive && planDayData) {
-        const gMain = document.createElement('optgroup');
-        gMain.label = 'Основная линия';
-        for (const b of planDayData.main.books) {
-          const opt = document.createElement('option');
-          opt.value = `main:${b}`;
-          opt.textContent = booksNames[b] || `Книга ${b}`;
-          gMain.appendChild(opt);
-        }
-        if (planDayData.main.books.length) elBookSel.appendChild(gMain);
+        const hasWisdom = planDayData.wisdom.books.length > 0;
+        if (hasWisdom) {
+          const gMain = document.createElement('optgroup');
+          gMain.label = 'Основная линия';
+          for (const b of planDayData.main.books) {
+            const opt = document.createElement('option');
+            opt.value = `main:${b}`;
+            opt.textContent = booksNames[b] || `Книга ${b}`;
+            gMain.appendChild(opt);
+          }
+          if (planDayData.main.books.length) elBookSel.appendChild(gMain);
 
-        const gWis = document.createElement('optgroup');
-        gWis.label = 'Линия мудрости';
-        for (const b of planDayData.wisdom.books) {
-          const opt = document.createElement('option');
-          opt.value = `wisdom:${b}`;
-          opt.textContent = booksNames[b] || `Книга ${b}`;
-          gWis.appendChild(opt);
+          const gWis = document.createElement('optgroup');
+          gWis.label = 'Линия мудрости';
+          for (const b of planDayData.wisdom.books) {
+            const opt = document.createElement('option');
+            opt.value = `wisdom:${b}`;
+            opt.textContent = booksNames[b] || `Книга ${b}`;
+            gWis.appendChild(opt);
+          }
+          elBookSel.appendChild(gWis);
+        } else {
+          for (const b of planDayData.main.books) {
+            const opt = document.createElement('option');
+            opt.value = `main:${b}`;
+            opt.textContent = booksNames[b] || `Книга ${b}`;
+            elBookSel.appendChild(opt);
+          }
         }
-        if (planDayData.wisdom.books.length) elBookSel.appendChild(gWis);
-
         elBookSel.value = `${planActiveLine}:${currentBook}`;
         populateChapterSelector();
       } else {
@@ -2401,6 +2482,11 @@
     }
 
     // --- ДВИЖОК БЕСКОНЕЧНОЙ БЕГУЩЕЙ СТРОКИ (TICKER) ---
+    function getTickerBufferPx() {
+      const visibleWorldW = (elWorkspace.clientWidth || window.innerWidth) / Math.max(TICKER_MIN_ZOOM, canvasZoom);
+      return Math.max(2400, Math.ceil(visibleWorldW * 0.95));
+    }
+
     function createTickerSpan(pos) {
       const span = document.createElement('span');
       span.className = 'ticker-item';
@@ -2489,9 +2575,9 @@
 
     function fillTickerBuffers() {
       if (!tickerItems.length) return;
+      const bufPx = getTickerBufferPx();
 
-      // 1. Добираем слова справа
-      while ((tickerTotalWidth + tickerStartGateW + tickerScrollX) < TICKER_BUFFER_PX) {
+      while ((tickerTotalWidth + tickerStartGateW + tickerScrollX) < bufPx) {
         const last = tickerItems[tickerItems.length - 1];
         const nextPos = getNextWordPos(last.b, last.c, last.v, last.wIdx);
         if (!nextPos) break;
@@ -2503,8 +2589,7 @@
         tickerTotalWidth += w;
       }
 
-      // 2. Добираем слова слева
-      while ((-(tickerScrollX + tickerStartGateW)) < TICKER_BUFFER_PX) {
+      while ((-(tickerScrollX + tickerStartGateW)) < bufPx) {
         const first = tickerItems[0];
         const prevPos = getPrevWordPos(first.b, first.c, first.v, first.wIdx);
         if (!prevPos) break;
@@ -2517,16 +2602,14 @@
         tickerScrollX -= w;
       }
 
-      // 3. Чистим ушедшие далеко влево
-      while (tickerItems.length > 16 && ((-(tickerScrollX + tickerStartGateW)) - tickerItems[0].width) > TICKER_BUFFER_PX + 600) {
+      while (tickerItems.length > 16 && ((-(tickerScrollX + tickerStartGateW)) - tickerItems[0].width) > bufPx + 700) {
         const removed = tickerItems.shift();
         removed.el.remove();
         tickerScrollX += removed.width;
         tickerTotalWidth -= removed.width;
       }
 
-      // 4. Чистим ушедшие далеко вправо
-      while (tickerItems.length > 16 && ((tickerTotalWidth + tickerStartGateW + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > TICKER_BUFFER_PX + 600) {
+      while (tickerItems.length > 16 && ((tickerTotalWidth + tickerStartGateW + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > bufPx + 700) {
         const removed = tickerItems.pop();
         removed.el.remove();
         tickerTotalWidth -= removed.width;
@@ -2601,6 +2684,8 @@
       const t = (tickerWpm - TICKER_MIN_WPM) / (TICKER_MAX_WPM - TICKER_MIN_WPM);
       const deg = -82 + t * 164;
       elGaugeNeedle.style.transform = `rotate(${deg.toFixed(1)}deg)`;
+
+      elTickerInvertBtn.classList.toggle('active', tickerInverted);
 
       if (tickerAutoRunning) {
         elTickerPlayBtn.innerHTML = SVG_PAUSE;
@@ -2717,10 +2802,24 @@
       updateStatusBar();
     });
 
+    elTickerInvertBtn.addEventListener('click', () => {
+      tickerInverted = !tickerInverted;
+      updateSovietGaugeUI();
+      updateStatusBar();
+    });
+
     // --- ОТРИСОВКА ---
+    function getPlanShortTag() {
+      if (!planActive) return '';
+      if (planType === '35') {
+        return `Д${String(planDayNum).padStart(2, '0')} (${planActiveLine === 'main' ? 'Осн.' : 'Мудр.'})`;
+      }
+      return `Д${String(planDayNum).padStart(2, '0')}/20`;
+    }
+
     function updateProgressBars() {
       const bookTitle = booksNames[currentBook] || 'Книга';
-      const planTag = planActive ? ` • День ${String(planDayNum).padStart(2, '0')} (${planActiveLine === 'main' ? 'Осн.' : 'Мудр.'})` : '';
+      const pTag = getPlanShortTag();
       if (displayMode === 'BLOCKS') {
         elBlockProgBox.style.display = 'flex';
         const passed = (chapterBlockOffsets[currentVerse] || 0) + currentBlockIdx;
@@ -2730,7 +2829,7 @@
         elBlockProgLbl.textContent = `Глава ${currentChapter} — ${Math.round(pct)}% (${passed + 1} / ${chapterTotalBlocks} бл.)`;
       } else if (displayMode === 'WORDS' || displayMode === 'TICKER') {
         elBlockProgBox.style.display = 'none';
-        elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}${planTag}`;
+        elHudRef.textContent = `${bookTitle} ${currentChapter}:${currentVerse}${pTag ? ' • ' + pTag : ''}`;
 
         const passedCh = (chapterWordOffsets[currentVerse] || 0) + currentWordIdx;
         const ratioCh = chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1);
@@ -2884,13 +2983,15 @@
 
     function updateStatusBar() {
       const zoomPct = Math.round(canvasZoom * 100);
-      const planInfo = planActive ? `День ${String(planDayNum).padStart(2, '0')} (${planActiveLine === 'main' ? 'Осн.' : 'Мудр.'}) • ` : '';
+      const pTag = getPlanShortTag();
+      const planInfo = pTag ? `${pTag} • ` : '';
       if (displayMode === 'BLOCKS') {
         elStatusBar.textContent = `${planInfo}Блок ${currentBlockIdx + 1}/${currentBlocks.length} (Ст. ${currentVerse}) • Зум ${zoomPct}%`;
       } else if (displayMode === 'WORDS') {
         elStatusBar.textContent = `${planInfo}Слово ${currentWordIdx + 1}/${currentWords.length} (Ст. ${currentVerse}) • Зум ${zoomPct}%`;
       } else if (displayMode === 'TICKER') {
-        const st = tickerAutoRunning ? `Авто ${tickerWpm} сл/мин` : `Удерживай справа/слева (${tickerWpm} сл/мин)`;
+        const invHint = tickerInverted ? 'Инверсия ⇄' : 'Справа → / Слева ←';
+        const st = tickerAutoRunning ? `Авто ${tickerWpm} сл/мин` : `${invHint} (${tickerWpm} сл/мин)`;
         elStatusBar.textContent = `${planInfo}${st} • Зум ${zoomPct}%`;
       } else if (displayMode === 'VERSES') {
         elStatusBar.textContent = `${planInfo}Стих ${currentVerse} • Зум ${zoomPct}%`;
@@ -2922,7 +3023,6 @@
       const cardWidth = Math.min(Math.max(300, wsW - 28), 640);
       elCardStack.style.width = `${cardWidth}px`;
 
-      // Сброс неоновых рамок карточки
       elTextCard.classList.remove('bound-start', 'bound-end');
 
       if (displayMode === 'BLOCKS') {
@@ -2934,8 +3034,8 @@
         if (atPlanEnd) elTextCard.classList.add('bound-end');
 
         const boundBadgeHtml = atPlanStart
-          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт линии • День ${String(planDayNum).padStart(2, '0')}</span></div>`
-          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш линии • День ${String(planDayNum).padStart(2, '0')}</span></div>` : '');
+          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • День ${String(planDayNum).padStart(2, '0')}</span></div>`
+          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • День ${String(planDayNum).padStart(2, '0')}</span></div>` : '');
 
         const dotsHtml = currentBlocks.map((_, i) => {
           if (i === currentBlockIdx) return '<span class="dot-active">●</span>';
@@ -2981,8 +3081,8 @@
         if (atPlanEnd) elTextCard.classList.add('bound-end');
 
         const boundBadgeHtml = atPlanStart
-          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт линии</span></div>`
-          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш линии</span></div>` : '');
+          ? `<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт дня</span></div>`
+          : (atPlanEnd ? `<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш дня</span></div>` : '');
 
         const raw = vObj[currentVerse] ?? '';
         elTextCard.innerHTML = `
@@ -3027,8 +3127,23 @@
     }
 
     // --- КАМЕРА (ЗУМ И ПЕРЕМЕЩЕНИЕ ДВУМЯ ПАЛЬЦАМИ) ---
+    function getMinZoomForMode() {
+      if (displayMode === 'TICKER') return TICKER_MIN_ZOOM;
+      if (displayMode === 'WORDS') return WORD_MIN_ZOOM;
+      return 0.35;
+    }
+
+    function getMaxZoomForMode() {
+      if (displayMode === 'WORDS' || displayMode === 'TICKER') return WORD_MAX_ZOOM;
+      return 5.0;
+    }
+
     function applyCamera() {
       elCanvasRoot.style.transform = `translate3d(${canvasPanX}px, ${canvasPanY}px, 0) scale(${canvasZoom})`;
+      if (displayMode === 'TICKER') {
+        fillTickerBuffers();
+        elTickerTape.style.transform = `translate3d(${tickerScrollX}px, -50%, 0)`;
+      }
       updateStatusBar();
     }
 
@@ -3058,6 +3173,11 @@
       setTimeout(() => el.classList.remove('show'), 140);
     }
 
+    function getTickerDirForSide(isRightHalf) {
+      const baseDir = isRightHalf ? 1 : -1;
+      return tickerInverted ? -baseDir : baseDir;
+    }
+
     // --- СЕНСОРНОЕ УПРАВЛЕНИЕ ---
     let singleStartX = 0, singleStartY = 0, singleStartTime = 0;
     let wasMultiTouch = false;
@@ -3079,7 +3199,7 @@
         singleStartTime = performance.now();
 
         if (displayMode === 'TICKER') {
-          manualTickerDir = relX >= rect.width * 0.5 ? 1 : -1;
+          manualTickerDir = getTickerDirForSide(relX >= rect.width * 0.5);
         }
       } else if (e.touches.length === 2) {
         wasMultiTouch = true;
@@ -3107,9 +3227,7 @@
 
         if (pinchPrevDist > 0) {
           const factor = dist / pinchPrevDist;
-          const minZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MIN_ZOOM : 0.35;
-          const maxZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MAX_ZOOM : 5.0;
-          const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
+          const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * factor));
 
           const worldX = (pinchPrevMidX - canvasPanX) / canvasZoom;
           const worldY = (pinchPrevMidY - canvasPanY) / canvasZoom;
@@ -3162,15 +3280,13 @@
       pinchPrevDist = 0;
     });
 
-    // Поддержка мыши и клавиатуры (на ПК)
+    // Мышь и клавиатура (на ПК)
     let mousePanning = false, mousePrevX = 0, mousePrevY = 0;
     elWorkspace.addEventListener('wheel', (e) => {
       if (displayMode === 'CHAPTERS') return;
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.1 : (1 / 1.1);
-      const minZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MIN_ZOOM : 0.35;
-      const maxZ = (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MAX_ZOOM : 5.0;
-      const newZoom = Math.max(minZ, Math.min(maxZ, canvasZoom * factor));
+      const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * factor));
       const rect = elWorkspace.getBoundingClientRect();
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
@@ -3186,7 +3302,7 @@
       if (isInteractiveTarget(e.target)) return;
       if (displayMode === 'TICKER' && e.button === 0) {
         const rect = elWorkspace.getBoundingClientRect();
-        manualTickerDir = (e.clientX - rect.left) >= rect.width * 0.5 ? 1 : -1;
+        manualTickerDir = getTickerDirForSide((e.clientX - rect.left) >= rect.width * 0.5);
         return;
       }
       mousePanning = true;
@@ -3220,11 +3336,11 @@
         }
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        if (displayMode === 'TICKER') keyTickerDir = 1;
+        if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(true);
         else stepForward();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        if (displayMode === 'TICKER') keyTickerDir = -1;
+        if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(false);
         else stepBackward();
       } else if (e.code === 'KeyR' && !e.ctrlKey && displayMode !== 'CHAPTERS') {
         e.preventDefault();
@@ -3233,8 +3349,7 @@
     });
 
     window.addEventListener('keyup', (e) => {
-      if (e.code === 'ArrowRight' && keyTickerDir === 1) keyTickerDir = 0;
-      if (e.code === 'ArrowLeft' && keyTickerDir === -1) keyTickerDir = 0;
+      if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') keyTickerDir = 0;
     });
 
     // --- ГЛАВНЫЙ ЦИКЛ АНИМАЦИИ ---
@@ -3304,7 +3419,7 @@
     }
     requestAnimationFrame(mainAnimLoop);
 
-    // --- СОБЫТИЯ ЭЛЕМЕНТОВ ИНТЕРФЕЙСА ---
+    // --- СОБЫТИЯ ИНТЕРФЕЙСА ---
     elBookSel.addEventListener('change', () => {
       if (planActive && planDayData) {
         const [lineKey, bStr] = elBookSel.value.split(':');
@@ -3357,9 +3472,7 @@
         keyTickerDir = 0;
         closeIosSpeedPicker();
       }
-      if (displayMode === 'WORDS' || displayMode === 'TICKER') {
-        canvasZoom = Math.max(canvasZoom, WORD_MIN_ZOOM);
-      }
+      canvasZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom));
       refreshView();
       if (displayMode !== 'CHAPTERS') centerCamera(false);
     });
@@ -3369,6 +3482,14 @@
     elPlanExitBtn.addEventListener('click', deactivatePlanMode);
     elPlanModalBackdrop.addEventListener('click', (e) => {
       if (e.target === elPlanModalBackdrop) closePlanModal();
+    });
+    elPlanTab35.addEventListener('click', () => {
+      planModalTab = '35';
+      renderPlanDaysList();
+    });
+    elPlanTab20.addEventListener('click', () => {
+      planModalTab = '20';
+      renderPlanDaysList();
     });
 
     elCenterBtn.addEventListener('click', () => centerCamera(true));
