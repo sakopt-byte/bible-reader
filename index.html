@@ -29,6 +29,8 @@
       --green-hover: #38A869;
       --red: #B83B44;
       --red-hover: #D14953;
+      --app-h: 100vh;
+      --top-extra: 18px;
     }
 
     * {
@@ -42,7 +44,7 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      height: var(--app-h);
       overflow: hidden;
       background: var(--bg);
       color: var(--text);
@@ -52,11 +54,13 @@
 
     #app {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--app-h);
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: 100%;
       background: var(--bg);
     }
 
@@ -64,12 +68,15 @@
     #top-bar {
       background: var(--panel);
       border-bottom: 1px solid var(--border);
-      padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+      padding-top: calc(env(safe-area-inset-top, 0px) + var(--top-extra));
       padding-left: calc(env(safe-area-inset-left, 0px) + 10px);
       padding-right: calc(env(safe-area-inset-right, 0px) + 10px);
       padding-bottom: 8px;
       z-index: 30;
       flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .top-row {
@@ -77,10 +84,6 @@
       align-items: center;
       gap: 6px;
       flex-wrap: nowrap;
-    }
-
-    .top-row + .top-row {
-      margin-top: 6px;
     }
 
     #top-bar.collapsed .row-secondary {
@@ -104,10 +107,10 @@
       transform: scale(0.97);
     }
 
-    #book-select { flex: 1 1 auto; min-width: 110px; }
+    #book-select { flex: 1 1 auto; min-width: 100px; }
     #chapter-select { width: 64px; flex-shrink: 0; }
     #verse-select { width: 64px; flex-shrink: 0; }
-    #mode-select { flex: 1 1 auto; min-width: 140px; }
+    #mode-select { flex: 1 1 auto; min-width: 135px; }
 
     .toggle-btn {
       display: inline-flex;
@@ -133,6 +136,25 @@
       color: var(--muted);
     }
 
+    /* Кнопка возврата панели, когда в альбомном режиме она полностью скрыта */
+    #restore-bar-btn {
+      position: absolute;
+      top: 8px;
+      right: calc(env(safe-area-inset-right, 0px) + 10px);
+      width: 34px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(26, 29, 34, 0.85);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 35;
+      cursor: pointer;
+    }
+
     /* --- РАБОЧАЯ ОБЛАСТЬ 1: ХОЛСТ --- */
     #workspace {
       position: relative;
@@ -155,7 +177,6 @@
       pointer-events: none;
     }
 
-    /* Визуальная подсказка тапа слева / справа (НЕ используется в "Бегущей строке") */
     .tap-flash {
       position: absolute;
       top: 0;
@@ -309,7 +330,7 @@
       margin-left: 2px;
     }
 
-    /* --- РЕЖИМ "ПО СЛОВАМ": БЕСКОНЕЧНАЯ СТРОКА --- */
+    /* --- РЕЖИМ "ПО СЛОВАМ" --- */
     #word-stream-root {
       position: absolute;
       top: 0;
@@ -355,7 +376,7 @@
       transform: translateY(-9px);
     }
 
-    /* --- РЕЖИМ "БЕГУЩАЯ СТРОКА": ПЛАВНАЯ ТВ-ЛЕНТА --- */
+    /* --- РЕЖИМ "БЕГУЩАЯ СТРОКА" --- */
     #ticker-stream-root {
       position: absolute;
       top: 0;
@@ -396,20 +417,26 @@
     /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА (ДЛЯ "ПО СЛОВАМ" И "БЕГУЩЕЙ СТРОКИ") --- */
     #word-hud {
       position: absolute;
-      top: 12px;
-      left: 14px;
-      right: 14px;
-      background: rgba(20, 23, 28, 0.88);
+      top: 10px;
+      left: calc(env(safe-area-inset-left, 0px) + 12px);
+      right: calc(env(safe-area-inset-right, 0px) + 12px);
+      background: rgba(20, 23, 28, 0.86);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(46, 53, 64, 0.9);
+      border: 1px solid rgba(46, 53, 64, 0.88);
       border-radius: 10px;
-      padding: 10px 14px;
+      padding: 9px 12px;
       z-index: 15;
       display: none;
       flex-direction: column;
       gap: 6px;
       pointer-events: none;
+    }
+
+    .hud-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .hud-row {
@@ -423,12 +450,14 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--text);
+      white-space: nowrap;
     }
 
     #hud-ch-lbl {
       font-size: 12px;
       color: var(--muted);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     #hud-v-lbl {
@@ -436,15 +465,16 @@
       color: var(--verse-bar);
       margin-left: auto;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
-    /* --- ОВЕРЛЕИ АВТОПРОИГРЫВАНИЯ (ДЛЯ РЕЖИМА "ПО СЛОВАМ") --- */
+    /* --- ОВЕРЛЕИ АВТОПРОИГРЫВАНИЯ ("ПО СЛОВАМ") --- */
     #autoplay-play-btn {
       position: absolute;
-      right: 20px;
-      bottom: 20px;
-      width: 56px;
-      height: 56px;
+      right: calc(env(safe-area-inset-right, 0px) + 18px);
+      bottom: 18px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       background: var(--green);
       border: none;
@@ -466,8 +496,8 @@
 
     #autoplay-popup {
       position: absolute;
-      right: 16px;
-      bottom: 88px;
+      right: calc(env(safe-area-inset-right, 0px) + 16px);
+      bottom: 84px;
       width: min(300px, calc(100vw - 32px));
       background: var(--panel);
       border: 1px solid #3A414D;
@@ -480,22 +510,9 @@
       gap: 10px;
     }
 
-    .pop-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .pop-speed-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pop-speed-row label {
-      font-size: 13px;
-      color: var(--muted);
-    }
+    .pop-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .pop-speed-row { display: flex; align-items: center; gap: 8px; }
+    .pop-speed-row label { font-size: 13px; color: var(--muted); }
 
     #wpm-input {
       flex: 1;
@@ -511,16 +528,8 @@
       -webkit-user-select: text;
     }
 
-    .pop-presets {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-
-    .pop-presets button {
-      height: 32px;
-      font-size: 13px;
-    }
+    .pop-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .pop-presets button { height: 32px; font-size: 13px; }
 
     #autoplay-confirm-btn {
       background: var(--green);
@@ -536,7 +545,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 16px;
+      bottom: 14px;
       width: min(340px, calc(100vw - 32px));
       display: none;
       flex-direction: column;
@@ -554,15 +563,11 @@
       border-radius: 999px;
     }
 
-    .auto-btn-row {
-      display: flex;
-      width: 100%;
-      gap: 8px;
-    }
+    .auto-btn-row { display: flex; width: 100%; gap: 8px; }
 
     #autoplay-toggle-btn {
       flex: 1;
-      height: 40px;
+      height: 38px;
       border: none;
       border-radius: 10px;
       background: var(--green);
@@ -571,13 +576,11 @@
       font-size: 15px;
     }
 
-    #autoplay-toggle-btn.running {
-      background: #B88635;
-    }
+    #autoplay-toggle-btn.running { background: #B88635; }
 
     #autoplay-exit-btn {
       flex: 1;
-      height: 40px;
+      height: 38px;
       border: none;
       border-radius: 10px;
       background: var(--red);
@@ -586,7 +589,7 @@
       font-size: 14px;
     }
 
-    /* --- СОВЕТСКИЙ ПРИБОР СКОРОСТИ (ПРИВЯЗАН К ИНТЕРФЕЙСУ СНИЗУ В "БЕГУЩЕЙ СТРОКЕ") --- */
+    /* --- СОВЕТСКИЙ ПРИБОР СКОРОСТИ ("БЕГУЩАЯ СТРОКА") --- */
     #ticker-dock {
       display: none;
       align-items: center;
@@ -604,7 +607,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      height: 68px;
+      height: 66px;
       padding: 6px 14px 6px 10px;
       border-radius: 12px;
       background: linear-gradient(180deg, #242830 0%, #171A1F 100%);
@@ -632,8 +635,8 @@
     .gauge-screw.br { bottom: 4px; right: 4px; }
 
     .gauge-dial-window {
-      width: 96px;
-      height: 52px;
+      width: 92px;
+      height: 50px;
       background: radial-gradient(ellipse at 50% 95%, #231D15 0%, #11100E 85%);
       border: 1.5px solid #0B0C0E;
       border-radius: 8px;
@@ -645,8 +648,8 @@
     }
 
     .gauge-dial-window svg {
-      width: 94px;
-      height: 50px;
+      width: 90px;
+      height: 48px;
       display: block;
     }
 
@@ -660,7 +663,7 @@
       flex-direction: column;
       align-items: flex-end;
       justify-content: center;
-      min-width: 78px;
+      min-width: 74px;
     }
 
     .gauge-caption {
@@ -693,13 +696,13 @@
     }
 
     #ticker-play-btn {
-      width: 56px;
-      height: 56px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       border: 2px solid #3A4D40;
       background: linear-gradient(180deg, #32945E 0%, #236E45 100%);
       color: #fff;
-      font-size: 22px;
+      font-size: 21px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -726,7 +729,7 @@
       display: none;
       align-items: flex-end;
       justify-content: center;
-      padding: 16px 14px calc(env(safe-area-inset-bottom, 0px) + 20px);
+      padding: 16px 14px calc(env(safe-area-inset-bottom, 0px) + 18px);
     }
 
     #ios-speed-backdrop.open {
@@ -744,7 +747,7 @@
       background: #090A0C;
       border: 1px solid #23272F;
       border-radius: 26px;
-      padding: 20px 18px 18px;
+      padding: 18px 18px 16px;
       box-shadow: 0 22px 60px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
@@ -760,7 +763,7 @@
     #ios-ruler-viewport {
       position: relative;
       width: 100%;
-      height: 82px;
+      height: 78px;
       overflow: hidden;
       touch-action: none;
       cursor: ew-resize;
@@ -793,7 +796,7 @@
     .ios-tick-num {
       position: absolute;
       top: 4px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: rgba(245, 158, 75, 0.72);
       font-variant-numeric: tabular-nums;
@@ -803,32 +806,30 @@
 
     .ios-tick-bar {
       width: 3px;
-      height: 36px;
+      height: 34px;
       border-radius: 2px;
       background: rgba(245, 158, 75, 0.45);
       transition: background 0.08s ease, height 0.08s ease;
     }
 
     .ios-tick.major .ios-tick-bar {
-      height: 44px;
+      height: 42px;
       background: rgba(245, 158, 75, 0.78);
     }
 
     .ios-tick.selected .ios-tick-bar {
       background: #FFB266;
-      height: 46px;
+      height: 44px;
       box-shadow: 0 0 10px rgba(245, 158, 75, 0.7);
     }
 
-    .ios-tick.selected .ios-tick-num {
-      color: #FFB266;
-    }
+    .ios-tick.selected .ios-tick-num { color: #FFB266; }
 
     .ios-pointer-row {
       display: flex;
       justify-content: center;
       margin-top: -2px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .ios-triangle {
@@ -845,11 +846,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding-top: 4px;
+      padding-top: 2px;
     }
 
     #ios-confirm-btn {
-      height: 46px;
+      height: 44px;
       padding: 0 22px;
       border-radius: 999px;
       border: none;
@@ -860,9 +861,7 @@
       cursor: pointer;
     }
 
-    #ios-confirm-btn:active {
-      background: rgba(245, 158, 75, 0.32);
-    }
+    #ios-confirm-btn:active { background: rgba(245, 158, 75, 0.32); }
 
     .ios-big-readout {
       display: flex;
@@ -873,25 +872,22 @@
     }
 
     #ios-big-wpm {
-      font-size: 40px;
+      font-size: 38px;
       font-weight: 400;
       line-height: 1;
       letter-spacing: -0.5px;
     }
 
-    .ios-big-unit {
-      font-size: 15px;
-      opacity: 0.75;
-    }
+    .ios-big-unit { font-size: 15px; opacity: 0.75; }
 
-    /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ДЛЯ "ПО ГЛАВАМ" --- */
+    /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ("ПО ГЛАВАМ") --- */
     #chapter-scroll {
       flex: 1 1 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
       display: none;
-      padding: 18px 14px 48px;
+      padding: 18px calc(env(safe-area-inset-right, 0px) + 14px) 48px calc(env(safe-area-inset-left, 0px) + 14px);
     }
 
     #chapter-container {
@@ -905,31 +901,10 @@
       -webkit-user-select: text;
     }
 
-    .ch-title {
-      color: var(--accent);
-      font-size: 23px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    .ch-verse {
-      font-size: 19px;
-      line-height: 1.65;
-      margin-bottom: 12px;
-      color: var(--text);
-    }
-
-    .ch-vnum {
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-      margin-right: 6px;
-    }
-
-    .ch-dot {
-      color: #4C566A;
-      margin: 0 5px;
-    }
+    .ch-title { color: var(--accent); font-size: 23px; font-weight: 700; margin-bottom: 18px; }
+    .ch-verse { font-size: 19px; line-height: 1.65; margin-bottom: 12px; color: var(--text); }
+    .ch-vnum { color: var(--muted); font-size: 14px; font-weight: 700; margin-right: 6px; }
+    .ch-dot { color: #4C566A; margin: 0 5px; }
 
     .ch-nav-row {
       display: flex;
@@ -938,19 +913,13 @@
       padding-top: 16px;
       border-top: 1px solid var(--border);
     }
-
-    .ch-nav-row button {
-      flex: 1;
-      height: 40px;
-      font-size: 14px;
-      font-weight: 500;
-    }
+    .ch-nav-row button { flex: 1; height: 40px; font-size: 14px; font-weight: 500; }
 
     /* --- НИЖНЯЯ СТРОКА СОСТОЯНИЯ --- */
     #status-bar {
       background: var(--panel);
       border-top: 1px solid var(--border);
-      padding: 6px 12px max(calc(env(safe-area-inset-bottom, 0px) - 12px), 6px);
+      padding: 7px 14px calc(env(safe-area-inset-bottom, 0px) + 6px);
       font-size: 12px;
       color: var(--muted);
       white-space: nowrap;
@@ -959,6 +928,126 @@
       flex-shrink: 0;
       z-index: 30;
     }
+
+    /* =====================================================================
+       КОМПАКТНЫЙ АЛЬБОМНЫЙ РЕЖИМ (АВТО-АДАПТАЦИЯ ПОД НИЗКИЙ ЭКРАН ТЕЛЕФОНА)
+       ===================================================================== */
+    body.landscape-compact #top-bar {
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      padding-top: 6px;
+      padding-bottom: 6px;
+      padding-left: calc(env(safe-area-inset-left, 0px) + 12px);
+      padding-right: calc(env(safe-area-inset-right, 0px) + 12px);
+    }
+
+    body.landscape-compact #top-bar.collapsed {
+      display: none;
+    }
+
+    body.landscape-compact.bar-hidden #restore-bar-btn {
+      display: flex;
+    }
+
+    body.landscape-compact .top-row {
+      gap: 5px;
+    }
+
+    body.landscape-compact .row-primary {
+      flex: 1 1 auto;
+    }
+
+    body.landscape-compact .row-secondary {
+      flex: 0 1 auto;
+    }
+
+    body.landscape-compact #top-bar select,
+    body.landscape-compact #top-bar button {
+      height: 30px;
+      font-size: 13px;
+      border-radius: 7px;
+      padding: 0 7px;
+    }
+
+    body.landscape-compact #book-select { min-width: 90px; max-width: 170px; }
+    body.landscape-compact #chapter-select { width: 58px; }
+    body.landscape-compact #verse-select { width: 58px; }
+    body.landscape-compact #mode-select { min-width: 130px; max-width: 170px; }
+    body.landscape-compact #collapse-btn { width: 30px; }
+
+    /* Тонкий однострочный HUD прогресса в альбомной ориентации */
+    body.landscape-compact #word-hud {
+      top: 6px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+    }
+
+    body.landscape-compact #word-hud .hud-section {
+      flex: 1 1 0;
+      gap: 3px;
+    }
+
+    body.landscape-compact #hud-ref { font-size: 12px; }
+    body.landscape-compact #hud-ch-lbl,
+    body.landscape-compact #hud-v-lbl { font-size: 11px; }
+    body.landscape-compact #word-hud .prog-track { height: 4px !important; }
+
+    /* Компактный советский прибор в альбомной ориентации */
+    body.landscape-compact #ticker-dock {
+      padding: 5px 12px calc(env(safe-area-inset-bottom, 0px) + 5px);
+      gap: 10px;
+    }
+
+    body.landscape-compact #soviet-gauge-btn {
+      height: 44px;
+      padding: 3px 10px 3px 8px;
+      gap: 8px;
+      border-radius: 9px;
+      border-width: 1.5px;
+    }
+
+    body.landscape-compact .gauge-screw { width: 4px; height: 4px; }
+    body.landscape-compact .gauge-dial-window { width: 64px; height: 34px; border-radius: 6px; }
+    body.landscape-compact .gauge-dial-window svg { width: 62px; height: 32px; }
+    body.landscape-compact .gauge-readout { flex-direction: row; align-items: baseline; gap: 5px; min-width: 0; }
+    body.landscape-compact .gauge-caption { display: none; }
+    body.landscape-compact .gauge-value-box { font-size: 16px; padding: 1px 6px; }
+    body.landscape-compact .gauge-unit { font-size: 10px; margin-top: 0; }
+
+    body.landscape-compact #ticker-play-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+    }
+
+    /* Убираем лишнюю нижнюю строку подсказок в альбомной ориентации */
+    body.landscape-compact #status-bar {
+      display: none;
+    }
+
+    /* Компактная карточка для Блоков/Стихов в альбомной ориентации */
+    body.landscape-compact #text-card {
+      padding: 14px 18px;
+    }
+    body.landscape-compact .block-ref { margin-bottom: 8px; }
+    body.landscape-compact .block-main { font-size: 22px; margin-bottom: 10px; }
+    body.landscape-compact .block-dots { margin-bottom: 6px; }
+    body.landscape-compact .block-divider { margin: 8px 0; }
+    body.landscape-compact .block-adj { display: none; }
+
+    /* Компактный iOS-пикер в альбомной ориентации */
+    body.landscape-compact #ios-speed-sheet {
+      padding: 12px 16px 12px;
+      border-radius: 20px;
+      gap: 4px;
+    }
+    body.landscape-compact #ios-ruler-viewport { height: 64px; }
+    body.landscape-compact #ios-big-wpm { font-size: 32px; }
+    body.landscape-compact #ios-confirm-btn { height: 38px; font-size: 15px; }
 
     /* --- ЭКРАН ЗАГРУЗКИ --- */
     #loader {
@@ -994,7 +1083,7 @@
 
   <div id="app">
     <header id="top-bar">
-      <div class="top-row">
+      <div class="top-row row-primary">
         <select id="book-select" aria-label="Книга"></select>
         <select id="chapter-select" aria-label="Глава"></select>
         <select id="verse-select" aria-label="Стих"></select>
@@ -1014,20 +1103,25 @@
     </header>
 
     <main id="workspace">
+      <button id="restore-bar-btn" type="button" title="Показать панель">▼</button>
       <div id="flash-left" class="tap-flash"></div>
       <div id="flash-right" class="tap-flash"></div>
 
       <!-- Фиксированный HUD прогресса (для "По словам" и "Бегущей строки") -->
       <div id="word-hud">
-        <div class="hud-row">
-          <span id="hud-ref">Бытие 1:1</span>
-          <span id="hud-ch-lbl">Глава 1 — 0%</span>
+        <div class="hud-section">
+          <div class="hud-row">
+            <span id="hud-ref">Бытие 1:1</span>
+            <span id="hud-ch-lbl">Глава 1 — 0%</span>
+          </div>
+          <div class="prog-track"><div id="hud-ch-fill" class="prog-fill"></div></div>
         </div>
-        <div class="prog-track"><div id="hud-ch-fill" class="prog-fill"></div></div>
-        <div class="hud-row">
-          <span id="hud-v-lbl">Стих 1 — 0%</span>
+        <div class="hud-section">
+          <div class="hud-row">
+            <span id="hud-v-lbl">Стих 1 — 0%</span>
+          </div>
+          <div class="prog-track" style="height:5px;"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
         </div>
-        <div class="prog-track" style="height:5px;"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
       </div>
 
       <!-- Масштабируемый и перемещаемый двумя пальцами холст -->
@@ -1076,7 +1170,7 @@
       </div>
     </main>
 
-    <!-- Советский прибор скорости (привязан к интерфейсу снизу, только в режиме "Бегущая строка") -->
+    <!-- Советский прибор скорости ("Бегущая строка") -->
     <div id="ticker-dock">
       <div id="soviet-gauge-btn" role="button" aria-label="Настроить скорость">
         <span class="gauge-screw tl"></span>
@@ -1086,11 +1180,8 @@
 
         <div class="gauge-dial-window">
           <svg viewBox="0 0 100 54">
-            <!-- Основная шкала дуги -->
             <path d="M 10 46 A 40 40 0 0 1 90 46" fill="none" stroke="#5A5042" stroke-width="2"/>
-            <!-- Красная зона высоких скоростей -->
             <path d="M 78 18 A 40 40 0 0 1 90 46" fill="none" stroke="#B83B44" stroke-width="2.5"/>
-            <!-- Риски советской шкалы -->
             <g stroke="#C9B08A" stroke-width="1.2">
               <line x1="10" y1="46" x2="17" y2="46"/>
               <line x1="15" y1="26" x2="21" y2="29"/>
@@ -1100,9 +1191,7 @@
               <line x1="85" y1="26" x2="79" y2="29" stroke="#D14953"/>
               <line x1="90" y1="46" x2="83" y2="46" stroke="#D14953"/>
             </g>
-            <!-- Подпись на шкале -->
             <text x="50" y="34" text-anchor="middle" fill="#6F6556" font-size="6.5" font-family="monospace">ТХ-800</text>
-            <!-- Стрелка прибора -->
             <g id="gauge-needle-group">
               <line x1="50" y1="46" x2="50" y2="11" stroke="#F59E4B" stroke-width="2" stroke-linecap="round"/>
             </g>
@@ -1120,7 +1209,7 @@
       <button id="ticker-play-btn" type="button" aria-label="Старт/Пауза бегущей строки">▶</button>
     </div>
 
-    <!-- Режим "По главам" с обычным свайп-скроллом -->
+    <!-- Режим "По главам" -->
     <section id="chapter-scroll">
       <div id="chapter-container"></div>
     </section>
@@ -1148,7 +1237,6 @@
   </div>
 
   <script>
-    // Регистрация Service Worker для офлайн-работы
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -1189,30 +1277,26 @@
     let chapterTotalWords = 1;
     let chapterWordOffsets = {};
 
-    // Камера
     let canvasZoom = 1.0;
     let canvasPanX = 0;
     let canvasPanY = 0;
 
-    // Автопроигрывание в режиме "По словам"
     let autoplaySubmode = false;
     let autoplayRunning = false;
     let autoplayWpm = 250;
     let autoplayLastTime = 0;
     let autoplayAccum = 0;
 
-    // Состояние режима "Бегущая строка" (TICKER)
     let tickerWpm = 220;
     let tickerAutoRunning = false;
-    let manualTickerDir = 0; // +1 (держим справа), -1 (держим слева), 0 (отпущено)
-    let keyTickerDir = 0; // Для клавиатуры на ПК
-    let tickerItems = []; // [{ b, c, v, wIdx, el, width }]
+    let manualTickerDir = 0;
+    let keyTickerDir = 0;
+    let tickerItems = [];
     let tickerScrollX = 0;
     let tickerTotalWidth = 0;
-    let tickerAvgWordPx = 135; // Калибруется по реальному шрифту
+    let tickerAvgWordPx = 135;
     let tickerLastTime = 0;
 
-    // Состояние iOS-рулетки скорости
     let rulerTempWpm = 220;
     let rulerOffset = 0;
     let rulerDragging = false;
@@ -1224,6 +1308,7 @@
     const elLoader = document.getElementById('loader');
     const elLoaderText = document.getElementById('loader-text');
     const elTopBar = document.getElementById('top-bar');
+    const elRestoreBarBtn = document.getElementById('restore-bar-btn');
     const elBookSel = document.getElementById('book-select');
     const elChapSel = document.getElementById('chapter-select');
     const elVerseSel = document.getElementById('verse-select');
@@ -1278,6 +1363,43 @@
     const elStatusBar = document.getElementById('status-bar');
     const elFlashLeft = document.getElementById('flash-left');
     const elFlashRight = document.getElementById('flash-right');
+
+    // =========================================================================
+    // АДАПТИВНЫЙ АЛГОРИТМ ПОД ЭКРАН, ОРИЕНТАЦИЮ И iOS STANDALONE (DYNAMIC ISLAND)
+    // =========================================================================
+    function syncViewportLayout() {
+      const w = window.innerWidth;
+      let h = window.innerHeight;
+      const isLandscape = w > h;
+      const isStandaloneIOS = window.navigator.standalone === true;
+
+      // Исправляем баг iOS black-translucent PWA (недосчёт ~59px снизу экрана)
+      if (isStandaloneIOS) {
+        const trueScreenH = isLandscape
+          ? Math.min(window.screen.width, window.screen.height)
+          : Math.max(window.screen.width, window.screen.height);
+        if (trueScreenH > h && (trueScreenH - h) <= 120) {
+          h = trueScreenH;
+        }
+      }
+
+      document.documentElement.style.setProperty('--app-h', `${h}px`);
+
+      // Дополнительный отступ сверху под камеру/Dynamic Island на высоких вертикальных экранах
+      const hasIslandRatio = !isLandscape && (h / Math.max(1, w) > 2.0);
+      const topExtra = isLandscape ? 6 : (hasIslandRatio ? 22 : 12);
+      document.documentElement.style.setProperty('--top-extra', `${topExtra}px`);
+
+      // Компактный альбомный режим для телефонов на боку (низкая высота экрана)
+      const isCompactLandscape = isLandscape && h <= 540;
+      document.body.classList.toggle('landscape-compact', isCompactLandscape);
+
+      if (!isCompactLandscape) {
+        document.body.classList.remove('bar-hidden');
+      } else {
+        document.body.classList.toggle('bar-hidden', elTopBar.classList.contains('collapsed'));
+      }
+    }
 
     // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE ---
     function escapeHtml(str) {
@@ -1732,7 +1854,6 @@
       const centerW = centerEl.offsetWidth;
       tickerItems.push({ ...centerPos, el: centerEl, width: centerW });
       tickerTotalWidth = centerW;
-      // Ставим текущее слово ровно в центр экрана (x = 0)
       tickerScrollX = -centerW * 0.5;
 
       fillTickerBuffers();
@@ -1742,7 +1863,6 @@
     function fillTickerBuffers() {
       if (!tickerItems.length) return;
 
-      // 1. Добираем слова справа вне поля зрения
       while ((tickerTotalWidth + tickerScrollX) < TICKER_BUFFER_PX) {
         const last = tickerItems[tickerItems.length - 1];
         const nextPos = getNextWordPos(last.b, last.c, last.v, last.wIdx);
@@ -1754,7 +1874,6 @@
         tickerTotalWidth += w;
       }
 
-      // 2. Добираем слова слева вне поля зрения
       while ((-tickerScrollX) < TICKER_BUFFER_PX) {
         const first = tickerItems[0];
         const prevPos = getPrevWordPos(first.b, first.c, first.v, first.wIdx);
@@ -1767,7 +1886,6 @@
         tickerScrollX -= w;
       }
 
-      // 3. Удаляем ушедшие далеко влево слова
       while (tickerItems.length > 16 && ((-tickerScrollX) - tickerItems[0].width) > TICKER_BUFFER_PX + 600) {
         const removed = tickerItems.shift();
         removed.el.remove();
@@ -1775,7 +1893,6 @@
         tickerTotalWidth -= removed.width;
       }
 
-      // 4. Удаляем ушедшие далеко вправо слова (при обратной перемотке)
       while (tickerItems.length > 16 && ((tickerTotalWidth + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > TICKER_BUFFER_PX + 600) {
         const removed = tickerItems.pop();
         removed.el.remove();
@@ -1859,7 +1976,7 @@
       }
     }
 
-    // --- iOS-РУЛЕТКА СКОРОСТИ (ШАГ 10 СЛ/МИН) ---
+    // --- iOS-РУЛЕТКА СКОРОСТИ ---
     function buildIosSpeedRuler() {
       elIosRulerTrack.innerHTML = '';
       rulerTickEls = [];
@@ -1983,13 +2100,13 @@
         const ratioCh = chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1);
         const pctCh = Math.max(0, Math.min(100, ratioCh * 100));
         elHudChFill.style.width = `${pctCh}%`;
-        elHudChLbl.textContent = `Глава ${currentChapter} — ${Math.round(pctCh)}% (${passedCh + 1}/${chapterTotalWords})`;
+        elHudChLbl.textContent = `Гл. ${currentChapter} — ${Math.round(pctCh)}% (${passedCh + 1}/${chapterTotalWords})`;
 
         const totalV = Math.max(1, currentWords.length);
         const ratioV = totalV <= 1 ? 1 : currentWordIdx / (totalV - 1);
         const pctV = Math.max(0, Math.min(100, ratioV * 100));
         elHudVFill.style.width = `${pctV}%`;
-        elHudVLbl.textContent = `Стих ${currentVerse} — ${Math.round(pctV)}% (${currentWordIdx + 1}/${totalV})`;
+        elHudVLbl.textContent = `Ст. ${currentVerse} — ${Math.round(pctV)}% (${currentWordIdx + 1}/${totalV})`;
       } else {
         elBlockProgBox.style.display = 'none';
       }
@@ -2234,13 +2351,14 @@
         const wsW = elWorkspace.clientWidth;
         const wsH = elWorkspace.clientHeight;
         if (displayMode === 'WORDS' || displayMode === 'TICKER') {
+          const hudH = elWordHud.offsetHeight || 0;
           canvasPanX = wsW * 0.5;
-          canvasPanY = wsH * 0.54;
+          canvasPanY = hudH + (wsH - hudH) * 0.5;
         } else {
           const stackW = elCardStack.offsetWidth * canvasZoom;
           const stackH = elCardStack.offsetHeight * canvasZoom;
           canvasPanX = (wsW - stackW) * 0.5;
-          canvasPanY = Math.max(20, (wsH - stackH) * 0.42);
+          canvasPanY = Math.max(14, (wsH - stackH) * 0.45);
         }
         applyCamera();
       });
@@ -2259,7 +2377,7 @@
     let pinchPrevDist = 0, pinchPrevMidX = 0, pinchPrevMidY = 0;
 
     function isInteractiveTarget(target) {
-      return Boolean(target.closest('button, select, input, #autoplay-popup, #autoplay-controls, #autoplay-play-btn'));
+      return Boolean(target.closest('button, select, input, #autoplay-popup, #autoplay-controls, #autoplay-play-btn, #restore-bar-btn'));
     }
 
     elWorkspace.addEventListener('touchstart', (e) => {
@@ -2432,7 +2550,7 @@
       if (e.code === 'ArrowLeft' && keyTickerDir === -1) keyTickerDir = 0;
     });
 
-    // --- ГЛАВНЫЙ ЦИКЛ АНИМАЦИИ (АВТОПРОИГРЫВАНИЕ + БЕГУЩАЯ СТРОКА) ---
+    // --- ГЛАВНЫЙ ЦИКЛ АНИМАЦИИ ---
     function toggleAutoplayRunning() {
       autoplayRunning = !autoplayRunning;
       autoplayAccum = 0;
@@ -2441,7 +2559,6 @@
     }
 
     function mainAnimLoop(now) {
-      // 1. Автопроигрывание в режиме "По словам"
       if (displayMode === 'WORDS' && autoplaySubmode && autoplayRunning) {
         if (!autoplayLastTime) autoplayLastTime = now;
         const dt = Math.min(0.1, (now - autoplayLastTime) / 1000);
@@ -2459,7 +2576,6 @@
         autoplayLastTime = now;
       }
 
-      // 2. Плавное движение в режиме "Бегущая строка"
       if (displayMode === 'TICKER') {
         if (!tickerLastTime) tickerLastTime = now;
         const dt = Math.min(0.05, (now - tickerLastTime) / 1000);
@@ -2470,7 +2586,6 @@
           const pxPerSec = (tickerWpm / 60.0) * tickerAvgWordPx;
           tickerScrollX -= dir * pxPerSec * dt;
 
-          // Проверка границ самого начала (Быт 1:1) и самого конца (Откр)
           const first = tickerItems[0];
           const last = tickerItems[tickerItems.length - 1];
           const atAbsoluteStart = !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
@@ -2550,10 +2665,19 @@
 
     elCenterBtn.addEventListener('click', () => centerCamera(true));
 
-    elCollapseBtn.addEventListener('click', () => {
-      const collapsed = elTopBar.classList.toggle('collapsed');
+    function setTopBarCollapsed(collapsed) {
+      elTopBar.classList.toggle('collapsed', collapsed);
       elCollapseBtn.textContent = collapsed ? '▼' : '▲';
+      syncViewportLayout();
       if (displayMode !== 'CHAPTERS') centerCamera(false);
+    }
+
+    elCollapseBtn.addEventListener('click', () => {
+      setTopBarCollapsed(!elTopBar.classList.contains('collapsed'));
+    });
+
+    elRestoreBarBtn.addEventListener('click', () => {
+      setTopBarCollapsed(false);
     });
 
     elAutoPlayBtn.addEventListener('click', () => {
@@ -2586,15 +2710,20 @@
       updateAutoplayUI();
     });
 
-    window.addEventListener('resize', () => {
+    function handleResizeOrRotate() {
+      syncViewportLayout();
       if (displayMode !== 'CHAPTERS') {
         if (displayMode !== 'TICKER') refreshView();
         centerCamera(false);
       }
-    });
+    }
+
+    window.addEventListener('resize', handleResizeOrRotate);
+    window.addEventListener('orientationchange', () => setTimeout(handleResizeOrRotate, 120));
 
     // --- ЗАГРУЗКА БАЗЫ ---
     async function init() {
+      syncViewportLayout();
       buildIosSpeedRuler();
       updateSovietGaugeUI();
       try {
