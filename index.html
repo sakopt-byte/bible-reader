@@ -12,7 +12,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
   <title>Библия RST+ Скорочтение</title>
-  <script type="text/javascript" src="https://me.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=bqfADn-GtWPlt0htcHovX8P-9tbEJh-7dSMf8-ncph_3JW7RoZ0hWUVmpE2CWizCEQuib2pH1Dx2-Yy7DoLgbXYl0Iqu4aQiJnsQd2rb4_itswVJs61yoI3j_dIQBusOBraayFzTPvnEk2aMV5jUCxNLrUpQXaKUClT7R2qNRNu29YOOIfdGV3l31vAeYJyASmCDKcT5ha9iTxEgP0XEj0T6PyMN_AyzweSGFsmURzNYM4Y7uAWBGD03QKYbXw_A2YrpbC4gWNr3XacgqW6ez9z6zKkZjVBg-TPNvHddvkLsogqsgTd6PYyQu6EiPBU551bADUDzZNdp3GU2XDVvnkZzt4uwzQHRs3iHBCc9XTVFFFqg0BnzxE8wBw5u8ron3vlEig48aMBxEOn_cSlGzbQrKYwiUPkcGjXe1DERQkMDs3JoxZ3SdrKWDiLmlFbz-GOzo7sX6IV3WVQDb37WTc4Jtj7AizFYNUz4UqFWz-iTBHGXsTd6lnLewmCGevkQ-E3FPS2R9ddK5ypyD6RySjDQPU3MH-WLqQolO3My8b7BFQ-hRs_RtcAriM8aNQHwFZVyQCQvSL3JqDYzabShcw61I91wzyKT6vej4qG_brY9_buwGtiFo5Lcnvcq58y2fY61HHGUV5HGmPjNsMW1CE1g-31SfVoIo-wYDZaHJUw0L9fdq8KAkqK3Tcj8wagCD5Y9BoVtPfZ-JA6zzMWgWlc-E6e02mnAy_p907cMYm7x_2BMNj2G_-sMeNxCxTnahLxGlSKQYsavd1A5b3r0mDq8nugtzPj9Nq1FI5rjMRhZuAuXxLb5P8W6W5G-sTU0EvL2oEssi9Om7gBKS9TBzQ-ArkPSzvCcNkzTfdOH8Hs3kpFMp7rztqhbqeRc2SVBjjJt3eU0sqez7lyEcx69MQ" charset="UTF-8"></script><style>
+  <style>
     :root {
       --bg: #121417;
       --panel: #1A1D22;
@@ -47,15 +47,12 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      overscroll-behavior: none;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -webkit-text-size-adjust: 100%;
     }
 
-    /* Жёсткая привязка к границам экрана без багов 100dvh на iOS */
     #app {
       position: fixed;
       top: 0;
@@ -90,9 +87,7 @@
       flex-wrap: nowrap;
     }
 
-    #top-bar.collapsed .row-secondary {
-      display: none;
-    }
+    #top-bar.collapsed .row-secondary { display: none; }
 
     select, button {
       font-family: inherit;
@@ -117,29 +112,17 @@
       padding-right: 20px;
     }
 
-    select:active, button:active {
-      transform: scale(0.97);
-    }
+    select:active, button:active { transform: scale(0.97); }
 
-    #book-select {
-      flex: 1 1 auto;
-      min-width: 92px;
-      text-overflow: ellipsis;
-    }
-
-    #chapter-select,
-    #verse-select {
+    #book-select { flex: 1 1 auto; min-width: 92px; text-overflow: ellipsis; }
+    #chapter-select, #verse-select {
       width: 84px;
       flex-shrink: 0;
       padding: 0 18px 0 7px;
       font-size: 13px;
       font-variant-numeric: tabular-nums;
     }
-
-    #mode-select {
-      flex: 1 1 auto;
-      min-width: 130px;
-    }
+    #mode-select { flex: 1 1 auto; min-width: 130px; }
 
     .toggle-btn {
       display: inline-flex;
@@ -169,7 +152,7 @@
       justify-content: center;
     }
 
-    /* --- ПОЛОСА ВЫБОРА ПОДХОДОВ (КОГДА ВКЛЮЧЁН ГРАФИК) --- */
+    /* --- ПОЛОСА ПОДХОДОВ --- */
     #plan-section-bar {
       display: none;
       align-items: center;
@@ -229,7 +212,7 @@
       cursor: pointer;
     }
 
-    /* --- РАБОЧАЯ ОБЛАСТЬ 1: ХОЛСТ --- */
+    /* --- РАБОЧАЯ ОБЛАСТЬ --- */
     #workspace {
       position: relative;
       flex: 1 1 auto;
@@ -260,53 +243,16 @@
       transition: opacity 0.22s ease-out;
       z-index: 5;
     }
-    #flash-left {
-      left: 0;
-      background: radial-gradient(circle at 0% 50%, rgba(212, 163, 89, 0.14), transparent 72%);
-    }
-    #flash-right {
-      right: 0;
-      background: radial-gradient(circle at 100% 50%, rgba(212, 163, 89, 0.14), transparent 72%);
-    }
+    #flash-left { left: 0; background: radial-gradient(circle at 0% 50%, rgba(212, 163, 89, 0.14), transparent 72%); }
+    #flash-right { right: 0; background: radial-gradient(circle at 100% 50%, rgba(212, 163, 89, 0.14), transparent 72%); }
     .tap-flash.show { opacity: 1; transition: opacity 0.04s ease-in; }
 
-    /* --- КАРТОЧКА (ДЛЯ БЛОКОВ И СТИХОВ) --- */
-    #card-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 340px;
-    }
-
-    #block-progress-box {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .prog-label {
-      font-size: 12px;
-      color: var(--muted);
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .prog-track {
-      width: 100%;
-      height: 7px;
-      background: #1F242C;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .prog-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      border-radius: 4px;
-      transition: width 0.16s ease-out;
-    }
-
+    /* --- КАРТОЧКА (БЛОКИ И СТИХИ) --- */
+    #card-stack { display: flex; flex-direction: column; gap: 10px; width: 340px; }
+    #block-progress-box { display: flex; flex-direction: column; gap: 4px; }
+    .prog-label { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+    .prog-track { width: 100%; height: 7px; background: #1F242C; border-radius: 4px; overflow: hidden; }
+    .prog-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 0.16s ease-out; }
     .prog-fill.verse-fill { background: var(--verse-bar); }
 
     #text-card {
@@ -322,26 +268,15 @@
 
     #text-card.bound-start {
       border-color: rgba(34, 229, 132, 0.72);
-      box-shadow:
-        inset 4px 0 0 var(--neon-green),
-        0 0 22px rgba(34, 229, 132, 0.22),
-        0 12px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: inset 4px 0 0 var(--neon-green), 0 0 22px rgba(34, 229, 132, 0.22), 0 12px 32px rgba(0, 0, 0, 0.45);
     }
-
     #text-card.bound-end {
       border-color: rgba(255, 59, 92, 0.75);
-      box-shadow:
-        inset -4px 0 0 var(--neon-red),
-        0 0 24px rgba(255, 59, 92, 0.24),
-        0 12px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: inset -4px 0 0 var(--neon-red), 0 0 24px rgba(255, 59, 92, 0.24), 0 12px 32px rgba(0, 0, 0, 0.45);
     }
-
     #text-card.bound-mid {
       border-color: rgba(95, 168, 211, 0.7);
-      box-shadow:
-        inset 4px 0 0 var(--neon-mid),
-        0 0 20px rgba(95, 168, 211, 0.2),
-        0 12px 32px rgba(0, 0, 0, 0.45);
+      box-shadow: inset 4px 0 0 var(--neon-mid), 0 0 20px rgba(95, 168, 211, 0.2), 0 12px 32px rgba(0, 0, 0, 0.45);
     }
 
     .card-bound-pill {
@@ -357,212 +292,54 @@
       border-radius: 999px;
       margin-bottom: 10px;
     }
-
-    .card-bound-pill.start {
-      color: var(--neon-green);
-      background: rgba(34, 229, 132, 0.12);
-      border: 1px solid rgba(34, 229, 132, 0.5);
-      box-shadow: 0 0 12px rgba(34, 229, 132, 0.28);
-    }
-
-    .card-bound-pill.end {
-      color: var(--neon-red);
-      background: rgba(255, 59, 92, 0.12);
-      border: 1px solid rgba(255, 59, 92, 0.55);
-      box-shadow: 0 0 12px rgba(255, 59, 92, 0.28);
-    }
-
-    .card-bound-pill.mid {
-      color: #8AC8EC;
-      background: rgba(95, 168, 211, 0.14);
-      border: 1px solid rgba(95, 168, 211, 0.55);
-      box-shadow: 0 0 12px rgba(95, 168, 211, 0.26);
-    }
-
+    .card-bound-pill.start { color: var(--neon-green); background: rgba(34, 229, 132, 0.12); border: 1px solid rgba(34, 229, 132, 0.5); }
+    .card-bound-pill.end { color: var(--neon-red); background: rgba(255, 59, 92, 0.12); border: 1px solid rgba(255, 59, 92, 0.55); }
+    .card-bound-pill.mid { color: #8AC8EC; background: rgba(95, 168, 211, 0.14); border: 1px solid rgba(95, 168, 211, 0.55); }
     .bound-pill-wrap { text-align: center; }
 
-    .block-ref {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 16px;
-      letter-spacing: 0.3px;
-    }
-
-    .block-main {
-      text-align: center;
-      font-size: 26px;
-      font-weight: 700;
-      line-height: 1.32;
-      color: var(--text);
-      margin-bottom: 16px;
-      animation: popIn 0.12s ease-out;
-    }
-
-    @keyframes popIn {
-      from { opacity: 0.55; transform: translateY(2px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .block-dots {
-      text-align: center;
-      font-size: 13px;
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-    }
-
+    .block-ref { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+    .block-main { text-align: center; font-size: 26px; font-weight: 700; line-height: 1.32; color: var(--text); margin-bottom: 16px; }
+    .block-dots { text-align: center; font-size: 13px; letter-spacing: 3px; margin-bottom: 12px; }
     .dot-active { color: var(--accent); }
     .dot-done { color: #4C566A; }
     .dot-todo { color: #2E3440; }
-
     .block-divider { height: 1px; background: var(--border); margin: 12px 0 14px; }
     .block-context { text-align: center; font-size: 15px; line-height: 1.5; }
     .ctx-active { color: var(--accent); font-weight: 600; }
     .ctx-done { color: #616A78; }
     .ctx-todo { color: #949DAB; }
-
-    .block-adj {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 12.5px;
-      line-height: 1.45;
-      color: #4B5260;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
+    .block-adj { margin-top: 14px; text-align: center; font-size: 12.5px; line-height: 1.45; color: #4B5260; display: flex; flex-direction: column; gap: 6px; }
     .verse-ref { color: var(--accent); font-size: 15px; font-weight: 600; margin-bottom: 12px; }
     .verse-body { font-size: 21px; line-height: 1.55; color: var(--text); }
 
-    /* --- НЕОНОВЫЕ ПОЛОСЫ-ГРАНИЦЫ В ЛЕНТАХ --- */
-    .neon-gate {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      vertical-align: middle;
-      margin: 0 22px;
-      flex-shrink: 0;
-    }
-
+    /* --- НЕОНОВЫЕ ГРАНИЦЫ В ЛЕНТАХ --- */
+    .neon-gate { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; vertical-align: middle; margin: 0 22px; flex-shrink: 0; }
     .neon-gate-line { width: 4px; height: 76px; border-radius: 4px; }
-
-    .neon-gate-tag {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1.3px;
-      margin-top: 6px;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .neon-gate.start .neon-gate-line {
-      background: var(--neon-green);
-      box-shadow: 0 0 8px var(--neon-green), 0 0 20px rgba(34, 229, 132, 0.75);
-    }
-    .neon-gate.start .neon-gate-tag {
-      color: var(--neon-green);
-      text-shadow: 0 0 8px rgba(34, 229, 132, 0.7);
-    }
-
-    .neon-gate.end .neon-gate-line {
-      background: var(--neon-red);
-      box-shadow: 0 0 8px var(--neon-red), 0 0 20px rgba(255, 59, 92, 0.78);
-    }
-    .neon-gate.end .neon-gate-tag {
-      color: var(--neon-red);
-      text-shadow: 0 0 8px rgba(255, 59, 92, 0.7);
-    }
-
+    .neon-gate-tag { font-size: 10px; font-weight: 800; letter-spacing: 1.3px; margin-top: 6px; text-transform: uppercase; white-space: nowrap; }
+    .neon-gate.start .neon-gate-line { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green), 0 0 20px rgba(34, 229, 132, 0.75); }
+    .neon-gate.start .neon-gate-tag { color: var(--neon-green); }
+    .neon-gate.end .neon-gate-line { background: var(--neon-red); box-shadow: 0 0 8px var(--neon-red), 0 0 20px rgba(255, 59, 92, 0.78); }
+    .neon-gate.end .neon-gate-tag { color: var(--neon-red); }
     .neon-gate.mid { margin: 0 18px; }
-    .neon-gate.mid .neon-gate-line {
-      width: 3px;
-      height: 62px;
-      background: var(--neon-mid);
-      box-shadow: 0 0 8px var(--neon-mid), 0 0 16px rgba(95, 168, 211, 0.7);
-    }
-    .neon-gate.mid .neon-gate-tag {
-      color: #8AC8EC;
-      font-size: 9.5px;
-      text-shadow: 0 0 8px rgba(95, 168, 211, 0.65);
-    }
+    .neon-gate.mid .neon-gate-line { width: 3px; height: 62px; background: var(--neon-mid); box-shadow: 0 0 8px var(--neon-mid), 0 0 16px rgba(95, 168, 211, 0.7); }
+    .neon-gate.mid .neon-gate-tag { color: #8AC8EC; font-size: 9.5px; }
 
-    /* --- РЕЖИМ "ПО СЛОВАМ" --- */
+    /* --- ПО СЛОВАМ --- */
     #word-stream-root { position: absolute; top: 0; left: 0; display: none; }
-
-    #word-tape {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-      will-change: transform;
-    }
-
-    .stream-word {
-      display: inline-block;
-      margin: 0 9px;
-      font-size: 22px;
-      line-height: 1;
-      transition: color 0.1s ease;
-    }
-
+    #word-tape { position: absolute; top: 0; left: 0; display: flex; align-items: center; white-space: nowrap; will-change: transform; }
+    .stream-word { display: inline-block; margin: 0 9px; font-size: 22px; line-height: 1; }
     .stream-word.read { color: var(--word-read); }
     .stream-word.next { color: var(--word-next); }
-    .stream-word.active {
-      font-size: 46px;
-      font-weight: 700;
-      color: var(--word-active);
-      margin: 0 14px;
-      text-shadow: 0 0 18px rgba(212, 163, 89, 0.25);
-    }
+    .stream-word.active { font-size: 46px; font-weight: 700; color: var(--word-active); margin: 0 14px; text-shadow: 0 0 18px rgba(212, 163, 89, 0.25); }
+    .stream-vtag { display: inline-block; font-size: 11px; color: var(--verse-tag); vertical-align: super; margin-right: -4px; margin-left: 6px; transform: translateY(-9px); }
 
-    .stream-vtag {
-      display: inline-block;
-      font-size: 11px;
-      color: var(--verse-tag);
-      vertical-align: super;
-      margin-right: -4px;
-      margin-left: 6px;
-      transform: translateY(-9px);
-    }
-
-    /* --- РЕЖИМ "БЕГУЩАЯ СТРОКА" --- */
+    /* --- БЕГУЩАЯ СТРОКА --- */
     #ticker-stream-root { position: absolute; top: 0; left: 0; display: none; }
+    #ticker-tape { position: absolute; top: 0; left: 0; display: flex; align-items: center; white-space: nowrap; will-change: transform; }
+    .ticker-item { display: inline-flex; align-items: center; padding-right: 16px; font-size: 36px; font-weight: 500; line-height: 1.15; color: var(--text); }
+    .ticker-vtag { font-size: 14px; font-weight: 700; color: var(--accent); opacity: 0.72; margin-right: 7px; transform: translateY(-10px); }
 
-    #ticker-tape {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-      will-change: transform;
-    }
-
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      padding-right: 16px;
-      font-size: 36px;
-      font-weight: 500;
-      line-height: 1.15;
-      color: var(--text);
-      letter-spacing: 0.2px;
-    }
-
-    .ticker-vtag {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--accent);
-      opacity: 0.72;
-      margin-right: 7px;
-      transform: translateY(-10px);
-    }
-
-    /* --- ФИКСИРОВАННЫЙ HUD ПРОГРЕССА --- */
+    /* --- HUD ПРОГРЕССА --- */
     #word-hud {
       position: absolute;
       top: 10px;
@@ -580,21 +357,13 @@
       gap: 6px;
       pointer-events: none;
     }
-
     .hud-section { display: flex; flex-direction: column; gap: 4px; }
     .hud-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    #hud-ref {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    #hud-ref { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #hud-ch-lbl { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
     #hud-v-lbl { font-size: 12px; color: var(--verse-bar); margin-left: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-    /* --- ЕДИНЫЙ СОВЕТСКИЙ ПРИБОР СКОРОСТИ --- */
+    /* --- СОВЕТСКИЙ ПРИБОР --- */
     #speed-dock {
       display: none;
       align-items: center;
@@ -618,19 +387,11 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 10px rgba(0, 0, 0, 0.3);
       cursor: pointer;
       flex-shrink: 0;
     }
-
     #ticker-invert-btn svg { width: 21px; height: 21px; display: block; }
-
-    #ticker-invert-btn.active {
-      border-color: var(--accent);
-      background: rgba(212, 163, 89, 0.16);
-      color: var(--accent-bright);
-      box-shadow: 0 0 12px rgba(212, 163, 89, 0.25);
-    }
+    #ticker-invert-btn.active { border-color: var(--accent); background: rgba(212, 163, 89, 0.16); color: var(--accent-bright); }
 
     #soviet-gauge-btn {
       position: relative;
@@ -645,20 +406,9 @@
       box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -2px 6px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.35);
       cursor: pointer;
     }
+    #soviet-gauge-btn:active { transform: scale(0.98); border-color: var(--accent); }
 
-    #soviet-gauge-btn:active {
-      transform: scale(0.98);
-      border-color: var(--accent);
-    }
-
-    .gauge-screw {
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #555D6B, #252A32);
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.7);
-    }
+    .gauge-screw { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #555D6B, #252A32); }
     .gauge-screw.tl { top: 4px; left: 4px; }
     .gauge-screw.tr { top: 4px; right: 4px; }
     .gauge-screw.bl { bottom: 4px; left: 4px; }
@@ -670,36 +420,16 @@
       background: radial-gradient(ellipse at 50% 96%, #1D1B17 0%, #121417 85%);
       border: 1px solid #2A2F37;
       border-radius: 7px;
-      box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.75);
       overflow: hidden;
       display: flex;
       align-items: flex-end;
       justify-content: center;
     }
-
     .gauge-dial-window svg { width: 84px; height: 44px; display: block; }
+    #gauge-needle-group { transform-origin: 50px 46px; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
 
-    #gauge-needle-group {
-      transform-origin: 50px 46px;
-      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .gauge-readout {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: center;
-      min-width: 68px;
-    }
-
-    .gauge-caption {
-      font-size: 8.5px;
-      letter-spacing: 1.1px;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
+    .gauge-readout { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-width: 68px; }
+    .gauge-caption { font-size: 8.5px; letter-spacing: 1.1px; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
     .gauge-value-box {
       background: #121417;
       border: 1px solid var(--border);
@@ -709,17 +439,10 @@
       font-size: 19px;
       font-weight: 700;
       color: var(--accent-bright);
-      text-shadow: 0 0 8px rgba(212, 163, 89, 0.28);
       line-height: 1.2;
       font-variant-numeric: tabular-nums;
     }
-
-    .gauge-unit {
-      font-size: 9.5px;
-      color: var(--muted);
-      margin-top: 2px;
-      letter-spacing: 0.5px;
-    }
+    .gauge-unit { font-size: 9.5px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
 
     #speed-play-btn {
       width: 50px;
@@ -732,20 +455,13 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.38);
       cursor: pointer;
       flex-shrink: 0;
     }
-
     #speed-play-btn svg { width: 22px; height: 22px; display: block; }
+    #speed-play-btn.running { border-color: #6B5533; background: linear-gradient(180deg, #C7964D 0%, #9A7134 100%); color: #121417; }
 
-    #speed-play-btn.running {
-      border-color: #6B5533;
-      background: linear-gradient(180deg, #C7964D 0%, #9A7134 100%);
-      color: #121417;
-    }
-
-    /* --- МОДАЛЬНОЕ ОКНО ВЫБОРА ГРАФИКА И ДНЯ --- */
+    /* --- МОДАЛЬНОЕ ОКНО ГРАФИКА --- */
     #plan-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -758,11 +474,7 @@
       justify-content: center;
       padding: calc(env(safe-area-inset-top, 0px) + 18px) 14px calc(env(safe-area-inset-bottom, 0px) + 18px);
     }
-
-    #plan-modal-backdrop.open {
-      display: flex;
-      animation: fadeBackdrop 0.16s ease-out;
-    }
+    #plan-modal-backdrop.open { display: flex; }
 
     #plan-modal {
       width: min(460px, 100%);
@@ -773,156 +485,29 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
     }
-
-    .plan-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px 10px;
-      background: var(--panel);
-      gap: 10px;
-    }
-
+    .plan-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(--panel); gap: 10px; }
     .plan-modal-title { font-size: 16px; font-weight: 700; color: var(--text); }
     .plan-header-actions { display: flex; align-items: center; gap: 8px; }
+    #plan-exit-btn { display: none; height: 30px; padding: 0 10px; background: rgba(184, 59, 68, 0.22); border-color: rgba(255, 59, 92, 0.5); color: #FF6B84; font-size: 12.5px; font-weight: 600; }
+    #plan-close-btn { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); font-size: 16px; }
 
-    #plan-exit-btn {
-      display: none;
-      height: 30px;
-      padding: 0 10px;
-      background: rgba(184, 59, 68, 0.22);
-      border-color: rgba(255, 59, 92, 0.5);
-      color: #FF6B84;
-      font-size: 12.5px;
-      font-weight: 600;
-    }
+    .plan-tabs-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); }
+    .plan-tab-btn { height: 32px; border-radius: 8px; background: #12151A; border: 1px solid #2A303B; color: var(--muted); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .plan-tab-btn.active { background: rgba(212, 163, 89, 0.16); border-color: var(--accent); color: var(--accent-bright); }
 
-    #plan-close-btn {
-      width: 30px;
-      height: 30px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 16px;
-    }
+    #plan-jump-row { display: none; align-items: center; gap: 8px; padding: 8px 14px; background: #16191F; border-bottom: 1px solid var(--border); }
+    #plan-jump-row label { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+    #plan-jump-input { flex: 1; height: 34px; background: #121417; border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-size: 16px; padding: 0 10px; user-select: text; -webkit-user-select: text; }
+    #plan-jump-go { height: 34px; padding: 0 14px; background: rgba(212, 163, 89, 0.18); border-color: var(--accent); color: var(--accent-bright); font-size: 13px; font-weight: 600; }
 
-    .plan-tabs-bar {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      padding: 0 16px 10px;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .plan-tab-btn {
-      height: 32px;
-      border-radius: 8px;
-      background: #12151A;
-      border: 1px solid #2A303B;
-      color: var(--muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .plan-tab-btn.active {
-      background: rgba(212, 163, 89, 0.16);
-      border-color: var(--accent);
-      color: var(--accent-bright);
-    }
-
-    #plan-jump-row {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: #16191F;
-      border-bottom: 1px solid var(--border);
-    }
-
-    #plan-jump-row label {
-      font-size: 12.5px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    /* 16px предотвращает авто-зум Safari при фокусе на поле ввода */
-    #plan-jump-input {
-      flex: 1;
-      height: 34px;
-      background: #121417;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--text);
-      font-size: 16px;
-      padding: 0 10px;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    #plan-jump-go {
-      height: 34px;
-      padding: 0 14px;
-      background: rgba(212, 163, 89, 0.18);
-      border-color: var(--accent);
-      color: var(--accent-bright);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    #plan-days-list {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .plan-day-card {
-      width: 100%;
-      height: auto;
-      padding: 10px 12px;
-      background: #1A1E25;
-      border: 1px solid #282E38;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .plan-day-card.active {
-      border-color: var(--neon-green);
-      background: rgba(34, 229, 132, 0.08);
-      box-shadow: 0 0 14px rgba(34, 229, 132, 0.16);
-    }
-
-    .plan-day-num {
-      width: 48px;
-      height: 46px;
-      border-radius: 10px;
-      background: #12151A;
-      border: 1px solid #2C333F;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
+    #plan-days-list { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .plan-day-card { width: 100%; height: auto; padding: 10px 12px; background: #1A1E25; border: 1px solid #282E38; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; }
+    .plan-day-card.active { border-color: var(--neon-green); background: rgba(34, 229, 132, 0.08); }
+    .plan-day-num { width: 48px; height: 46px; border-radius: 10px; background: #12151A; border: 1px solid #2C333F; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
     .plan-day-card.active .plan-day-num { border-color: var(--neon-green); color: var(--neon-green); }
-    .plan-day-num span:first-child { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; }
+    .plan-day-num span:first-child { font-size: 9px; color: var(--muted); }
     .plan-day-num span:last-child { font-size: 16px; font-weight: 700; line-height: 1.1; }
-
     .plan-day-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .plan-line-row { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .plan-line-row.wisdom { font-size: 12px; color: var(--accent); }
@@ -930,7 +515,7 @@
     .plan-line-row.sub { font-size: 11.5px; color: var(--muted); }
     .plan-line-badge { display: inline-block; font-size: 10px; color: var(--muted); margin-right: 5px; text-transform: uppercase; }
 
-    /* --- ВЫДВИЖНОЙ ВЫБОР СКОРОСТИ В СТИЛЕ ТАЙМЕРА iOS --- */
+    /* --- РУЛЕТКА СКОРОСТИ iOS --- */
     #ios-speed-backdrop {
       position: fixed;
       inset: 0;
@@ -943,13 +528,7 @@
       justify-content: center;
       padding: 16px 14px calc(env(safe-area-inset-bottom, 0px) + 18px);
     }
-
-    #ios-speed-backdrop.open { display: flex; animation: fadeBackdrop 0.16s ease-out; }
-
-    @keyframes fadeBackdrop {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
+    #ios-speed-backdrop.open { display: flex; }
 
     #ios-speed-sheet {
       width: min(410px, 100%);
@@ -957,16 +536,9 @@
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 18px 18px 16px;
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.8);
       display: flex;
       flex-direction: column;
       gap: 8px;
-      animation: slideUpSheet 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @keyframes slideUpSheet {
-      from { transform: translateY(28px); opacity: 0.6; }
-      to   { transform: translateY(0); opacity: 1; }
     }
 
     #ios-ruler-viewport {
@@ -979,156 +551,46 @@
       -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
       mask-image: linear-gradient(90deg, transparent 0%, #000 20%, #000 80%, transparent 100%);
     }
-
-    #ios-ruler-track {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      height: 100%;
-      display: flex;
-      align-items: flex-end;
-      will-change: transform;
-    }
-
-    .ios-tick {
-      position: relative;
-      width: 14px;
-      height: 100%;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 6px;
-    }
-
-    .ios-tick-num {
-      position: absolute;
-      top: 4px;
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(212, 163, 89, 0.72);
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .ios-tick-bar {
-      width: 3px;
-      height: 34px;
-      border-radius: 2px;
-      background: rgba(212, 163, 89, 0.38);
-      transition: background 0.08s ease, height 0.08s ease;
-    }
-
+    #ios-ruler-track { position: absolute; top: 0; left: 50%; height: 100%; display: flex; align-items: flex-end; will-change: transform; }
+    .ios-tick { position: relative; width: 14px; height: 100%; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 6px; }
+    .ios-tick-num { position: absolute; top: 4px; font-size: 15px; font-weight: 600; color: rgba(212, 163, 89, 0.72); font-variant-numeric: tabular-nums; pointer-events: none; }
+    .ios-tick-bar { width: 3px; height: 34px; border-radius: 2px; background: rgba(212, 163, 89, 0.38); }
     .ios-tick.major .ios-tick-bar { height: 42px; background: rgba(212, 163, 89, 0.72); }
-    .ios-tick.selected .ios-tick-bar {
-      background: var(--accent-bright);
-      height: 44px;
-      box-shadow: 0 0 10px rgba(212, 163, 89, 0.65);
-    }
+    .ios-tick.selected .ios-tick-bar { background: var(--accent-bright); height: 44px; box-shadow: 0 0 10px rgba(212, 163, 89, 0.65); }
     .ios-tick.selected .ios-tick-num { color: var(--accent-bright); }
 
     .ios-pointer-row { display: flex; justify-content: center; margin-top: -2px; margin-bottom: 6px; }
-    .ios-triangle {
-      width: 0;
-      height: 0;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-      border-bottom: 10px solid var(--accent-bright);
-      filter: drop-shadow(0 0 6px rgba(212, 163, 89, 0.45));
-    }
-
+    .ios-triangle { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 10px solid var(--accent-bright); }
     .ios-bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 2px; }
-
-    #ios-confirm-btn {
-      height: 44px;
-      padding: 0 22px;
-      border-radius: 999px;
-      border: 1px solid rgba(212, 163, 89, 0.35);
-      background: rgba(212, 163, 89, 0.16);
-      color: var(--accent-bright);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    #ios-confirm-btn:active { background: rgba(212, 163, 89, 0.28); }
-
-    .ios-big-readout {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      color: var(--accent-bright);
-      font-variant-numeric: tabular-nums;
-    }
-
-    #ios-big-wpm { font-size: 38px; font-weight: 400; line-height: 1; letter-spacing: -0.5px; }
+    #ios-confirm-btn { height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid rgba(212, 163, 89, 0.35); background: rgba(212, 163, 89, 0.16); color: var(--accent-bright); font-size: 16px; font-weight: 600; cursor: pointer; }
+    .ios-big-readout { display: flex; align-items: baseline; gap: 6px; color: var(--accent-bright); font-variant-numeric: tabular-nums; }
+    #ios-big-wpm { font-size: 38px; font-weight: 400; line-height: 1; }
     .ios-big-unit { font-size: 15px; opacity: 0.75; }
 
-    /* --- РАБОЧАЯ ОБЛАСТЬ 2: ОБЫЧНЫЙ СКРОЛЛ ("ПО ГЛАВАМ") --- */
+    /* --- ПО ГЛАВАМ --- */
     #chapter-scroll {
       flex: 1 1 auto;
       min-height: 0;
       overflow-y: auto;
-      overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-y;
       display: none;
       padding: 18px calc(env(safe-area-inset-right, 0px) + 14px) 48px calc(env(safe-area-inset-left, 0px) + 14px);
     }
-
-    #chapter-container {
-      max-width: 780px;
-      margin: 0 auto;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px 20px 28px;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
+    #chapter-container { max-width: 780px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px 20px 28px; user-select: text; -webkit-user-select: text; }
     .ch-title { color: var(--accent); font-size: 23px; font-weight: 700; margin-bottom: 18px; }
     .ch-verse { font-size: 19px; line-height: 1.65; margin-bottom: 12px; color: var(--text); }
     .ch-vnum { color: var(--muted); font-size: 14px; font-weight: 700; margin-right: 6px; }
     .ch-dot { color: #4C566A; margin: 0 5px; }
-
     .ch-neon-banner { height: 3px; border-radius: 3px; margin: 14px 0; }
     .ch-neon-banner.start { background: var(--neon-green); box-shadow: 0 0 12px var(--neon-green); }
     .ch-neon-banner.end { background: var(--neon-red); box-shadow: 0 0 12px var(--neon-red); }
-
-    .ch-sub-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 16px 0 14px;
-      color: #8AC8EC;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-    }
-    .ch-sub-divider::before,
-    .ch-sub-divider::after {
-      content: '';
-      flex: 1;
-      height: 2px;
-      background: var(--neon-mid);
-      box-shadow: 0 0 8px rgba(95, 168, 211, 0.7);
-      border-radius: 2px;
-    }
-
-    .ch-nav-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
+    .ch-sub-divider { display: flex; align-items: center; gap: 10px; margin: 16px 0 14px; color: #8AC8EC; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+    .ch-sub-divider::before, .ch-sub-divider::after { content: ''; flex: 1; height: 2px; background: var(--neon-mid); border-radius: 2px; }
+    .ch-nav-row { display: flex; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
     .ch-nav-row button { flex: 1; height: 40px; font-size: 14px; font-weight: 500; }
 
-    /* --- НИЖНЯЯ СТРОКА СОСТОЯНИЯ --- */
+    /* --- НИЖНЯЯ СТРОКА --- */
     #status-bar {
       background: var(--panel);
       border-top: 1px solid var(--border);
@@ -1142,79 +604,31 @@
       z-index: 30;
     }
 
-    /* =====================================================================
-       КОМПАКТНЫЙ АЛЬБОМНЫЙ РЕЖИМ
-       ===================================================================== */
-    body.landscape-compact #top-bar {
-      flex-direction: row;
-      align-items: center;
-      gap: 6px;
-      padding-top: 6px;
-      padding-bottom: 6px;
-      padding-left: calc(env(safe-area-inset-left, 0px) + 12px);
-      padding-right: calc(env(safe-area-inset-right, 0px) + 12px);
-    }
-
+    /* --- КОМПАКТНЫЙ АЛЬБОМНЫЙ РЕЖИМ --- */
+    body.landscape-compact #top-bar { flex-direction: row; align-items: center; gap: 6px; padding-top: 6px; padding-bottom: 6px; padding-left: calc(env(safe-area-inset-left, 0px) + 12px); padding-right: calc(env(safe-area-inset-right, 0px) + 12px); }
     body.landscape-compact #top-bar.collapsed { display: none; }
     body.landscape-compact #top-bar.collapsed + #plan-section-bar { display: none !important; }
     body.landscape-compact.bar-hidden #restore-bar-btn { display: flex; }
-
     body.landscape-compact #plan-section-bar { padding-top: 4px; padding-bottom: 4px; }
     body.landscape-compact .section-pill { height: 24px; font-size: 11.5px; padding: 0 9px; }
-
     body.landscape-compact .top-row { gap: 5px; }
     body.landscape-compact .row-primary { flex: 1 1 auto; }
     body.landscape-compact .row-secondary { flex: 0 1 auto; }
-
-    body.landscape-compact #top-bar select,
-    body.landscape-compact #top-bar button {
-      height: 30px;
-      font-size: 13px;
-      border-radius: 7px;
-      padding: 0 7px;
-    }
-
-    body.landscape-compact #top-bar select {
-      padding-right: 18px;
-    }
-
+    body.landscape-compact #top-bar select, body.landscape-compact #top-bar button { height: 30px; font-size: 13px; border-radius: 7px; padding: 0 7px; }
+    body.landscape-compact #top-bar select { padding-right: 18px; }
     body.landscape-compact #book-select { min-width: 90px; max-width: 170px; }
-    body.landscape-compact #chapter-select,
-    body.landscape-compact #verse-select { width: 76px; padding: 0 16px 0 6px; }
+    body.landscape-compact #chapter-select, body.landscape-compact #verse-select { width: 76px; padding: 0 16px 0 6px; }
     body.landscape-compact #mode-select { min-width: 130px; max-width: 170px; }
     body.landscape-compact #collapse-btn { width: 30px; padding: 0; }
-
-    body.landscape-compact #word-hud {
-      top: 6px;
-      padding: 5px 12px;
-      border-radius: 8px;
-      flex-direction: row;
-      align-items: center;
-      gap: 14px;
-    }
-
+    body.landscape-compact #word-hud { top: 6px; padding: 5px 12px; border-radius: 8px; flex-direction: row; align-items: center; gap: 14px; }
     body.landscape-compact #word-hud .hud-section { flex: 1 1 0; gap: 3px; }
     body.landscape-compact #hud-ref { font-size: 12px; }
-    body.landscape-compact #hud-ch-lbl,
-    body.landscape-compact #hud-v-lbl { font-size: 11px; }
+    body.landscape-compact #hud-ch-lbl, body.landscape-compact #hud-v-lbl { font-size: 11px; }
     body.landscape-compact #word-hud .prog-track { height: 4px !important; }
-
-    body.landscape-compact #speed-dock {
-      padding: 5px calc(env(safe-area-inset-right, 0px) + 12px) max(env(safe-area-inset-bottom, 0px), 6px) calc(env(safe-area-inset-left, 0px) + 12px);
-      gap: 10px;
-    }
-
+    body.landscape-compact #speed-dock { padding: 5px calc(env(safe-area-inset-right, 0px) + 12px) max(env(safe-area-inset-bottom, 0px), 6px) calc(env(safe-area-inset-left, 0px) + 12px); gap: 10px; }
     body.landscape-compact #ticker-invert-btn { width: 36px; height: 36px; }
     body.landscape-compact #ticker-invert-btn svg { width: 17px; height: 17px; }
-
-    body.landscape-compact #soviet-gauge-btn {
-      height: 42px;
-      padding: 3px 10px 3px 8px;
-      gap: 8px;
-      border-radius: 9px;
-      border-width: 1px;
-    }
-
+    body.landscape-compact #soviet-gauge-btn { height: 42px; padding: 3px 10px 3px 8px; gap: 8px; border-radius: 9px; border-width: 1px; }
     body.landscape-compact .gauge-screw { width: 4px; height: 4px; }
     body.landscape-compact .gauge-dial-window { width: 62px; height: 32px; border-radius: 6px; }
     body.landscape-compact .gauge-dial-window svg { width: 60px; height: 30px; }
@@ -1222,29 +636,21 @@
     body.landscape-compact .gauge-caption { display: none; }
     body.landscape-compact .gauge-value-box { font-size: 15px; padding: 1px 6px; }
     body.landscape-compact .gauge-unit { font-size: 10px; margin-top: 0; }
-
     body.landscape-compact #speed-play-btn { width: 38px; height: 38px; }
     body.landscape-compact #speed-play-btn svg { width: 17px; height: 17px; }
-
     body.landscape-compact #status-bar { display: none; }
-
     body.landscape-compact #text-card { padding: 14px 18px; }
     body.landscape-compact .block-ref { margin-bottom: 8px; }
     body.landscape-compact .block-main { font-size: 22px; margin-bottom: 10px; }
     body.landscape-compact .block-dots { margin-bottom: 6px; }
     body.landscape-compact .block-divider { margin: 8px 0; }
     body.landscape-compact .block-adj { display: none; }
-
-    body.landscape-compact #ios-speed-sheet {
-      padding: 12px 16px 12px;
-      border-radius: 20px;
-      gap: 4px;
-    }
+    body.landscape-compact #ios-speed-sheet { padding: 12px 16px 12px; border-radius: 20px; gap: 4px; }
     body.landscape-compact #ios-ruler-viewport { height: 64px; }
     body.landscape-compact #ios-big-wpm { font-size: 32px; }
     body.landscape-compact #ios-confirm-btn { height: 38px; font-size: 15px; }
 
-    /* --- ЭКРАН ЗАГРУЗКИ И ДИАГНОСТИКИ (НИКАКОГО ЧЁРНОГО ЭКРАНА) --- */
+    /* --- ЗАГРУЗКА --- */
     #loader {
       position: fixed;
       inset: 0;
@@ -1259,47 +665,14 @@
       color: var(--text);
       text-align: center;
     }
-
-    .spinner {
-      width: 34px;
-      height: 34px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    #loader-actions {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 8px;
-      width: min(280px, 100%);
-    }
-
-    #loader-actions button {
-      height: 40px;
-      font-weight: 600;
-      border-radius: 10px;
-    }
-
-    #btn-reset-cache {
-      background: rgba(212, 163, 89, 0.18);
-      border-color: var(--accent);
-      color: var(--accent-bright);
-    }
-
+    .spinner { width: 34px; height: 34px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div id="loader">
-    <div id="loader-spinner" class="spinner"></div>
+    <div class="spinner"></div>
     <div id="loader-text">Загрузка Писания RST+...</div>
-    <div id="loader-actions">
-      <button id="btn-retry-load" type="button">Повторить загрузку</button>
-      <button id="btn-reset-cache" type="button">Сбросить кэш и обновить</button>
-    </div>
   </div>
 
   <div id="app">
@@ -1354,54 +727,37 @@
           </div>
           <div id="text-card"></div>
         </div>
-
-        <div id="word-stream-root">
-          <div id="word-tape"></div>
-        </div>
-
-        <div id="ticker-stream-root">
-          <div id="ticker-tape"></div>
-        </div>
+        <div id="word-stream-root"><div id="word-tape"></div></div>
+        <div id="ticker-stream-root"><div id="ticker-tape"></div></div>
       </div>
     </main>
 
     <div id="speed-dock">
-      <button id="ticker-invert-btn" type="button" title="Инверсия управления (лево/право)" aria-label="Инверсия управления">
+      <button id="ticker-invert-btn" type="button" title="Инверсия управления" aria-label="Инверсия управления">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17 3l4 4-4 4"/>
-          <path d="M3 7h18"/>
-          <path d="M7 21l-4-4 4-4"/>
-          <path d="M21 17H3"/>
+          <path d="M17 3l4 4-4 4"/><path d="M3 7h18"/><path d="M7 21l-4-4 4-4"/><path d="M21 17H3"/>
         </svg>
       </button>
 
       <div id="soviet-gauge-btn" role="button" aria-label="Настроить скорость">
-        <span class="gauge-screw tl"></span>
-        <span class="gauge-screw tr"></span>
-        <span class="gauge-screw bl"></span>
-        <span class="gauge-screw br"></span>
-
+        <span class="gauge-screw tl"></span><span class="gauge-screw tr"></span>
+        <span class="gauge-screw bl"></span><span class="gauge-screw br"></span>
         <div class="gauge-dial-window">
           <svg viewBox="0 0 100 54">
             <path d="M 10 46 A 40 40 0 0 1 90 46" fill="none" stroke="#3F4550" stroke-width="2"/>
             <path d="M 78 18 A 40 40 0 0 1 90 46" fill="none" stroke="#A6464F" stroke-width="2.4"/>
             <g stroke="#8E7A5B" stroke-width="1.2">
-              <line x1="10" y1="46" x2="17" y2="46"/>
-              <line x1="15" y1="26" x2="21" y2="29"/>
-              <line x1="30" y1="11" x2="33" y2="17"/>
-              <line x1="50" y1="6"  x2="50" y2="13"/>
+              <line x1="10" y1="46" x2="17" y2="46"/><line x1="15" y1="26" x2="21" y2="29"/>
+              <line x1="30" y1="11" x2="33" y2="17"/><line x1="50" y1="6" x2="50" y2="13"/>
               <line x1="70" y1="11" x2="67" y2="17"/>
               <line x1="85" y1="26" x2="79" y2="29" stroke="#C45C65"/>
               <line x1="90" y1="46" x2="83" y2="46" stroke="#C45C65"/>
             </g>
             <text x="50" y="34" text-anchor="middle" fill="#636B78" font-size="6.5" font-family="monospace">ТХ-800</text>
-            <g id="gauge-needle-group">
-              <line x1="50" y1="46" x2="50" y2="11" stroke="#D4A359" stroke-width="2" stroke-linecap="round"/>
-            </g>
+            <g id="gauge-needle-group"><line x1="50" y1="46" x2="50" y2="11" stroke="#D4A359" stroke-width="2" stroke-linecap="round"/></g>
             <circle cx="50" cy="46" r="4.2" fill="#3B424E" stroke="#121417" stroke-width="1"/>
           </svg>
         </div>
-
         <div class="gauge-readout">
           <span class="gauge-caption">СКОРОСТЬ</span>
           <span id="gauge-wpm-val" class="gauge-value-box">250</span>
@@ -1412,10 +768,7 @@
       <button id="speed-play-btn" type="button" aria-label="Старт/Пауза"></button>
     </div>
 
-    <section id="chapter-scroll">
-      <div id="chapter-container"></div>
-    </section>
-
+    <section id="chapter-scroll"><div id="chapter-container"></div></section>
     <footer id="status-bar">Загрузка...</footer>
   </div>
 
@@ -1445,17 +798,12 @@
 
   <div id="ios-speed-backdrop">
     <div id="ios-speed-sheet">
-      <div id="ios-ruler-viewport">
-        <div id="ios-ruler-track"></div>
-      </div>
-      <div class="ios-pointer-row">
-        <div class="ios-triangle"></div>
-      </div>
+      <div id="ios-ruler-viewport"><div id="ios-ruler-track"></div></div>
+      <div class="ios-pointer-row"><div class="ios-triangle"></div></div>
       <div class="ios-bottom-row">
         <button id="ios-confirm-btn" type="button">Подтвердить</button>
         <div class="ios-big-readout">
-          <span id="ios-big-wpm">250</span>
-          <span class="ios-big-unit">сл/мин</span>
+          <span id="ios-big-wpm">250</span><span class="ios-big-unit">сл/мин</span>
         </div>
       </div>
     </div>
@@ -1465,208 +813,122 @@
     (function () {
       'use strict';
 
-      // --- ЗАЩИТА ОТ ЧЁРНОГО ЭКРАНА И ЗАВИСАНИЙ НА iOS ---
-      const elLoader = document.getElementById('loader');
-      const elLoaderSpinner = document.getElementById('loader-spinner');
-      const elLoaderText = document.getElementById('loader-text');
-      const elLoaderActions = document.getElementById('loader-actions');
-      const elBtnRetry = document.getElementById('btn-retry-load');
-      const elBtnResetCache = document.getElementById('btn-reset-cache');
-
-      function showFatalError(msg) {
-        elLoader.style.display = 'flex';
-        elLoaderSpinner.style.display = 'none';
-        elLoaderText.textContent = msg;
-        elLoaderActions.style.display = 'flex';
-      }
-
-      // Глобальный перехватчик ошибок убран, чтобы не мешать системным окнам iOS
-
-      // Блокируем системный pinch-zoom Safari на iOS
-      document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
-      document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
-
-      elBtnRetry.addEventListener('click', () => {
-        window.location.reload();
-      });
-
-      elBtnResetCache.addEventListener('click', async () => {
-        try {
-          if ('serviceWorker' in navigator) {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(regs.map((r) => r.unregister()));
-          }
-          if ('caches' in window) {
-            const keys = await caches.keys();
-            await Promise.all(keys.map((k) => caches.delete(k)));
-          }
-        } catch (_) {}
-        window.location.href = './index.html?refresh=' + Date.now();
-      });
-
-      // Service Worker регистрируется после загрузки текста (в init), чтобы не дублировать трафик
-
-      // --- ИКОНКИ ---
       const SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
       const SVG_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>';
 
-      // --- КОНСТАНТЫ ---
       const WORD_WINDOW_RADIUS = 45;
       const WORD_MIN_ZOOM = 0.55;
       const TICKER_MIN_ZOOM = 0.25;
       const WORD_MAX_ZOOM = 10000.0;
-
       const SPEED_MIN_WPM = 30;
       const SPEED_MAX_WPM = 800;
       const SPEED_STEP_WPM = 10;
       const RULER_TICK_PX = 14;
 
       const STD_BOOK_IDS = {
-        'Быт': 10, 'Исх': 20, 'Лев': 30, 'Чис': 40, 'Втор': 50,
-        'Нав': 60, 'Суд': 70, 'Руф': 80, '1Цар': 90, '2Цар': 100,
-        '3Цар': 110, '4Цар': 120, '1Пар': 130, '2Пар': 140, 'Ездр': 150,
-        'Неем': 160, 'Есф': 190, 'Иов': 220, 'Пс': 230, 'Прит': 240,
-        'Еккл': 250, 'Песн': 260, 'Ис': 290, 'Иер': 300, 'Плач': 310,
-        'Иез': 330, 'Дан': 340, 'Ос': 350, 'Иоил': 360, 'Ам': 370,
-        'Авд': 380, 'Ион': 390, 'Мих': 400, 'Наум': 410, 'Авв': 420,
-        'Соф': 430, 'Агг': 440, 'Зах': 450, 'Мал': 460,
-        'Мат': 470, 'Мар': 480, 'Лук': 490, 'Ин': 500, 'Деян': 510,
-        'Рим': 520, '1Кор': 530, '2Кор': 540, 'Гал': 550, 'Еф': 560,
-        'Флп': 570, 'Кол': 580, '1Фес': 590, '2Фес': 600, '1Тим': 610,
-        '2Тим': 620, 'Тит': 630, 'Флм': 640, 'Евр': 650, 'Иак': 660,
-        '1Пет': 670, '2Пет': 680, '1Ин': 690, '2Ин': 700, '3Ин': 710,
-        'Иуд': 720, 'Откр': 730
+        'Быт':10,'Исх':20,'Лев':30,'Чис':40,'Втор':50,'Нав':60,'Суд':70,'Руф':80,
+        '1Цар':90,'2Цар':100,'3Цар':110,'4Цар':120,'1Пар':130,'2Пар':140,'Ездр':150,
+        'Неем':160,'Есф':190,'Иов':220,'Пс':230,'Прит':240,'Еккл':250,'Песн':260,
+        'Ис':290,'Иер':300,'Плач':310,'Иез':330,'Дан':340,'Ос':350,'Иоил':360,
+        'Ам':370,'Авд':380,'Ион':390,'Мих':400,'Наум':410,'Авв':420,'Соф':430,
+        'Агг':440,'Зах':450,'Мал':460,'Мат':470,'Мар':480,'Лук':490,'Ин':500,
+        'Деян':510,'Рим':520,'1Кор':530,'2Кор':540,'Гал':550,'Еф':560,'Флп':570,
+        'Кол':580,'1Фес':590,'2Фес':600,'1Тим':610,'2Тим':620,'Тит':630,'Флм':640,
+        'Евр':650,'Иак':660,'1Пет':670,'2Пет':680,'1Ин':690,'2Ин':700,'3Ин':710,
+        'Иуд':720,'Откр':730
       };
-
       const WISDOM_BOOK_IDS = [230, 240, 250];
 
-      // --- ПЛАН 1: 35 ДНЕЙ (ПОДХОД 1 + ПОДХОД 2 + ЛИНИЯ МУДРОСТИ) ---
       const READING_PLAN_35 = [
-        { day: 1,  p1: ['Быт',1,1, 'Быт',18,16],      p2: ['Быт',18,17, 'Быт',30,6],     w: ['Пс',1,1, 'Пс',28,5],       ml: 'Быт. 1:1 – 30:6',        wl: 'Пс. 1:1 – 28:5' },
-        { day: 2,  p1: ['Быт',30,7, 'Быт',41,44],     p2: ['Быт',41,45, 'Исх',4,14],     w: ['Пс',28,6, 'Пс',49,22],     ml: 'Быт. 30:7 – Исх. 4:14',  wl: 'Пс. 28:6 – 49:22' },
-        { day: 3,  p1: ['Исх',4,15, 'Исх',17,3],      p2: ['Исх',17,4, 'Исх',30,10],     w: ['Пс',49,23, 'Пс',73,14],    ml: 'Исх. 4:15 – 30:10',      wl: 'Пс. 49:23 – 73:14' },
-        { day: 4,  p1: ['Исх',30,11, 'Лев',4,14],     p2: ['Лев',4,15, 'Лев',15,18],     w: ['Пс',73,15, 'Пс',96,5],     ml: 'Исх. 30:11 – Лев. 15:18',wl: 'Пс. 73:15 – 96:5' },
-        { day: 5,  p1: ['Лев',15,19, 'Лев',27,3],     p2: ['Лев',27,4, 'Чис',10,35],     w: ['Пс',96,6, 'Пс',118,41],    ml: 'Лев. 15:19 – Чис. 10:35',wl: 'Пс. 96:6 – 118:41' },
-        { day: 6,  p1: ['Чис',10,36, 'Чис',22,32],    p2: ['Чис',22,33, 'Чис',35,22],    w: ['Пс',118,42, 'Пс',148,14],  ml: 'Чис. 10:36 – 35:22',     wl: 'Пс. 118:42 – 148:14' },
-        { day: 7,  p1: ['Чис',35,23, 'Втор',11,2],    p2: ['Втор',11,3, 'Втор',24,20],   w: ['Пс',149,1, 'Прит',15,32],  ml: 'Чис. 35:23 – Втор. 24:20',wl: 'Пс. 149:1 – Прит. 15:32' },
-        { day: 8,  p1: ['Втор',24,21, 'Нав',3,1],     p2: ['Нав',3,2, 'Нав',15,52],      w: ['Прит',15,33, 'Прит',30,15],ml: 'Втор. 24:21 – Нав. 15:52',wl: 'Прит. 15:33 – 30:15' },
-        { day: 9,  p1: ['Нав',15,53, 'Суд',5,15],     p2: ['Суд',5,16, 'Суд',16,28],     w: ['Прит',30,16, 'Пс',3,7],    ml: 'Нав. 15:53 – Суд. 16:28',wl: 'Прит. 30:16 – Пс. 3:7' },
-        { day: 10, p1: ['Суд',16,29, '1Цар',4,17],    p2: ['1Цар',4,18, '1Цар',17,28],   w: ['Пс',3,8, 'Пс',30,6],       ml: 'Суд. 16:29 – 1Цар. 17:28',wl: 'Пс. 3:8 – 30:6' },
-        { day: 11, p1: ['1Цар',17,29, '1Цар',28,23],  p2: ['1Цар',28,24, '2Цар',12,20],  w: ['Пс',30,7, 'Пс',51,3],      ml: '1Цар. 17:29 – 2Цар. 12:20',wl: 'Пс. 30:7 – 51:3' },
-        { day: 12, p1: ['2Цар',12,21, '2Цар',22,35],  p2: ['2Цар',22,36, '3Цар',8,26],   w: ['Пс',51,4, 'Пс',75,8],      ml: '2Цар. 12:21 – 3Цар. 8:26',wl: 'Пс. 51:4 – 75:8' },
-        { day: 13, p1: ['3Цар',8,27, '3Цар',18,5],    p2: ['3Цар',18,6, '4Цар',5,21],    w: ['Пс',75,9, 'Пс',98,9],      ml: '3Цар. 8:27 – 4Цар. 5:21',wl: 'Пс. 75:9 – 98:9' },
-        { day: 14, p1: ['4Цар',5,22, '4Цар',17,8],    p2: ['4Цар',17,9, '1Пар',4,18],    w: ['Пс',99,1, 'Пс',118,72],    ml: '4Цар. 5:22 – 1Пар. 4:18',wl: 'Пс. 99:1 – 118:72' },
-        { day: 15, p1: ['1Пар',4,19, '1Пар',19,2],    p2: ['1Пар',19,3, '2Пар',6,15],    w: ['Пс',118,73, 'Прит',1,14],  ml: '1Пар. 4:19 – 2Пар. 6:15',wl: 'Пс. 118:73 – Прит. 1:14' },
-        { day: 16, p1: ['2Пар',6,16, '2Пар',21,6],    p2: ['2Пар',21,7, '2Пар',34,12],   w: ['Прит',1,15, 'Прит',16,26], ml: '2Пар. 6:16 – 34:12',     wl: 'Прит. 1:15 – 16:26' },
-        { day: 17, p1: ['2Пар',34,13, 'Неем',2,10],   p2: ['Неем',2,11, 'Есф',1,21],     w: ['Прит',16,27, 'Прит',31,7], ml: '2Пар. 34:13 – Есф. 1:21',wl: 'Прит. 16:27 – 31:7' },
-        { day: 18, p1: ['Есф',1,22, 'Иов',12,15],     p2: ['Иов',12,16, 'Иов',36,20],    w: ['Прит',31,8, 'Пс',5,11],    ml: 'Есф. 1:22 – Иов. 36:20', wl: 'Прит. 31:8 – Пс. 5:11' },
-        { day: 19, p1: ['Иов',36,21, 'Ис',9,7],       p2: ['Ис',9,8, 'Ис',30,20],        w: ['Пс',5,12, 'Пс',30,25],     ml: 'Иов. 36:21 – Ис. 30:20', wl: 'Пс. 5:12 – 30:25' },
-        { day: 20, p1: ['Ис',30,21, 'Ис',47,13],      p2: ['Ис',47,14, 'Иер',1,10],      w: ['Пс',31,1, 'Пс',53,6],      ml: 'Ис. 30:21 – Иер. 1:10',  wl: 'Пс. 31:1 – 53:6' },
-        { day: 21, p1: ['Иер',1,11, 'Иер',14,15],     p2: ['Иер',14,16, 'Иер',29,1],     w: ['Пс',53,7, 'Пс',76,20],     ml: 'Иер. 1:11 – 29:1',       wl: 'Пс. 53:7 – 76:20' },
-        { day: 22, p1: ['Иер',29,2, 'Иер',40,12],     p2: ['Иер',40,13, 'Иер',52,25],    w: ['Пс',76,21, 'Пс',101,7],    ml: 'Иер. 29:2 – 52:25',      wl: 'Пс. 76:21 – 101:7' },
-        { day: 23, p1: ['Иер',52,26, 'Иез',12,2],     p2: ['Иез',12,3, 'Иез',23,23],     w: ['Пс',101,8, 'Пс',118,97],   ml: 'Иер. 52:26 – Иез. 23:23',wl: 'Пс. 101:8 – 118:97' },
-        { day: 24, p1: ['Иез',23,24, 'Иез',36,17],    p2: ['Иез',36,18, 'Иез',47,17],    w: ['Пс',118,98, 'Прит',2,3],   ml: 'Иез. 23:24 – 47:17',     wl: 'Пс. 118:98 – Прит. 2:3' },
-        { day: 25, p1: ['Иез',47,18, 'Дан',10,5],     p2: ['Дан',10,6, 'Ам',3,2],        w: ['Прит',2,4, 'Прит',17,19],  ml: 'Иез. 47:18 – Ам. 3:2',   wl: 'Прит. 2:4 – 17:19' },
-        { day: 26, p1: ['Ам',3,3, 'Авв',2,19],        p2: ['Авв',2,20, 'Мал',3,2],       w: ['Прит',17,20, 'Еккл',1,2],  ml: 'Ам. 3:3 – Мал. 3:2',     wl: 'Прит. 17:20 – Еккл. 1:2' },
-        { day: 27, p1: ['Мал',3,3, 'Мат',13,36],      p2: ['Мат',13,37, 'Мат',25,45],    w: ['Еккл',1,3, 'Пс',7,8],      ml: 'Мал. 3:3 – Мат. 25:45',  wl: 'Еккл. 1:3 – Пс. 7:8' },
-        { day: 28, p1: ['Мат',25,46, 'Мар',9,4],      p2: ['Мар',9,5, 'Лук',3,8],        w: ['Пс',7,9, 'Пс',32,12],      ml: 'Мат. 25:46 – Лук. 3:8',  wl: 'Пс. 7:9 – 32:12' },
-        { day: 29, p1: ['Лук',3,9, 'Лук',12,17],      p2: ['Лук',12,18, 'Лук',23,26],    w: ['Пс',32,13, 'Пс',54,19],    ml: 'Лук. 3:9 – 23:26',       wl: 'Пс. 32:13 – 54:19' },
-        { day: 30, p1: ['Лук',23,27, 'Ин',8,59],      p2: ['Ин',9,1, 'Ин',20,25],        w: ['Пс',54,20, 'Пс',77,21],    ml: 'Лук. 23:27 – Ин. 20:25', wl: 'Пс. 54:20 – 77:21' },
-        { day: 31, p1: ['Ин',20,26, 'Деян',11,27],    p2: ['Деян',11,28, 'Деян',23,29],  w: ['Пс',77,22, 'Пс',102,3],    ml: 'Ин. 20:26 – Деян. 23:29',wl: 'Пс. 77:22 – 102:3' },
-        { day: 32, p1: ['Деян',23,30, 'Рим',11,14],   p2: ['Рим',11,15, '1Кор',14,23],   w: ['Пс',102,4, 'Пс',118,123],  ml: 'Деян. 23:30 – 1Кор. 14:23',wl: 'Пс. 102:4 – 118:123' },
-        { day: 33, p1: ['1Кор',14,24, 'Гал',5,1],     p2: ['Гал',5,2, '2Фес',2,9],       w: ['Пс',118,124, 'Прит',3,7],  ml: '1Кор. 14:24 – 2Фес. 2:9',wl: 'Пс. 118:124 – Прит. 3:7' },
-        { day: 34, p1: ['2Фес',2,10, 'Евр',10,37],    p2: ['Евр',10,38, '1Ин',4,18],     w: ['Прит',3,8, 'Прит',18,19],  ml: '2Фес. 2:10 – 1Ин. 4:18', wl: 'Прит. 3:8 – 18:19' },
-        { day: 35, p1: ['1Ин',4,19, 'Откр',17,9],     p2: ['Откр',17,10, 'Откр',22,21],  w: ['Прит',18,20, 'Еккл',12,14],ml: '1Ин. 4:19 – Откр. 22:21',wl: 'Прит. 18:20 – Еккл. 12:14' }
+        { day:1, p1:['Быт',1,1,'Быт',18,16], p2:['Быт',18,17,'Быт',30,6], w:['Пс',1,1,'Пс',28,5], ml:'Быт. 1:1 – 30:6', wl:'Пс. 1:1 – 28:5' },
+        { day:2, p1:['Быт',30,7,'Быт',41,44], p2:['Быт',41,45,'Исх',4,14], w:['Пс',28,6,'Пс',49,22], ml:'Быт. 30:7 – Исх. 4:14', wl:'Пс. 28:6 – 49:22' },
+        { day:3, p1:['Исх',4,15,'Исх',17,3], p2:['Исх',17,4,'Исх',30,10], w:['Пс',49,23,'Пс',73,14], ml:'Исх. 4:15 – 30:10', wl:'Пс. 49:23 – 73:14' },
+        { day:4, p1:['Исх',30,11,'Лев',4,14], p2:['Лев',4,15,'Лев',15,18], w:['Пс',73,15,'Пс',96,5], ml:'Исх. 30:11 – Лев. 15:18',wl:'Пс. 73:15 – 96:5' },
+        { day:5, p1:['Лев',15,19,'Лев',27,3], p2:['Лев',27,4,'Чис',10,35], w:['Пс',96,6,'Пс',118,41], ml:'Лев. 15:19 – Чис. 10:35',wl:'Пс. 96:6 – 118:41' },
+        { day:6, p1:['Чис',10,36,'Чис',22,32], p2:['Чис',22,33,'Чис',35,22], w:['Пс',118,42,'Пс',148,14], ml:'Чис. 10:36 – 35:22', wl:'Пс. 118:42 – 148:14' },
+        { day:7, p1:['Чис',35,23,'Втор',11,2], p2:['Втор',11,3,'Втор',24,20], w:['Пс',149,1,'Прит',15,32], ml:'Чис. 35:23 – Втор. 24:20',wl:'Пс. 149:1 – Прит. 15:32' },
+        { day:8, p1:['Втор',24,21,'Нав',3,1], p2:['Нав',3,2,'Нав',15,52], w:['Прит',15,33,'Прит',30,15],ml:'Втор. 24:21 – Нав. 15:52',wl:'Прит. 15:33 – 30:15' },
+        { day:9, p1:['Нав',15,53,'Суд',5,15], p2:['Суд',5,16,'Суд',16,28], w:['Прит',30,16,'Пс',3,7], ml:'Нав. 15:53 – Суд. 16:28',wl:'Прит. 30:16 – Пс. 3:7' },
+        { day:10, p1:['Суд',16,29,'1Цар',4,17], p2:['1Цар',4,18,'1Цар',17,28], w:['Пс',3,8,'Пс',30,6], ml:'Суд. 16:29 – 1Цар. 17:28',wl:'Пс. 3:8 – 30:6' },
+        { day:11, p1:['1Цар',17,29,'1Цар',28,23], p2:['1Цар',28,24,'2Цар',12,20], w:['Пс',30,7,'Пс',51,3], ml:'1Цар. 17:29 – 2Цар. 12:20',wl:'Пс. 30:7 – 51:3' },
+        { day:12, p1:['2Цар',12,21,'2Цар',22,35], p2:['2Цар',22,36,'3Цар',8,26], w:['Пс',51,4,'Пс',75,8], ml:'2Цар. 12:21 – 3Цар. 8:26',wl:'Пс. 51:4 – 75:8' },
+        { day:13, p1:['3Цар',8,27,'3Цар',18,5], p2:['3Цар',18,6,'4Цар',5,21], w:['Пс',75,9,'Пс',98,9], ml:'3Цар. 8:27 – 4Цар. 5:21',wl:'Пс. 75:9 – 98:9' },
+        { day:14, p1:['4Цар',5,22,'4Цар',17,8], p2:['4Цар',17,9,'1Пар',4,18], w:['Пс',99,1,'Пс',118,72], ml:'4Цар. 5:22 – 1Пар. 4:18',wl:'Пс. 99:1 – 118:72' },
+        { day:15, p1:['1Пар',4,19,'1Пар',19,2], p2:['1Пар',19,3,'2Пар',6,15], w:['Пс',118,73,'Прит',1,14], ml:'1Пар. 4:19 – 2Пар. 6:15',wl:'Пс. 118:73 – Прит. 1:14' },
+        { day:16, p1:['2Пар',6,16,'2Пар',21,6], p2:['2Пар',21,7,'2Пар',34,12], w:['Прит',1,15,'Прит',16,26], ml:'2Пар. 6:16 – 34:12', wl:'Прит. 1:15 – 16:26' },
+        { day:17, p1:['2Пар',34,13,'Неем',2,10], p2:['Неем',2,11,'Есф',1,21], w:['Прит',16,27,'Прит',31,7], ml:'2Пар. 34:13 – Есф. 1:21',wl:'Прит. 16:27 – 31:7' },
+        { day:18, p1:['Есф',1,22,'Иов',12,15], p2:['Иов',12,16,'Иов',36,20], w:['Прит',31,8,'Пс',5,11], ml:'Есф. 1:22 – Иов. 36:20', wl:'Прит. 31:8 – Пс. 5:11' },
+        { day:19, p1:['Иов',36,21,'Ис',9,7], p2:['Ис',9,8,'Ис',30,20], w:['Пс',5,12,'Пс',30,25], ml:'Иов. 36:21 – Ис. 30:20', wl:'Пс. 5:12 – 30:25' },
+        { day:20, p1:['Ис',30,21,'Ис',47,13], p2:['Ис',47,14,'Иер',1,10], w:['Пс',31,1,'Пс',53,6], ml:'Ис. 30:21 – Иер. 1:10', wl:'Пс. 31:1 – 53:6' },
+        { day:21, p1:['Иер',1,11,'Иер',14,15], p2:['Иер',14,16,'Иер',29,1], w:['Пс',53,7,'Пс',76,20], ml:'Иер. 1:11 – 29:1', wl:'Пс. 53:7 – 76:20' },
+        { day:22, p1:['Иер',29,2,'Иер',40,12], p2:['Иер',40,13,'Иер',52,25], w:['Пс',76,21,'Пс',101,7], ml:'Иер. 29:2 – 52:25', wl:'Пс. 76:21 – 101:7' },
+        { day:23, p1:['Иер',52,26,'Иез',12,2], p2:['Иез',12,3,'Иез',23,23], w:['Пс',101,8,'Пс',118,97], ml:'Иер. 52:26 – Иез. 23:23',wl:'Пс. 101:8 – 118:97' },
+        { day:24, p1:['Иез',23,24,'Иез',36,17], p2:['Иез',36,18,'Иез',47,17], w:['Пс',118,98,'Прит',2,3], ml:'Иез. 23:24 – 47:17', wl:'Пс. 118:98 – Прит. 2:3' },
+        { day:25, p1:['Иез',47,18,'Дан',10,5], p2:['Дан',10,6,'Ам',3,2], w:['Прит',2,4,'Прит',17,19], ml:'Иез. 47:18 – Ам. 3:2', wl:'Прит. 2:4 – 17:19' },
+        { day:26, p1:['Ам',3,3,'Авв',2,19], p2:['Авв',2,20,'Мал',3,2], w:['Прит',17,20,'Еккл',1,2], ml:'Ам. 3:3 – Мал. 3:2', wl:'Прит. 17:20 – Еккл. 1:2' },
+        { day:27, p1:['Мал',3,3,'Мат',13,36], p2:['Мат',13,37,'Мат',25,45], w:['Еккл',1,3,'Пс',7,8], ml:'Мал. 3:3 – Мат. 25:45', wl:'Еккл. 1:3 – Пс. 7:8' },
+        { day:28, p1:['Мат',25,46,'Мар',9,4], p2:['Мар',9,5,'Лук',3,8], w:['Пс',7,9,'Пс',32,12], ml:'Мат. 25:46 – Лук. 3:8', wl:'Пс. 7:9 – 32:12' },
+        { day:29, p1:['Лук',3,9,'Лук',12,17], p2:['Лук',12,18,'Лук',23,26], w:['Пс',32,13,'Пс',54,19], ml:'Лук. 3:9 – 23:26', wl:'Пс. 32:13 – 54:19' },
+        { day:30, p1:['Лук',23,27,'Ин',8,59], p2:['Ин',9,1,'Ин',20,25], w:['Пс',54,20,'Пс',77,21], ml:'Лук. 23:27 – Ин. 20:25', wl:'Пс. 54:20 – 77:21' },
+        { day:31, p1:['Ин',20,26,'Деян',11,27], p2:['Деян',11,28,'Деян',23,29], w:['Пс',77,22,'Пс',102,3], ml:'Ин. 20:26 – Деян. 23:29',wl:'Пс. 77:22 – 102:3' },
+        { day:32, p1:['Деян',23,30,'Рим',11,14], p2:['Рим',11,15,'1Кор',14,23], w:['Пс',102,4,'Пс',118,123], ml:'Деян. 23:30 – 1Кор. 14:23',wl:'Пс. 102:4 – 118:123' },
+        { day:33, p1:['1Кор',14,24,'Гал',5,1], p2:['Гал',5,2,'2Фес',2,9], w:['Пс',118,124,'Прит',3,7], ml:'1Кор. 14:24 – 2Фес. 2:9',wl:'Пс. 118:124 – Прит. 3:7' },
+        { day:34, p1:['2Фес',2,10,'Евр',10,37], p2:['Евр',10,38,'1Ин',4,18], w:['Прит',3,8,'Прит',18,19], ml:'2Фес. 2:10 – 1Ин. 4:18', wl:'Прит. 3:8 – 18:19' },
+        { day:35, p1:['1Ин',4,19,'Откр',17,9], p2:['Откр',17,10,'Откр',22,21], w:['Прит',18,20,'Еккл',12,14],ml:'1Ин. 4:19 – Откр. 22:21',wl:'Прит. 18:20 – Еккл. 12:14' }
       ];
 
-      // --- ПЛАН 2: 20 ДНЕЙ (4 ПОДХОДА В ДЕНЬ) ---
       const READING_PLAN_20 = [
-        { day: 1,  p: [['Быт',1,1,'Быт',17,20],['Быт',17,20,'Быт',28,15],['Быт',28,15,'Быт',39,16],['Быт',39,16,'Быт',50,19]],       ml: 'Быт. 1:1 – 50:19',         sub: '4 подхода: 1:1 • 17:20 • 28:15 • 39:16' },
-        { day: 2,  p: [['Быт',50,19,'Исх',13,9],['Исх',13,9,'Исх',26,16],['Исх',26,16,'Исх',37,26],['Исх',37,26,'Лев',11,8]],        ml: 'Быт. 50:19 – Лев. 11:8',   sub: '4 подхода: Быт 50:19 • Исх 13:9 • 26:16 • 37:26' },
-        { day: 3,  p: [['Лев',11,8,'Лев',21,17],['Лев',21,17,'Чис',4,23],['Чис',4,23,'Чис',15,14],['Чис',15,14,'Чис',26,56]],        ml: 'Лев. 11:8 – Чис. 26:56',   sub: '4 подхода: Лев 11:8 • 21:17 • Чис 4:23 • 15:14' },
-        { day: 4,  p: [['Чис',26,56,'Втор',2,14],['Втор',2,14,'Втор',12,27],['Втор',12,27,'Втор',26,17],['Втор',26,17,'Нав',4,4]],   ml: 'Чис. 26:56 – Нав. 4:4',    sub: '4 подхода: Чис 26:56 • Втор 2:14 • 12:27 • 26:17' },
-        { day: 5,  p: [['Нав',4,4,'Нав',15,50],['Нав',15,50,'Суд',4,15],['Суд',4,15,'Суд',15,12],['Суд',15,12,'1Цар',2,15]],         ml: 'Нав. 4:4 – 1Цар. 2:15',    sub: '4 подхода: Нав 4:4 • 15:50 • Суд 4:15 • 15:12' },
-        { day: 6,  p: [['1Цар',2,15,'1Цар',14,52],['1Цар',14,52,'1Цар',25,14],['1Цар',25,14,'2Цар',7,8],['2Цар',7,8,'2Цар',18,14]],  ml: '1Цар. 2:15 – 2Цар. 18:14', sub: '4 подхода: 1Цар 2:15 • 14:52 • 25:14 • 2Цар 7:8' },
-        { day: 7,  p: [['2Цар',18,14,'3Цар',3,13],['3Цар',3,13,'3Цар',12,10],['3Цар',12,10,'3Цар',21,22],['3Цар',21,22,'4Цар',9,17]],ml: '2Цар. 18:14 – 4Цар. 9:17', sub: '4 подхода: 2Цар 18:14 • 3Цар 3:13 • 12:10 • 21:22' },
-        { day: 8,  p: [['4Цар',9,17,'4Цар',19,25],['4Цар',19,25,'1Пар',6,78],['1Пар',6,78,'1Пар',22,1],['1Пар',22,1,'2Пар',7,3]],    ml: '4Цар. 9:17 – 2Пар. 7:3',   sub: '4 подхода: 4Цар 9:17 • 19:25 • 1Пар 6:78 • 22:1' },
-        { day: 9,  p: [['2Пар',7,3,'2Пар',22,2],['2Пар',22,2,'2Пар',34,10],['2Пар',34,10,'Неем',1,3],['Неем',1,3,'Неем',13,14]],     ml: '2Пар. 7:3 – Неем. 13:14',  sub: '4 подхода: 2Пар 7:3 • 22:2 • 34:10 • Неем 1:3' },
-        { day: 10, p: [['Неем',13,14,'Иов',8,2],['Иов',8,2,'Иов',31,25],['Иов',31,25,'Пс',17,50],['Пс',17,50,'Пс',50,6]],            ml: 'Неем. 13:14 – Пс. 50:6',   sub: '4 подхода: Неем 13:14 • Иов 8:2 • 31:25 • Пс 17:50' },
-        { day: 11, p: [['Пс',50,6,'Пс',81,7],['Пс',81,7,'Пс',114,8],['Пс',114,8,'Прит',4,7],['Прит',4,7,'Прит',25,18]],              ml: 'Пс. 50:6 – Прит. 25:18',   sub: '4 подхода: Пс 50:6 • 81:7 • 114:8 • Прит 4:7' },
-        { day: 12, p: [['Прит',25,18,'Песн',4,1],['Песн',4,1,'Ис',16,4],['Ис',16,4,'Ис',36,9],['Ис',36,9,'Ис',51,9]],                ml: 'Прит. 25:18 – Ис. 51:9',   sub: '4 подхода: Прит 25:18 • Песн 4:1 • Ис 16:4 • 36:9' },
-        { day: 13, p: [['Ис',51,9,'Иер',3,5],['Иер',3,5,'Иер',15,20],['Иер',15,20,'Иер',29,12],['Иер',29,12,'Иер',40,5]],            ml: 'Ис. 51:9 – Иер. 40:5',     sub: '4 подхода: Ис 51:9 • Иер 3:5 • 15:20 • 29:12' },
-        { day: 14, p: [['Иер',40,5,'Иер',51,59],['Иер',51,59,'Иез',9,8],['Иез',9,8,'Иез',21,7],['Иез',21,7,'Иез',33,8]],             ml: 'Иер. 40:5 – Иез. 33:8',    sub: '4 подхода: Иер 40:5 • 51:59 • Иез 9:8 • 21:7' },
-        { day: 15, p: [['Иез',33,8,'Иез',43,25],['Иез',43,25,'Дан',5,24],['Дан',5,24,'Ос',9,14],['Ос',9,14,'Ион',4,9]],              ml: 'Иез. 33:8 – Ион. 4:9',     sub: '4 подхода: Иез 33:8 • 43:25 • Дан 5:24 • Ос 9:14' },
-        { day: 16, p: [['Ион',4,9,'Зах',4,9],['Зах',4,9,'Мат',6,8],['Мат',6,8,'Мат',18,3],['Мат',18,3,'Мат',27,55]],                 ml: 'Ион. 4:9 – Мат. 27:55',    sub: '4 подхода: Ион 4:9 • Зах 4:9 • Мат 6:8 • 18:3' },
-        { day: 17, p: [['Мат',27,55,'Мар',10,44],['Мар',10,44,'Лук',5,2],['Лук',5,2,'Лук',12,52],['Лук',12,52,'Лук',23,36]],         ml: 'Мат. 27:55 – Лук. 23:36',  sub: '4 подхода: Мат 27:55 • Мар 10:44 • Лук 5:2 • 12:52' },
-        { day: 18, p: [['Лук',23,36,'Ин',8,42],['Ин',8,42,'Ин',19,24],['Ин',19,24,'Деян',10,2],['Деян',10,2,'Деян',21,11]],          ml: 'Лук. 23:36 – Деян. 21:11', sub: '4 подхода: Лук 23:36 • Ин 8:42 • 19:24 • Деян 10:2' },
-        { day: 19, p: [['Деян',21,11,'Рим',7,3],['Рим',7,3,'1Кор',8,13],['1Кор',8,13,'2Кор',11,1],['2Кор',11,1,'Флп',4,15]],         ml: 'Деян. 21:11 – Флп. 4:15',  sub: '4 подхода: Деян 21:11 • Рим 7:3 • 1Кор 8:13 • 2Кор 11:1' },
-        { day: 20, p: [['Флп',4,15,'Тит',3,4],['Тит',3,4,'1Пет',1,5],['1Пет',1,5,'Откр',4,2],['Откр',4,2,'Откр',22,21]],             ml: 'Флп. 4:15 – Откр. 22:21',  sub: '4 подхода: Флп 4:15 • Тит 3:4 • 1Пет 1:5 • Откр 4:2' }
+        { day:1, p:[['Быт',1,1,'Быт',17,20],['Быт',17,20,'Быт',28,15],['Быт',28,15,'Быт',39,16],['Быт',39,16,'Быт',50,19]], ml:'Быт. 1:1 – 50:19', sub:'4 подхода: 1:1 • 17:20 • 28:15 • 39:16' },
+        { day:2, p:[['Быт',50,19,'Исх',13,9],['Исх',13,9,'Исх',26,16],['Исх',26,16,'Исх',37,26],['Исх',37,26,'Лев',11,8]], ml:'Быт. 50:19 – Лев. 11:8', sub:'4 подхода: Быт 50:19 • Исх 13:9 • 26:16 • 37:26' },
+        { day:3, p:[['Лев',11,8,'Лев',21,17],['Лев',21,17,'Чис',4,23],['Чис',4,23,'Чис',15,14],['Чис',15,14,'Чис',26,56]], ml:'Лев. 11:8 – Чис. 26:56', sub:'4 подхода: Лев 11:8 • 21:17 • Чис 4:23 • 15:14' },
+        { day:4, p:[['Чис',26,56,'Втор',2,14],['Втор',2,14,'Втор',12,27],['Втор',12,27,'Втор',26,17],['Втор',26,17,'Нав',4,4]], ml:'Чис. 26:56 – Нав. 4:4', sub:'4 подхода: Чис 26:56 • Втор 2:14 • 12:27 • 26:17' },
+        { day:5, p:[['Нав',4,4,'Нав',15,50],['Нав',15,50,'Суд',4,15],['Суд',4,15,'Суд',15,12],['Суд',15,12,'1Цар',2,15]], ml:'Нав. 4:4 – 1Цар. 2:15', sub:'4 подхода: Нав 4:4 • 15:50 • Суд 4:15 • 15:12' },
+        { day:6, p:[['1Цар',2,15,'1Цар',14,52],['1Цар',14,52,'1Цар',25,14],['1Цар',25,14,'2Цар',7,8],['2Цар',7,8,'2Цар',18,14]], ml:'1Цар. 2:15 – 2Цар. 18:14', sub:'4 подхода: 1Цар 2:15 • 14:52 • 25:14 • 2Цар 7:8' },
+        { day:7, p:[['2Цар',18,14,'3Цар',3,13],['3Цар',3,13,'3Цар',12,10],['3Цар',12,10,'3Цар',21,22],['3Цар',21,22,'4Цар',9,17]],ml:'2Цар. 18:14 – 4Цар. 9:17', sub:'4 подхода: 2Цар 18:14 • 3Цар 3:13 • 12:10 • 21:22' },
+        { day:8, p:[['4Цар',9,17,'4Цар',19,25],['4Цар',19,25,'1Пар',6,78],['1Пар',6,78,'1Пар',22,1],['1Пар',22,1,'2Пар',7,3]], ml:'4Цар. 9:17 – 2Пар. 7:3', sub:'4 подхода: 4Цар 9:17 • 19:25 • 1Пар 6:78 • 22:1' },
+        { day:9, p:[['2Пар',7,3,'2Пар',22,2],['2Пар',22,2,'2Пар',34,10],['2Пар',34,10,'Неем',1,3],['Неем',1,3,'Неем',13,14]], ml:'2Пар. 7:3 – Неем. 13:14', sub:'4 подхода: 2Пар 7:3 • 22:2 • 34:10 • Неем 1:3' },
+        { day:10, p:[['Неем',13,14,'Иов',8,2],['Иов',8,2,'Иов',31,25],['Иов',31,25,'Пс',17,50],['Пс',17,50,'Пс',50,6]], ml:'Неем. 13:14 – Пс. 50:6', sub:'4 подхода: Неем 13:14 • Иов 8:2 • 31:25 • Пс 17:50' },
+        { day:11, p:[['Пс',50,6,'Пс',81,7],['Пс',81,7,'Пс',114,8],['Пс',114,8,'Прит',4,7],['Прит',4,7,'Прит',25,18]], ml:'Пс. 50:6 – Прит. 25:18', sub:'4 подхода: Пс 50:6 • 81:7 • 114:8 • Прит 4:7' },
+        { day:12, p:[['Прит',25,18,'Песн',4,1],['Песн',4,1,'Ис',16,4],['Ис',16,4,'Ис',36,9],['Ис',36,9,'Ис',51,9]], ml:'Прит. 25:18 – Ис. 51:9', sub:'4 подхода: Прит 25:18 • Песн 4:1 • Ис 16:4 • 36:9' },
+        { day:13, p:[['Ис',51,9,'Иер',3,5],['Иер',3,5,'Иер',15,20],['Иер',15,20,'Иер',29,12],['Иер',29,12,'Иер',40,5]], ml:'Ис. 51:9 – Иер. 40:5', sub:'4 подхода: Ис 51:9 • Иер 3:5 • 15:20 • 29:12' },
+        { day:14, p:[['Иер',40,5,'Иер',51,59],['Иер',51,59,'Иез',9,8],['Иез',9,8,'Иез',21,7],['Иез',21,7,'Иез',33,8]], ml:'Иер. 40:5 – Иез. 33:8', sub:'4 подхода: Иер 40:5 • 51:59 • Иез 9:8 • 21:7' },
+        { day:15, p:[['Иез',33,8,'Иез',43,25],['Иез',43,25,'Дан',5,24],['Дан',5,24,'Ос',9,14],['Ос',9,14,'Ион',4,9]], ml:'Иез. 33:8 – Ион. 4:9', sub:'4 подхода: Иез 33:8 • 43:25 • Дан 5:24 • Ос 9:14' },
+        { day:16, p:[['Ион',4,9,'Зах',4,9],['Зах',4,9,'Мат',6,8],['Мат',6,8,'Мат',18,3],['Мат',18,3,'Мат',27,55]], ml:'Ион. 4:9 – Мат. 27:55', sub:'4 подхода: Ион 4:9 • Зах 4:9 • Мат 6:8 • 18:3' },
+        { day:17, p:[['Мат',27,55,'Мар',10,44],['Мар',10,44,'Лук',5,2],['Лук',5,2,'Лук',12,52],['Лук',12,52,'Лук',23,36]], ml:'Мат. 27:55 – Лук. 23:36', sub:'4 подхода: Мат 27:55 • Мар 10:44 • Лук 5:2 • 12:52' },
+        { day:18, p:[['Лук',23,36,'Ин',8,42],['Ин',8,42,'Ин',19,24],['Ин',19,24,'Деян',10,2],['Деян',10,2,'Деян',21,11]], ml:'Лук. 23:36 – Деян. 21:11', sub:'4 подхода: Лук 23:36 • Ин 8:42 • 19:24 • Деян 10:2' },
+        { day:19, p:[['Деян',21,11,'Рим',7,3],['Рим',7,3,'1Кор',8,13],['1Кор',8,13,'2Кор',11,1],['2Кор',11,1,'Флп',4,15]], ml:'Деян. 21:11 – Флп. 4:15', sub:'4 подхода: Деян 21:11 • Рим 7:3 • 1Кор 8:13 • 2Кор 11:1' },
+        { day:20, p:[['Флп',4,15,'Тит',3,4],['Тит',3,4,'1Пет',1,5],['1Пет',1,5,'Откр',4,2],['Откр',4,2,'Откр',22,21]], ml:'Флп. 4:15 – Откр. 22:21', sub:'4 подхода: Флп 4:15 • Тит 3:4 • 1Пет 1:5 • Откр 4:2' }
       ];
 
       let READING_PLAN_365_STRAIGHT = [];
       let READING_PLAN_365_COMBO = [];
+      let yearlyPlansBuilt = false;
 
-      // --- СОСТОЯНИЕ ---
-      let booksOrder = [];
-      let booksNames = {};
-      let bibleData = {};
-      let bookChaptersSorted = {};
-      let chapterVersesSorted = {};
+      let booksOrder = [], booksNames = {}, bibleData = {};
+      let bookChaptersSorted = {}, chapterVersesSorted = {};
       let verseWordsCache = new Map();
 
-      let planActive = false;
-      let planType = '35';
-      let planModalTab = '35';
-      let planDayNum = 0;
-      let planSections = [];
-      let planActiveSectionId = '';
+      let planActive = false, planType = '35', planModalTab = '35', planDayNum = 0;
+      let planSections = [], planActiveSectionId = '';
 
-      let currentBook = 10;
-      let currentChapter = 1;
-      let currentVerse = 1;
-      let currentBlockIdx = 0;
-      let currentBlocks = [];
-      let currentWordIdx = 0;
-      let currentWords = [];
+      let currentBook = 10, currentChapter = 1, currentVerse = 1;
+      let currentBlockIdx = 0, currentBlocks = [], currentWordIdx = 0, currentWords = [];
       let displayMode = 'WORDS';
 
-      let chapterTotalBlocks = 1;
-      let chapterBlockOffsets = {};
-      let chapterTotalWords = 1;
-      let chapterWordOffsets = {};
+      let chapterTotalBlocks = 1, chapterBlockOffsets = {};
+      let chapterTotalWords = 1, chapterWordOffsets = {};
+      let canvasZoom = 1.0, canvasPanX = 0, canvasPanY = 0;
 
-      let canvasZoom = 1.0;
-      let canvasPanX = 0;
-      let canvasPanY = 0;
+      let wordsWpm = 250, wordsAutoRunning = false, wordsLastTime = 0, wordsAccum = 0;
+      let tickerWpm = 220, tickerAutoRunning = false, tickerInverted = false;
+      let manualTickerDir = 0, keyTickerDir = 0;
+      let tickerItems = [], tickerScrollX = 0, tickerTotalWidth = 0, tickerAvgWordPx = 135, tickerLastTime = 0;
+      let tickerStartGateEl = null, tickerEndGateEl = null, tickerStartGateW = 0, tickerEndGateW = 0;
 
-      let wordsWpm = 250;
-      let wordsAutoRunning = false;
-      let wordsLastTime = 0;
-      let wordsAccum = 0;
+      let rulerTempWpm = 250, rulerOffset = 0, rulerDragging = false, rulerStartX = 0, rulerStartOffset = 0, rulerTickEls = [];
 
-      let tickerWpm = 220;
-      let tickerAutoRunning = false;
-      let tickerInverted = false;
-      let manualTickerDir = 0;
-      let keyTickerDir = 0;
-      let tickerItems = [];
-      let tickerScrollX = 0;
-      let tickerTotalWidth = 0;
-      let tickerAvgWordPx = 135;
-      let tickerLastTime = 0;
-      let tickerStartGateEl = null;
-      let tickerEndGateEl = null;
-      let tickerStartGateW = 0;
-      let tickerEndGateW = 0;
-
-      let rulerTempWpm = 250;
-      let rulerOffset = 0;
-      let rulerDragging = false;
-      let rulerStartX = 0;
-      let rulerStartOffset = 0;
-      let rulerTickEls = [];
-
-      // --- DOM ---
+      const elLoader = document.getElementById('loader');
+      const elLoaderText = document.getElementById('loader-text');
       const elTopBar = document.getElementById('top-bar');
       const elPlanSectionBar = document.getElementById('plan-section-bar');
       const elRestoreBarBtn = document.getElementById('restore-bar-btn');
@@ -1729,22 +991,13 @@
       const elFlashLeft = document.getElementById('flash-left');
       const elFlashRight = document.getElementById('flash-right');
 
-      // --- АДАПТАЦИЯ ПОД ОРИЕНТАЦИЮ ---
       function syncViewportLayout() {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const isLandscape = w > h;
-        const isCompactLandscape = isLandscape && h <= 540;
+        const isCompactLandscape = window.innerWidth > window.innerHeight && window.innerHeight <= 540;
         document.body.classList.toggle('landscape-compact', isCompactLandscape);
-
-        if (!isCompactLandscape) {
-          document.body.classList.remove('bar-hidden');
-        } else {
-          document.body.classList.toggle('bar-hidden', elTopBar.classList.contains('collapsed'));
-        }
+        if (!isCompactLandscape) document.body.classList.remove('bar-hidden');
+        else document.body.classList.toggle('bar-hidden', elTopBar.classList.contains('collapsed'));
       }
 
-      // --- ТОЧНАЯ ОЧИСТКА ТЕГОВ MYBIBLE ---
       function escapeHtml(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       }
@@ -1760,9 +1013,7 @@
         return s;
       }
 
-      function cleanVerseHtml(raw) {
-        return escapeHtml(cleanPlainText(raw));
-      }
+      function cleanVerseHtml(raw) { return escapeHtml(cleanPlainText(raw)); }
 
       function splitIntoWords(raw) {
         const clean = cleanPlainText(raw);
@@ -1780,64 +1031,41 @@
         return words;
       }
 
-      const BREAK_CONJ = new Set([
-        'и','но','а','что','чтобы','ибо','потому','когда','как',
-        'который','которая','которые','если','дабы'
-      ]);
-      const STICKY_PREP = new Set([
-        'в','во','на','над','под','к','ко','с','со','у','о','об',
-        'от','из','за','по','не','ни','да','же','для','до'
-      ]);
+      const BREAK_CONJ = new Set(['и','но','а','что','чтобы','ибо','потому','когда','как','который','которая','которые','если','дабы']);
+      const STICKY_PREP = new Set(['в','во','на','над','под','к','ко','с','со','у','о','об','от','из','за','по','не','ни','да','же','для','до']);
 
       function splitIntoSemanticBlocks(raw) {
         const clean = cleanPlainText(raw);
         if (!clean) return ['—'];
         const words = clean.split(' ').filter(Boolean);
         const blocks = [];
-        let curWords = [];
-        let curLen = 0;
+        let curWords = [], curLen = 0;
 
         for (let i = 0; i < words.length; i++) {
           const w = words[i];
           const wLower = w.toLowerCase().replace(/[,;:.]+$/, '');
           const prevLower = curWords.length ? curWords[curWords.length - 1].toLowerCase() : '';
-
           if (BREAK_CONJ.has(wLower) && curWords.length >= 2 && curLen >= 14 && !STICKY_PREP.has(prevLower)) {
             blocks.push(curWords.join(' '));
-            curWords = [];
-            curLen = 0;
+            curWords = []; curLen = 0;
           }
-
           curWords.push(w);
           curLen += w.length + 1;
-
           const endsPunct = /[,;:.!?—]$/.test(w);
-          const isSticky = STICKY_PREP.has(wLower);
-
-          if (!isSticky) {
-            if (endsPunct && (curLen >= 10 || curWords.length >= 2)) {
+          if (!STICKY_PREP.has(wLower)) {
+            if ((endsPunct && (curLen >= 10 || curWords.length >= 2)) || curLen >= 32 || curWords.length >= 5) {
               blocks.push(curWords.join(' '));
-              curWords = [];
-              curLen = 0;
-            } else if (curLen >= 32 || curWords.length >= 5) {
-              blocks.push(curWords.join(' '));
-              curWords = [];
-              curLen = 0;
+              curWords = []; curLen = 0;
             }
           }
         }
-
         if (curWords.length) {
-          if (curWords.length === 1 && curLen < 10 && blocks.length) {
-            blocks[blocks.length - 1] += ' ' + curWords[0];
-          } else {
-            blocks.push(curWords.join(' '));
-          }
+          if (curWords.length === 1 && curLen < 10 && blocks.length) blocks[blocks.length - 1] += ' ' + curWords[0];
+          else blocks.push(curWords.join(' '));
         }
         return blocks.length ? blocks : ['—'];
       }
 
-      // --- ГЕНЕРАЦИЯ ГОДОВЫХ ПЛАНОВ (365 ДНЕЙ) ---
       function formatBookRangeLabel(sb, sc, sv, eb, ec, ev, wholeChapters) {
         const n1 = booksNames[sb] || ('Кн.' + sb);
         const n2 = booksNames[eb] || ('Кн.' + eb);
@@ -1845,50 +1073,39 @@
           if (sb === eb) return sc === ec ? (n1 + ' ' + sc) : (n1 + ' ' + sc + '–' + ec);
           return n1 + ' ' + sc + ' – ' + n2 + ' ' + ec;
         }
-        if (sb === eb) {
-          return sc === ec ? (n1 + ' ' + sc + ':' + sv + '–' + ev) : (n1 + ' ' + sc + ':' + sv + ' – ' + ec + ':' + ev);
-        }
+        if (sb === eb) return sc === ec ? (n1 + ' ' + sc + ':' + sv + '–' + ev) : (n1 + ' ' + sc + ':' + sv + ' – ' + ec + ':' + ev);
         return n1 + ' ' + sc + ':' + sv + ' – ' + n2 + ' ' + ec + ':' + ev;
       }
 
       function partitionUnitsIntoDays(units, numDays) {
         const totalWeight = units.reduce((acc, u) => acc + u.weight, 0);
         const result = [];
-        let cursor = 0;
-        let accWeight = 0;
-
+        let cursor = 0, accWeight = 0;
         for (let d = 0; d < numDays; d++) {
           const remainingDays = numDays - d;
           const startIdx = cursor;
           const target = ((d + 1) * totalWeight) / numDays;
-
           if (d === numDays - 1) {
             cursor = units.length;
           } else {
             while (cursor < units.length - (remainingDays - 1)) {
               const nextW = accWeight + units[cursor].weight;
-              if (cursor > startIdx && Math.abs(nextW - target) > Math.abs(accWeight - target)) {
-                break;
-              }
+              if (cursor > startIdx && Math.abs(nextW - target) > Math.abs(accWeight - target)) break;
               accWeight = nextW;
               cursor++;
               if (accWeight >= target) break;
             }
-            if (cursor === startIdx && cursor < units.length) {
-              accWeight += units[cursor].weight;
-              cursor++;
-            }
+            if (cursor === startIdx && cursor < units.length) { accWeight += units[cursor].weight; cursor++; }
           }
           result.push({ first: units[startIdx], last: units[cursor - 1] });
         }
         return result;
       }
 
-      function buildYearlyPlans() {
-        const allChapters = [];
-        const otChapters = [];
-        const ntVerses = [];
-
+      function ensureYearlyPlans() {
+        if (yearlyPlansBuilt) return;
+        yearlyPlansBuilt = true;
+        const allChapters = [], otChapters = [], ntVerses = [];
         for (let bi = 0; bi < booksOrder.length; bi++) {
           const b = booksOrder[bi];
           const chList = bookChaptersSorted[b] || [];
@@ -1902,29 +1119,23 @@
               const raw = String((bibleData[b] && bibleData[b][c] && bibleData[b][c][v]) ? bibleData[b][c][v] : '');
               const len = Math.max(12, raw.length);
               chLen += len;
-              if (b >= 470) {
-                ntVerses.push({ b: b, c: c, v: v, weight: len });
-              }
+              if (b >= 470) ntVerses.push({ b, c, v, weight: len });
             }
-            const chUnit = { b: b, c: c, firstV: vList[0], lastV: vList[vList.length - 1], weight: chLen };
+            const chUnit = { b, c, firstV: vList[0], lastV: vList[vList.length - 1], weight: chLen };
             allChapters.push(chUnit);
             if (b < 470) otChapters.push(chUnit);
           }
         }
-
-        const straightParts = partitionUnitsIntoDays(allChapters, 365);
-        READING_PLAN_365_STRAIGHT = straightParts.map((seg, i) => ({
+        READING_PLAN_365_STRAIGHT = partitionUnitsIntoDays(allChapters, 365).map((seg, i) => ({
           day: i + 1,
           r: [seg.first.b, seg.first.c, seg.first.firstV, seg.last.b, seg.last.c, seg.last.lastV],
           ml: formatBookRangeLabel(seg.first.b, seg.first.c, seg.first.firstV, seg.last.b, seg.last.c, seg.last.lastV, true)
         }));
-
         const otParts = partitionUnitsIntoDays(otChapters, 365);
         const ntParts = partitionUnitsIntoDays(ntVerses, 365);
         READING_PLAN_365_COMBO = [];
         for (let i = 0; i < 365; i++) {
-          const o = otParts[i];
-          const n = ntParts[i];
+          const o = otParts[i], n = ntParts[i];
           READING_PLAN_365_COMBO.push({
             day: i + 1,
             ot: [o.first.b, o.first.c, o.first.firstV, o.last.b, o.last.c, o.last.lastV],
@@ -1935,57 +1146,39 @@
         }
       }
 
-      // --- ЛОГИКА ГРАФИКОВ И ПОДХОДОВ ---
       function buildLineRangeData(bookSeq, startBook, startCh, startV, endBook, endCh, endV, allowWrap) {
-        const verses = [];
-        const indexMap = new Map();
-        const books = [];
-        const chaptersByBook = {};
-        const versesByBookChap = {};
-
-        const startIdx = bookSeq.indexOf(startBook);
-        const endIdx = bookSeq.indexOf(endBook);
-        if (startIdx === -1 || endIdx === -1) {
-          return { verses, indexMap, books, chaptersByBook, versesByBookChap };
-        }
+        const verses = [], indexMap = new Map(), books = [], chaptersByBook = {}, versesByBookChap = {};
+        const startIdx = bookSeq.indexOf(startBook), endIdx = bookSeq.indexOf(endBook);
+        if (startIdx === -1 || endIdx === -1) return { verses, indexMap, books, chaptersByBook, versesByBookChap };
 
         const spanBooks = [];
         if (startIdx < endIdx) {
           for (let i = startIdx; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
         } else if (startIdx === endIdx) {
-          const sameBookWrap = allowWrap && (startCh > endCh || (startCh === endCh && startV > endV));
-          if (sameBookWrap) {
+          const sameWrap = allowWrap && (startCh > endCh || (startCh === endCh && startV > endV));
+          if (sameWrap) {
             for (let i = startIdx; i < bookSeq.length; i++) spanBooks.push(bookSeq[i]);
             for (let i = 0; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
-          } else {
-            spanBooks.push(bookSeq[startIdx]);
-          }
+          } else spanBooks.push(bookSeq[startIdx]);
         } else if (allowWrap) {
           for (let i = startIdx; i < bookSeq.length; i++) spanBooks.push(bookSeq[i]);
           for (let i = 0; i <= endIdx; i++) spanBooks.push(bookSeq[i]);
         }
 
         for (let bi = 0; bi < spanBooks.length; bi++) {
-          const b = spanBooks[bi];
-          const isFirstBook = (bi === 0);
-          const isLastBook = (bi === spanBooks.length - 1);
+          const b = spanBooks[bi], isFirst = (bi === 0), isLast = (bi === spanBooks.length - 1);
           const chList = bookChaptersSorted[b] || [];
-
           for (let ci = 0; ci < chList.length; ci++) {
             const c = chList[ci];
-            if (isFirstBook && c < startCh) continue;
-            if (isLastBook && c > endCh) break;
+            if (isFirst && c < startCh) continue;
+            if (isLast && c > endCh) break;
             const vList = (chapterVersesSorted[b] && chapterVersesSorted[b][c]) ? chapterVersesSorted[b][c] : [];
-
             for (let vi = 0; vi < vList.length; vi++) {
               const v = vList[vi];
-              if (isFirstBook && c === startCh && v < startV) continue;
-              if (isLastBook && c === endCh && v > endV) break;
-
-              const key = b + '_' + c + '_' + v;
-              indexMap.set(key, verses.length);
-              verses.push({ b: b, c: c, v: v });
-
+              if (isFirst && c === startCh && v < startV) continue;
+              if (isLast && c === endCh && v > endV) break;
+              indexMap.set(b + '_' + c + '_' + v, verses.length);
+              verses.push({ b, c, v });
               if (!books.includes(b)) books.push(b);
               if (!chaptersByBook[b]) chaptersByBook[b] = [];
               if (!chaptersByBook[b].includes(c)) chaptersByBook[b].push(c);
@@ -1995,7 +1188,6 @@
             }
           }
         }
-
         return { verses, indexMap, books, chaptersByBook, versesByBookChap };
       }
 
@@ -2003,47 +1195,20 @@
         if (!planActive || !planSections.length) return null;
         return planSections.find((s) => s.id === planActiveSectionId) || planSections[0];
       }
-
-      function getActivePlanLineObj() {
-        const sec = getActivePlanSection();
-        return sec ? sec.rangeData : null;
-      }
-
-      function getSubBoundaryLabelAt(b, c, v) {
-        const sec = getActivePlanSection();
-        if (!sec || !sec.subBoundaries) return '';
-        return sec.subBoundaries.get(b + '_' + c + '_' + v) || '';
-      }
-
-      function isAtPlanLineStartVerse() {
-        const line = getActivePlanLineObj();
-        if (!line || !line.verses.length) return false;
-        const first = line.verses[0];
-        return currentBook === first.b && currentChapter === first.c && currentVerse === first.v;
-      }
-
-      function isAtPlanLineEndVerse() {
-        const line = getActivePlanLineObj();
-        if (!line || !line.verses.length) return false;
-        const last = line.verses[line.verses.length - 1];
-        return currentBook === last.b && currentChapter === last.c && currentVerse === last.v;
-      }
+      function getActivePlanLineObj() { const sec = getActivePlanSection(); return sec ? sec.rangeData : null; }
+      function getSubBoundaryLabelAt(b, c, v) { const sec = getActivePlanSection(); return (sec && sec.subBoundaries) ? (sec.subBoundaries.get(b + '_' + c + '_' + v) || '') : ''; }
+      function isAtPlanLineStartVerse() { const l = getActivePlanLineObj(); if (!l || !l.verses.length) return false; const f = l.verses[0]; return currentBook === f.b && currentChapter === f.c && currentVerse === f.v; }
+      function isAtPlanLineEndVerse() { const l = getActivePlanLineObj(); if (!l || !l.verses.length) return false; const e = l.verses[l.verses.length - 1]; return currentBook === e.b && currentChapter === e.c && currentVerse === e.v; }
 
       function renderPlanSectionBar() {
-        if (!planActive || planSections.length <= 1) {
-          elPlanSectionBar.style.display = 'none';
-          elPlanSectionBar.innerHTML = '';
-          return;
-        }
+        if (!planActive || planSections.length <= 1) { elPlanSectionBar.style.display = 'none'; elPlanSectionBar.innerHTML = ''; return; }
         elPlanSectionBar.style.display = 'flex';
         elPlanSectionBar.innerHTML = '';
         for (let i = 0; i < planSections.length; i++) {
           const sec = planSections[i];
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'section-pill'
-            + (sec.isWisdom ? ' wisdom-pill' : '')
-            + (sec.id === planActiveSectionId ? ' active' : '');
+          btn.className = 'section-pill' + (sec.isWisdom ? ' wisdom-pill' : '') + (sec.id === planActiveSectionId ? ' active' : '');
           btn.textContent = sec.label;
           btn.addEventListener('click', () => selectPlanSection(sec.id));
           elPlanSectionBar.appendChild(btn);
@@ -2054,117 +1219,71 @@
         const sec = planSections.find((s) => s.id === secId);
         if (!sec || !sec.rangeData.verses.length) return;
         planActiveSectionId = sec.id;
-        tickerAutoRunning = false;
-        wordsAutoRunning = false;
-
-        const firstV = sec.rangeData.verses[0];
-        currentBook = firstV.b;
-        currentChapter = firstV.c;
-        currentVerse = firstV.v;
-        currentBlockIdx = 0;
-        currentWordIdx = 0;
-
-        renderPlanSectionBar();
-        populateBookSelector();
-        updateSovietGaugeUI();
-        refreshView();
+        tickerAutoRunning = false; wordsAutoRunning = false;
+        const f = sec.rangeData.verses[0];
+        currentBook = f.b; currentChapter = f.c; currentVerse = f.v; currentBlockIdx = 0; currentWordIdx = 0;
+        renderPlanSectionBar(); populateBookSelector(); updateSovietGaugeUI(); refreshView();
         if (displayMode !== 'CHAPTERS') centerCamera(false);
       }
 
       function activatePlanDay(type, dayNum) {
+        if (type === '365s' || type === '365c') ensureYearlyPlans();
         const sections = [];
-
         if (type === '35') {
           const entry = READING_PLAN_35.find((d) => d.day === dayNum);
           if (!entry) return;
           const mainSeq = booksOrder.filter((b) => !WISDOM_BOOK_IDS.includes(b));
           const wisSeq = WISDOM_BOOK_IDS.filter((b) => booksOrder.includes(b));
-
           const rP1 = buildLineRangeData(mainSeq, STD_BOOK_IDS[entry.p1[0]], entry.p1[1], entry.p1[2], STD_BOOK_IDS[entry.p1[3]], entry.p1[4], entry.p1[5], false);
           const rP2 = buildLineRangeData(mainSeq, STD_BOOK_IDS[entry.p2[0]], entry.p2[1], entry.p2[2], STD_BOOK_IDS[entry.p2[3]], entry.p2[4], entry.p2[5], false);
           const rAllMain = buildLineRangeData(mainSeq, STD_BOOK_IDS[entry.p1[0]], entry.p1[1], entry.p1[2], STD_BOOK_IDS[entry.p2[3]], entry.p2[4], entry.p2[5], false);
           const rWis = buildLineRangeData(wisSeq, STD_BOOK_IDS[entry.w[0]], entry.w[1], entry.w[2], STD_BOOK_IDS[entry.w[3]], entry.w[4], entry.w[5], true);
-
           const mainBounds = new Map();
           mainBounds.set(STD_BOOK_IDS[entry.p2[0]] + '_' + entry.p2[1] + '_' + entry.p2[2], 'ПОДХОД 2');
-
-          sections.push({ id: 'p1', label: 'Подход 1', isWisdom: false, rangeData: rP1, subBoundaries: new Map() });
-          sections.push({ id: 'p2', label: 'Подход 2', isWisdom: false, rangeData: rP2, subBoundaries: new Map() });
-          sections.push({ id: 'all_main', label: 'Вся осн.', isWisdom: false, rangeData: rAllMain, subBoundaries: mainBounds });
-          sections.push({ id: 'wisdom', label: 'Мудрость', isWisdom: true, rangeData: rWis, subBoundaries: new Map() });
+          sections.push({ id:'p1', label:'Подход 1', isWisdom:false, rangeData:rP1, subBoundaries:new Map() });
+          sections.push({ id:'p2', label:'Подход 2', isWisdom:false, rangeData:rP2, subBoundaries:new Map() });
+          sections.push({ id:'all_main', label:'Вся осн.', isWisdom:false, rangeData:rAllMain, subBoundaries:mainBounds });
+          sections.push({ id:'wisdom', label:'Мудрость', isWisdom:true, rangeData:rWis, subBoundaries:new Map() });
         } else if (type === '20') {
           const entry = READING_PLAN_20.find((d) => d.day === dayNum);
           if (!entry) return;
           const allBounds = new Map();
-
           for (let i = 0; i < entry.p.length; i++) {
             const seg = entry.p[i];
             const rd = buildLineRangeData(booksOrder, STD_BOOK_IDS[seg[0]], seg[1], seg[2], STD_BOOK_IDS[seg[3]], seg[4], seg[5], false);
-            sections.push({ id: 'p' + (i + 1), label: 'Подход ' + (i + 1), isWisdom: false, rangeData: rd, subBoundaries: new Map() });
-            if (i > 0) {
-              allBounds.set(STD_BOOK_IDS[seg[0]] + '_' + seg[1] + '_' + seg[2], 'ПОДХОД ' + (i + 1));
-            }
+            sections.push({ id:'p' + (i + 1), label:'Подход ' + (i + 1), isWisdom:false, rangeData:rd, subBoundaries:new Map() });
+            if (i > 0) allBounds.set(STD_BOOK_IDS[seg[0]] + '_' + seg[1] + '_' + seg[2], 'ПОДХОД ' + (i + 1));
           }
-
-          const firstSeg = entry.p[0];
-          const lastSeg = entry.p[entry.p.length - 1];
-          const rAllDay = buildLineRangeData(booksOrder, STD_BOOK_IDS[firstSeg[0]], firstSeg[1], firstSeg[2], STD_BOOK_IDS[lastSeg[3]], lastSeg[4], lastSeg[5], false);
-          sections.push({ id: 'all_day', label: 'Весь день', isWisdom: false, rangeData: rAllDay, subBoundaries: allBounds });
+          const fSeg = entry.p[0], lSeg = entry.p[entry.p.length - 1];
+          const rAllDay = buildLineRangeData(booksOrder, STD_BOOK_IDS[fSeg[0]], fSeg[1], fSeg[2], STD_BOOK_IDS[lSeg[3]], lSeg[4], lSeg[5], false);
+          sections.push({ id:'all_day', label:'Весь день', isWisdom:false, rangeData:rAllDay, subBoundaries:allBounds });
         } else if (type === '365s') {
           const entry = READING_PLAN_365_STRAIGHT.find((d) => d.day === dayNum);
           if (!entry) return;
           const rd = buildLineRangeData(booksOrder, entry.r[0], entry.r[1], entry.r[2], entry.r[3], entry.r[4], entry.r[5], false);
-          sections.push({ id: 'day', label: 'День', isWisdom: false, rangeData: rd, subBoundaries: new Map() });
+          sections.push({ id:'day', label:'День', isWisdom:false, rangeData:rd, subBoundaries:new Map() });
         } else if (type === '365c') {
           const entry = READING_PLAN_365_COMBO.find((d) => d.day === dayNum);
           if (!entry) return;
           const rOT = buildLineRangeData(booksOrder, entry.ot[0], entry.ot[1], entry.ot[2], entry.ot[3], entry.ot[4], entry.ot[5], false);
           const rNT = buildLineRangeData(booksOrder, entry.nt[0], entry.nt[1], entry.nt[2], entry.nt[3], entry.nt[4], entry.nt[5], false);
-          sections.push({ id: 'ot', label: 'Ветхий Завет', isWisdom: false, rangeData: rOT, subBoundaries: new Map() });
-          sections.push({ id: 'nt', label: 'Новый Завет', isWisdom: true, rangeData: rNT, subBoundaries: new Map() });
+          sections.push({ id:'ot', label:'Ветхий Завет', isWisdom:false, rangeData:rOT, subBoundaries:new Map() });
+          sections.push({ id:'nt', label:'Новый Завет', isWisdom:true, rangeData:rNT, subBoundaries:new Map() });
         }
-
         if (!sections.length) return;
-        planActive = true;
-        planType = type;
-        planModalTab = type;
-        planDayNum = dayNum;
-        planSections = sections;
-        planActiveSectionId = sections[0].id;
-        tickerAutoRunning = false;
-        wordsAutoRunning = false;
-
+        planActive = true; planType = type; planModalTab = type; planDayNum = dayNum;
+        planSections = sections; planActiveSectionId = sections[0].id;
+        tickerAutoRunning = false; wordsAutoRunning = false;
         const firstV = sections[0].rangeData.verses[0];
-        if (firstV) {
-          currentBook = firstV.b;
-          currentChapter = firstV.c;
-          currentVerse = firstV.v;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-        }
-
-        updatePlanButtonUI();
-        renderPlanSectionBar();
-        populateBookSelector();
-        updateSovietGaugeUI();
-        closePlanModal();
-        refreshView();
+        if (firstV) { currentBook = firstV.b; currentChapter = firstV.c; currentVerse = firstV.v; currentBlockIdx = 0; currentWordIdx = 0; }
+        updatePlanButtonUI(); renderPlanSectionBar(); populateBookSelector(); updateSovietGaugeUI(); closePlanModal(); refreshView();
         if (displayMode !== 'CHAPTERS') centerCamera(false);
       }
 
       function deactivatePlanMode() {
-        planActive = false;
-        planDayNum = 0;
-        planSections = [];
-        planActiveSectionId = '';
-        tickerAutoRunning = false;
-        wordsAutoRunning = false;
-        updatePlanButtonUI();
-        renderPlanSectionBar();
-        populateBookSelector();
-        updateSovietGaugeUI();
-        closePlanModal();
-        refreshView();
+        planActive = false; planDayNum = 0; planSections = []; planActiveSectionId = '';
+        tickerAutoRunning = false; wordsAutoRunning = false;
+        updatePlanButtonUI(); renderPlanSectionBar(); populateBookSelector(); updateSovietGaugeUI(); closePlanModal(); refreshView();
         if (displayMode !== 'CHAPTERS') centerCamera(false);
       }
 
@@ -2186,8 +1305,8 @@
         elPlanTab20.classList.toggle('active', planModalTab === '20');
         elPlanTab365s.classList.toggle('active', planModalTab === '365s');
         elPlanTab365c.classList.toggle('active', planModalTab === '365c');
-
         const isYearly = (planModalTab === '365s' || planModalTab === '365c');
+        if (isYearly) ensureYearlyPlans();
         elPlanJumpRow.style.display = isYearly ? 'flex' : 'none';
         elPlanDaysList.innerHTML = '';
 
@@ -2204,67 +1323,36 @@
           btn.type = 'button';
           btn.className = 'plan-day-card' + (isCurrent ? ' active' : '');
           const dayStr = isYearly ? String(item.day) : String(item.day).padStart(2, '0');
-
           if (planModalTab === '35') {
-            btn.innerHTML =
-              '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div>' +
-              '<div class="plan-day-info">' +
-                '<div class="plan-line-row"><span class="plan-line-badge">Осн.</span>' + escapeHtml(item.ml) + '</div>' +
-                '<div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>' + escapeHtml(item.wl) + '</div>' +
-              '</div>';
+            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">Осн.</span>' + escapeHtml(item.ml) + '</div><div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>' + escapeHtml(item.wl) + '</div></div>';
           } else if (planModalTab === '20') {
-            btn.innerHTML =
-              '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div>' +
-              '<div class="plan-day-info">' +
-                '<div class="plan-line-row">' + escapeHtml(item.ml) + '</div>' +
-                '<div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div>' +
-              '</div>';
+            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div><div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div></div>';
           } else if (planModalTab === '365s') {
-            btn.innerHTML =
-              '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div>' +
-              '<div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div></div>';
+            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div></div>';
           } else {
-            btn.innerHTML =
-              '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div>' +
-              '<div class="plan-day-info">' +
-                '<div class="plan-line-row"><span class="plan-line-badge">ВЗ</span>' + escapeHtml(item.otl) + '</div>' +
-                '<div class="plan-line-row nt"><span class="plan-line-badge">НЗ</span>' + escapeHtml(item.ntl) + '</div>' +
-              '</div>';
+            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">ВЗ</span>' + escapeHtml(item.otl) + '</div><div class="plan-line-row nt"><span class="plan-line-badge">НЗ</span>' + escapeHtml(item.ntl) + '</div></div>';
           }
-
           btn.addEventListener('click', () => activatePlanDay(planModalTab, item.day));
           frag.appendChild(btn);
         }
-
         elPlanDaysList.appendChild(frag);
         const activeCard = elPlanDaysList.querySelector('.plan-day-card.active');
         if (activeCard) activeCard.scrollIntoView({ block: 'center' });
         else elPlanDaysList.scrollTop = 0;
       }
 
-      function openPlanModal() {
-        if (planActive) planModalTab = planType;
-        renderPlanDaysList();
-        elPlanModalBackdrop.classList.add('open');
-      }
+      function openPlanModal() { if (planActive) planModalTab = planType; renderPlanDaysList(); elPlanModalBackdrop.classList.add('open'); }
+      function closePlanModal() { elPlanModalBackdrop.classList.remove('open'); }
 
-      function closePlanModal() {
-        elPlanModalBackdrop.classList.remove('open');
-      }
-
-      // --- ИНДЕКСАЦИЯ И НАВИГАЦИЯ ---
       function buildNavigationIndex() {
-        bookChaptersSorted = {};
-        chapterVersesSorted = {};
+        bookChaptersSorted = {}; chapterVersesSorted = {};
         for (let bi = 0; bi < booksOrder.length; bi++) {
-          const b = booksOrder[bi];
-          const chObj = bibleData[b] || {};
+          const b = booksOrder[bi], chObj = bibleData[b] || {};
           const chKeys = Object.keys(chObj).map(Number).sort((a, z) => a - z);
           bookChaptersSorted[b] = chKeys;
           chapterVersesSorted[b] = {};
           for (let ci = 0; ci < chKeys.length; ci++) {
-            const c = chKeys[ci];
-            const vObj = chObj[c] || {};
+            const c = chKeys[ci], vObj = chObj[c] || {};
             chapterVersesSorted[b][c] = Object.keys(vObj).map(Number).sort((a, z) => a - z);
           }
         }
@@ -2272,32 +1360,25 @@
 
       function getNextVerseRef(b, c, v) {
         if (planActive) {
-          const line = getActivePlanLineObj();
-          if (!line) return null;
-          const idx = line.indexMap.get(b + '_' + c + '_' + v);
-          if (idx === undefined || idx + 1 >= line.verses.length) return null;
-          return line.verses[idx + 1];
+          const l = getActivePlanLineObj();
+          if (!l) return null;
+          const idx = l.indexMap.get(b + '_' + c + '_' + v);
+          return (idx === undefined || idx + 1 >= l.verses.length) ? null : l.verses[idx + 1];
         }
-
         const vList = (chapterVersesSorted[b] && chapterVersesSorted[b][c]) ? chapterVersesSorted[b][c] : [];
         const vi = vList.indexOf(v);
-        if (vi !== -1 && vi + 1 < vList.length) return { b: b, c: c, v: vList[vi + 1] };
-
+        if (vi !== -1 && vi + 1 < vList.length) return { b, c, v: vList[vi + 1] };
         const cList = bookChaptersSorted[b] || [];
         const ci = cList.indexOf(c);
         if (ci !== -1 && ci + 1 < cList.length) {
-          const nc = cList[ci + 1];
-          const nvList = (chapterVersesSorted[b] && chapterVersesSorted[b][nc]) ? chapterVersesSorted[b][nc] : [];
-          if (nvList.length) return { b: b, c: nc, v: nvList[0] };
+          const nc = cList[ci + 1], nvList = (chapterVersesSorted[b] && chapterVersesSorted[b][nc]) ? chapterVersesSorted[b][nc] : [];
+          if (nvList.length) return { b, c: nc, v: nvList[0] };
         }
-
         const bi = booksOrder.indexOf(b);
         if (bi !== -1 && bi + 1 < booksOrder.length) {
-          const nb = booksOrder[bi + 1];
-          const ncList = bookChaptersSorted[nb] || [];
+          const nb = booksOrder[bi + 1], ncList = bookChaptersSorted[nb] || [];
           if (ncList.length) {
-            const fc = ncList[0];
-            const nvList = (chapterVersesSorted[nb] && chapterVersesSorted[nb][fc]) ? chapterVersesSorted[nb][fc] : [];
+            const fc = ncList[0], nvList = (chapterVersesSorted[nb] && chapterVersesSorted[nb][fc]) ? chapterVersesSorted[nb][fc] : [];
             if (nvList.length) return { b: nb, c: fc, v: nvList[0] };
           }
         }
@@ -2306,32 +1387,25 @@
 
       function getPrevVerseRef(b, c, v) {
         if (planActive) {
-          const line = getActivePlanLineObj();
-          if (!line) return null;
-          const idx = line.indexMap.get(b + '_' + c + '_' + v);
-          if (idx === undefined || idx <= 0) return null;
-          return line.verses[idx - 1];
+          const l = getActivePlanLineObj();
+          if (!l) return null;
+          const idx = l.indexMap.get(b + '_' + c + '_' + v);
+          return (idx === undefined || idx <= 0) ? null : l.verses[idx - 1];
         }
-
         const vList = (chapterVersesSorted[b] && chapterVersesSorted[b][c]) ? chapterVersesSorted[b][c] : [];
         const vi = vList.indexOf(v);
-        if (vi > 0) return { b: b, c: c, v: vList[vi - 1] };
-
+        if (vi > 0) return { b, c, v: vList[vi - 1] };
         const cList = bookChaptersSorted[b] || [];
         const ci = cList.indexOf(c);
         if (ci > 0) {
-          const pc = cList[ci - 1];
-          const pvList = (chapterVersesSorted[b] && chapterVersesSorted[b][pc]) ? chapterVersesSorted[b][pc] : [];
-          if (pvList.length) return { b: b, c: pc, v: pvList[pvList.length - 1] };
+          const pc = cList[ci - 1], pvList = (chapterVersesSorted[b] && chapterVersesSorted[b][pc]) ? chapterVersesSorted[b][pc] : [];
+          if (pvList.length) return { b, c: pc, v: pvList[pvList.length - 1] };
         }
-
         const bi = booksOrder.indexOf(b);
         if (bi > 0) {
-          const pb = booksOrder[bi - 1];
-          const pcList = bookChaptersSorted[pb] || [];
+          const pb = booksOrder[bi - 1], pcList = bookChaptersSorted[pb] || [];
           if (pcList.length) {
-            const lc = pcList[pcList.length - 1];
-            const pvList = (chapterVersesSorted[pb] && chapterVersesSorted[pb][lc]) ? chapterVersesSorted[pb][lc] : [];
+            const lc = pcList[pcList.length - 1], pvList = (chapterVersesSorted[pb] && chapterVersesSorted[pb][lc]) ? chapterVersesSorted[pb][lc] : [];
             if (pvList.length) return { b: pb, c: lc, v: pvList[pvList.length - 1] };
           }
         }
@@ -2340,7 +1414,7 @@
 
       function getNextWordPos(b, c, v, wIdx) {
         const words = getVerseWordsCached(b, c, v);
-        if (wIdx + 1 < words.length) return { b: b, c: c, v: v, wIdx: wIdx + 1, text: words[wIdx + 1] };
+        if (wIdx + 1 < words.length) return { b, c, v, wIdx: wIdx + 1, text: words[wIdx + 1] };
         const nv = getNextVerseRef(b, c, v);
         if (!nv) return null;
         const nWords = getVerseWordsCached(nv.b, nv.c, nv.v);
@@ -2349,7 +1423,7 @@
 
       function getPrevWordPos(b, c, v, wIdx) {
         const words = getVerseWordsCached(b, c, v);
-        if (wIdx > 0) return { b: b, c: c, v: v, wIdx: wIdx - 1, text: words[wIdx - 1] };
+        if (wIdx > 0) return { b, c, v, wIdx: wIdx - 1, text: words[wIdx - 1] };
         const pv = getPrevVerseRef(b, c, v);
         if (!pv) return null;
         const pWords = getVerseWordsCached(pv.b, pv.c, pv.v);
@@ -2357,26 +1431,16 @@
       }
 
       function getAllowedChapters(bookId) {
-        if (planActive) {
-          const line = getActivePlanLineObj();
-          return (line && line.chaptersByBook[bookId]) ? line.chaptersByBook[bookId] : [];
-        }
+        if (planActive) { const l = getActivePlanLineObj(); return (l && l.chaptersByBook[bookId]) ? l.chaptersByBook[bookId] : []; }
         return bookChaptersSorted[bookId] || [];
       }
-
       function getAllowedVerses(bookId, chapNum) {
-        if (planActive) {
-          const line = getActivePlanLineObj();
-          return (line && line.versesByBookChap[bookId + '_' + chapNum]) ? line.versesByBookChap[bookId + '_' + chapNum] : [];
-        }
+        if (planActive) { const l = getActivePlanLineObj(); return (l && l.versesByBookChap[bookId + '_' + chapNum]) ? l.versesByBookChap[bookId + '_' + chapNum] : []; }
         return (chapterVersesSorted[bookId] && chapterVersesSorted[bookId][chapNum]) ? chapterVersesSorted[bookId][chapNum] : [];
       }
 
       function recalculateChapterTotals() {
-        chapterBlockOffsets = {};
-        chapterWordOffsets = {};
-        chapterTotalBlocks = 0;
-        chapterTotalWords = 0;
+        chapterBlockOffsets = {}; chapterWordOffsets = {}; chapterTotalBlocks = 0; chapterTotalWords = 0;
         const vList = getAllowedVerses(currentBook, currentChapter);
         for (let i = 0; i < vList.length; i++) {
           const v = vList[i];
@@ -2392,17 +1456,15 @@
 
       function populateBookSelector() {
         elBookSel.innerHTML = '';
-        const line = getActivePlanLineObj();
-        const allowedBooks = planActive ? (line ? line.books : []) : booksOrder;
-        for (let i = 0; i < allowedBooks.length; i++) {
-          const b = allowedBooks[i];
-          const opt = document.createElement('option');
-          opt.value = String(b);
-          opt.textContent = booksNames[b] || ('Книга ' + b);
+        const l = getActivePlanLineObj();
+        const allowed = planActive ? (l ? l.books : []) : booksOrder;
+        for (let i = 0; i < allowed.length; i++) {
+          const b = allowed[i], opt = document.createElement('option');
+          opt.value = String(b); opt.textContent = booksNames[b] || ('Книга ' + b);
           elBookSel.appendChild(opt);
         }
-        if (allowedBooks.length) {
-          if (!allowedBooks.includes(currentBook)) currentBook = allowedBooks[0];
+        if (allowed.length) {
+          if (!allowed.includes(currentBook)) currentBook = allowed[0];
           elBookSel.value = String(currentBook);
           populateChapterSelector();
         }
@@ -2412,10 +1474,8 @@
         elChapSel.innerHTML = '';
         const chList = getAllowedChapters(currentBook);
         for (let i = 0; i < chList.length; i++) {
-          const c = chList[i];
           const opt = document.createElement('option');
-          opt.value = c;
-          opt.textContent = 'Гл. ' + c;
+          opt.value = chList[i]; opt.textContent = 'Гл. ' + chList[i];
           elChapSel.appendChild(opt);
         }
         if (chList.length) {
@@ -2430,10 +1490,8 @@
         elVerseSel.innerHTML = '';
         const vList = getAllowedVerses(currentBook, currentChapter);
         for (let i = 0; i < vList.length; i++) {
-          const v = vList[i];
           const opt = document.createElement('option');
-          opt.value = v;
-          opt.textContent = 'Ст. ' + v;
+          opt.value = vList[i]; opt.textContent = 'Ст. ' + vList[i];
           elVerseSel.appendChild(opt);
         }
         if (vList.length) {
@@ -2452,153 +1510,76 @@
       }
 
       function syncSelectorsToCurrent() {
-        if (elBookSel.value !== String(currentBook)) {
-          elBookSel.value = String(currentBook);
-        }
+        if (elBookSel.value !== String(currentBook)) elBookSel.value = String(currentBook);
         populateChapterSelector();
       }
 
       function advanceChapter(delta) {
-        const chList = getAllowedChapters(currentBook);
-        const pos = chList.indexOf(currentChapter);
+        const chList = getAllowedChapters(currentBook), pos = chList.indexOf(currentChapter);
         if (pos === -1) return false;
         const nextPos = pos + delta;
         if (nextPos >= 0 && nextPos < chList.length) {
-          currentChapter = chList[nextPos];
-          elChapSel.value = currentChapter;
-          const nextVList = getAllowedVerses(currentBook, currentChapter);
-          currentVerse = nextVList.length ? nextVList[0] : 1;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-          recalculateChapterTotals();
-          populateVerseSelector();
-          return true;
+          currentChapter = chList[nextPos]; elChapSel.value = currentChapter;
+          const nv = getAllowedVerses(currentBook, currentChapter);
+          currentVerse = nv.length ? nv[0] : 1; currentBlockIdx = 0; currentWordIdx = 0;
+          recalculateChapterTotals(); populateVerseSelector(); return true;
         }
-
-        const line = getActivePlanLineObj();
-        const bookList = planActive ? (line ? line.books : []) : booksOrder;
-        const bi = bookList.indexOf(currentBook);
+        const l = getActivePlanLineObj(), bookList = planActive ? (l ? l.books : []) : booksOrder, bi = bookList.indexOf(currentBook);
         if (delta > 0 && bi !== -1 && bi + 1 < bookList.length) {
           currentBook = bookList[bi + 1];
-          const ncList = getAllowedChapters(currentBook);
-          currentChapter = ncList.length ? ncList[0] : 1;
-          const nvList = getAllowedVerses(currentBook, currentChapter);
-          currentVerse = nvList.length ? nvList[0] : 1;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-          syncSelectorsToCurrent();
-          return true;
+          const nc = getAllowedChapters(currentBook); currentChapter = nc.length ? nc[0] : 1;
+          const nv = getAllowedVerses(currentBook, currentChapter); currentVerse = nv.length ? nv[0] : 1;
+          currentBlockIdx = 0; currentWordIdx = 0; syncSelectorsToCurrent(); return true;
         } else if (delta < 0 && bi > 0) {
           currentBook = bookList[bi - 1];
-          const pcList = getAllowedChapters(currentBook);
-          currentChapter = pcList.length ? pcList[pcList.length - 1] : 1;
-          const pvList = getAllowedVerses(currentBook, currentChapter);
-          currentVerse = pvList.length ? pvList[0] : 1;
-          currentBlockIdx = 0;
-          currentWordIdx = 0;
-          syncSelectorsToCurrent();
-          return true;
+          const pc = getAllowedChapters(currentBook); currentChapter = pc.length ? pc[pc.length - 1] : 1;
+          const pv = getAllowedVerses(currentBook, currentChapter); currentVerse = pv.length ? pv[0] : 1;
+          currentBlockIdx = 0; currentWordIdx = 0; syncSelectorsToCurrent(); return true;
         }
         return false;
       }
 
       function advanceVerse(delta) {
-        const nextRef = delta > 0
-          ? getNextVerseRef(currentBook, currentChapter, currentVerse)
-          : getPrevVerseRef(currentBook, currentChapter, currentVerse);
+        const nextRef = delta > 0 ? getNextVerseRef(currentBook, currentChapter, currentVerse) : getPrevVerseRef(currentBook, currentChapter, currentVerse);
         if (!nextRef) return false;
-
-        const bookChanged = nextRef.b !== currentBook;
-        const chapChanged = bookChanged || nextRef.c !== currentChapter;
-
-        currentBook = nextRef.b;
-        currentChapter = nextRef.c;
-        currentVerse = nextRef.v;
-
-        if (bookChanged) {
-          syncSelectorsToCurrent();
-        } else if (chapChanged) {
-          elChapSel.value = currentChapter;
-          recalculateChapterTotals();
-          populateVerseSelector();
-        } else {
-          elVerseSel.value = currentVerse;
-          rebuildCurrentVerseUnits();
-        }
+        const bookChanged = nextRef.b !== currentBook, chapChanged = bookChanged || nextRef.c !== currentChapter;
+        currentBook = nextRef.b; currentChapter = nextRef.c; currentVerse = nextRef.v;
+        if (bookChanged) syncSelectorsToCurrent();
+        else if (chapChanged) { elChapSel.value = currentChapter; recalculateChapterTotals(); populateVerseSelector(); }
+        else { elVerseSel.value = currentVerse; rebuildCurrentVerseUnits(); }
         return true;
       }
 
       function stepForward() {
         if (displayMode === 'BLOCKS') {
-          if (currentBlockIdx + 1 < currentBlocks.length) {
-            currentBlockIdx++;
-            refreshView();
-            return true;
-          } else if (advanceVerse(1)) {
-            currentBlockIdx = 0;
-            refreshView();
-            return true;
-          }
+          if (currentBlockIdx + 1 < currentBlocks.length) { currentBlockIdx++; refreshView(); return true; }
+          if (advanceVerse(1)) { currentBlockIdx = 0; refreshView(); return true; }
         } else if (displayMode === 'WORDS') {
-          if (currentWordIdx + 1 < currentWords.length) {
-            currentWordIdx++;
-            refreshView();
-            return true;
-          } else if (advanceVerse(1)) {
-            currentWordIdx = 0;
-            refreshView();
-            return true;
-          }
+          if (currentWordIdx + 1 < currentWords.length) { currentWordIdx++; refreshView(); return true; }
+          if (advanceVerse(1)) { currentWordIdx = 0; refreshView(); return true; }
         } else if (displayMode === 'VERSES') {
-          if (advanceVerse(1)) {
-            refreshView();
-            return true;
-          }
+          if (advanceVerse(1)) { refreshView(); return true; }
         } else if (displayMode === 'CHAPTERS') {
-          if (advanceChapter(1)) {
-            refreshView();
-            return true;
-          }
+          if (advanceChapter(1)) { refreshView(); return true; }
         }
         return false;
       }
 
       function stepBackward() {
         if (displayMode === 'BLOCKS') {
-          if (currentBlockIdx > 0) {
-            currentBlockIdx--;
-            refreshView();
-            return true;
-          } else if (advanceVerse(-1)) {
-            currentBlockIdx = Math.max(0, currentBlocks.length - 1);
-            refreshView();
-            return true;
-          }
+          if (currentBlockIdx > 0) { currentBlockIdx--; refreshView(); return true; }
+          if (advanceVerse(-1)) { currentBlockIdx = Math.max(0, currentBlocks.length - 1); refreshView(); return true; }
         } else if (displayMode === 'WORDS') {
-          if (currentWordIdx > 0) {
-            currentWordIdx--;
-            refreshView();
-            return true;
-          } else if (advanceVerse(-1)) {
-            currentWordIdx = Math.max(0, currentWords.length - 1);
-            refreshView();
-            return true;
-          }
+          if (currentWordIdx > 0) { currentWordIdx--; refreshView(); return true; }
+          if (advanceVerse(-1)) { currentWordIdx = Math.max(0, currentWords.length - 1); refreshView(); return true; }
         } else if (displayMode === 'VERSES') {
-          if (advanceVerse(-1)) {
-            refreshView();
-            return true;
-          }
+          if (advanceVerse(-1)) { refreshView(); return true; }
         } else if (displayMode === 'CHAPTERS') {
-          if (advanceChapter(-1)) {
-            refreshView();
-            return true;
-          }
+          if (advanceChapter(-1)) { refreshView(); return true; }
         }
         return false;
       }
 
-      // --- НЕОНОВЫЕ ГРАНИЦЫ ДЛЯ ЛЕНТ ---
       function createNeonGateEl(type, customLabel) {
         const gate = document.createElement('span');
         gate.className = 'neon-gate ' + type;
@@ -2607,7 +1588,6 @@
         return gate;
       }
 
-      // --- ДВИЖОК БЕСКОНЕЧНОЙ БЕГУЩЕЙ СТРОКИ (TICKER) ---
       function getTickerBufferPx() {
         const visibleWorldW = (elWorkspace.clientWidth || window.innerWidth) / Math.max(TICKER_MIN_ZOOM, canvasZoom);
         return Math.max(2400, Math.ceil(visibleWorldW * 0.95));
@@ -2620,8 +1600,7 @@
           const subLbl = getSubBoundaryLabelAt(pos.b, pos.c, pos.v);
           if (subLbl) span.appendChild(createNeonGateEl('mid', subLbl));
           const tag = document.createElement('span');
-          tag.className = 'ticker-vtag';
-          tag.textContent = String(pos.v);
+          tag.className = 'ticker-vtag'; tag.textContent = String(pos.v);
           span.appendChild(tag);
         }
         span.appendChild(document.createTextNode(pos.text));
@@ -2630,81 +1609,49 @@
 
       function calibrateTickerWordPx() {
         const probe = document.createElement('span');
-        probe.className = 'ticker-item';
-        probe.style.visibility = 'hidden';
-        probe.style.position = 'absolute';
-        probe.textContent = 'словом';
+        probe.className = 'ticker-item'; probe.style.visibility = 'hidden'; probe.style.position = 'absolute'; probe.textContent = 'словом';
         elTickerTape.appendChild(probe);
-        const w = probe.offsetWidth;
-        probe.remove();
+        const w = probe.offsetWidth; probe.remove();
         if (w > 40) tickerAvgWordPx = w;
       }
 
       function rebuildTickerFromCurrent() {
-        elTickerTape.innerHTML = '';
-        tickerItems = [];
-        tickerTotalWidth = 0;
-        tickerStartGateEl = null;
-        tickerEndGateEl = null;
-        tickerStartGateW = 0;
-        tickerEndGateW = 0;
-
+        elTickerTape.innerHTML = ''; tickerItems = []; tickerTotalWidth = 0;
+        tickerStartGateEl = null; tickerEndGateEl = null; tickerStartGateW = 0; tickerEndGateW = 0;
         calibrateTickerWordPx();
-
-        const startText = currentWords[currentWordIdx] || '—';
-        const centerPos = {
-          b: currentBook,
-          c: currentChapter,
-          v: currentVerse,
-          wIdx: currentWordIdx,
-          text: startText
-        };
-
+        const centerPos = { b: currentBook, c: currentChapter, v: currentVerse, wIdx: currentWordIdx, text: currentWords[currentWordIdx] || '—' };
         const centerEl = createTickerSpan(centerPos);
         elTickerTape.appendChild(centerEl);
         const centerW = centerEl.offsetWidth;
-        tickerItems.push({ b: centerPos.b, c: centerPos.c, v: centerPos.v, wIdx: centerPos.wIdx, text: centerPos.text, el: centerEl, width: centerW });
-        tickerTotalWidth = centerW;
-        tickerScrollX = -centerW * 0.5;
-
+        tickerItems.push({ ...centerPos, el: centerEl, width: centerW });
+        tickerTotalWidth = centerW; tickerScrollX = -centerW * 0.5;
         fillTickerBuffers();
         elTickerTape.style.transform = 'translate3d(' + tickerScrollX + 'px, -50%, 0)';
       }
 
       function updateTickerGates() {
         if (!tickerItems.length) return;
-        const first = tickerItems[0];
-        const last = tickerItems[tickerItems.length - 1];
+        const first = tickerItems[0], last = tickerItems[tickerItems.length - 1];
         const atStart = planActive && !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
         const atEnd = planActive && !getNextWordPos(last.b, last.c, last.v, last.wIdx);
-
         if (atStart && !tickerStartGateEl) {
           tickerStartGateEl = createNeonGateEl('start', '');
           elTickerTape.insertBefore(tickerStartGateEl, elTickerTape.firstChild);
-          tickerStartGateW = tickerStartGateEl.offsetWidth + 44;
-          tickerScrollX -= tickerStartGateW;
+          tickerStartGateW = tickerStartGateEl.offsetWidth + 44; tickerScrollX -= tickerStartGateW;
         } else if (!atStart && tickerStartGateEl) {
-          tickerStartGateEl.remove();
-          tickerStartGateEl = null;
-          tickerScrollX += tickerStartGateW;
-          tickerStartGateW = 0;
+          tickerStartGateEl.remove(); tickerStartGateEl = null; tickerScrollX += tickerStartGateW; tickerStartGateW = 0;
         }
-
         if (atEnd && !tickerEndGateEl) {
           tickerEndGateEl = createNeonGateEl('end', '');
-          elTickerTape.appendChild(tickerEndGateEl);
-          tickerEndGateW = tickerEndGateEl.offsetWidth + 44;
+          elTickerTape.appendChild(tickerEndGateEl); tickerEndGateW = tickerEndGateEl.offsetWidth + 44;
         } else if (!atEnd && tickerEndGateEl) {
-          tickerEndGateEl.remove();
-          tickerEndGateEl = null;
-          tickerEndGateW = 0;
+          tickerEndGateEl.remove(); tickerEndGateEl = null; tickerEndGateW = 0;
         }
       }
 
       function fillTickerBuffers() {
         if (!tickerItems.length) return;
         const bufPx = getTickerBufferPx();
-
         while ((tickerTotalWidth + tickerStartGateW + tickerScrollX) < bufPx) {
           const last = tickerItems[tickerItems.length - 1];
           const nextPos = getNextWordPos(last.b, last.c, last.v, last.wIdx);
@@ -2713,10 +1660,8 @@
           if (tickerEndGateEl) elTickerTape.insertBefore(el, tickerEndGateEl);
           else elTickerTape.appendChild(el);
           const w = el.offsetWidth;
-          tickerItems.push({ b: nextPos.b, c: nextPos.c, v: nextPos.v, wIdx: nextPos.wIdx, text: nextPos.text, el: el, width: w });
-          tickerTotalWidth += w;
+          tickerItems.push({ ...nextPos, el, width: w }); tickerTotalWidth += w;
         }
-
         while ((-(tickerScrollX + tickerStartGateW)) < bufPx) {
           const first = tickerItems[0];
           const prevPos = getPrevWordPos(first.b, first.c, first.v, first.wIdx);
@@ -2725,155 +1670,68 @@
           if (tickerStartGateEl) elTickerTape.insertBefore(el, tickerStartGateEl.nextSibling);
           else elTickerTape.insertBefore(el, elTickerTape.firstChild);
           const w = el.offsetWidth;
-          tickerItems.unshift({ b: prevPos.b, c: prevPos.c, v: prevPos.v, wIdx: prevPos.wIdx, text: prevPos.text, el: el, width: w });
-          tickerTotalWidth += w;
-          tickerScrollX -= w;
+          tickerItems.unshift({ ...prevPos, el, width: w }); tickerTotalWidth += w; tickerScrollX -= w;
         }
-
         while (tickerItems.length > 16 && ((-(tickerScrollX + tickerStartGateW)) - tickerItems[0].width) > bufPx + 700) {
-          const removed = tickerItems.shift();
-          removed.el.remove();
-          tickerScrollX += removed.width;
-          tickerTotalWidth -= removed.width;
+          const r = tickerItems.shift(); r.el.remove(); tickerScrollX += r.width; tickerTotalWidth -= r.width;
         }
-
         while (tickerItems.length > 16 && ((tickerTotalWidth + tickerStartGateW + tickerScrollX) - tickerItems[tickerItems.length - 1].width) > bufPx + 700) {
-          const removed = tickerItems.pop();
-          removed.el.remove();
-          tickerTotalWidth -= removed.width;
+          const r = tickerItems.pop(); r.el.remove(); tickerTotalWidth -= r.width;
         }
-
         updateTickerGates();
       }
 
       function syncCurrentFromTickerCenter() {
         if (!tickerItems.length) return;
-        let acc = tickerScrollX + tickerStartGateW;
-        let found = tickerItems[tickerItems.length - 1];
+        let acc = tickerScrollX + tickerStartGateW, found = tickerItems[tickerItems.length - 1];
         for (let i = 0; i < tickerItems.length; i++) {
-          const item = tickerItems[i];
-          if (acc + item.width >= 0) {
-            found = item;
-            break;
-          }
-          acc += item.width;
+          if (acc + tickerItems[i].width >= 0) { found = tickerItems[i]; break; }
+          acc += tickerItems[i].width;
         }
-
-        if (
-          found.b === currentBook &&
-          found.c === currentChapter &&
-          found.v === currentVerse &&
-          found.wIdx === currentWordIdx
-        ) {
-          return;
-        }
-
-        const bookChanged = found.b !== currentBook;
-        const chapChanged = bookChanged || found.c !== currentChapter;
-        const verseChanged = chapChanged || found.v !== currentVerse;
-
-        currentBook = found.b;
-        currentChapter = found.c;
-        currentVerse = found.v;
-        currentWordIdx = found.wIdx;
-
+        if (found.b === currentBook && found.c === currentChapter && found.v === currentVerse && found.wIdx === currentWordIdx) return;
+        const bookChanged = found.b !== currentBook, chapChanged = bookChanged || found.c !== currentChapter, verseChanged = chapChanged || found.v !== currentVerse;
+        currentBook = found.b; currentChapter = found.c; currentVerse = found.v; currentWordIdx = found.wIdx;
         if (bookChanged) {
-          elBookSel.value = String(currentBook);
-          elChapSel.innerHTML = '';
-          const chs = getAllowedChapters(currentBook);
-          for (let i = 0; i < chs.length; i++) {
-            const opt = document.createElement('option');
-            opt.value = chs[i];
-            opt.textContent = 'Гл. ' + chs[i];
-            elChapSel.appendChild(opt);
-          }
+          elBookSel.value = String(currentBook); elChapSel.innerHTML = '';
+          getAllowedChapters(currentBook).forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = 'Гл. ' + c; elChapSel.appendChild(o); });
         }
         if (chapChanged) {
-          elChapSel.value = currentChapter;
-          recalculateChapterTotals();
-          elVerseSel.innerHTML = '';
-          const vs = getAllowedVerses(currentBook, currentChapter);
-          for (let i = 0; i < vs.length; i++) {
-            const opt = document.createElement('option');
-            opt.value = vs[i];
-            opt.textContent = 'Ст. ' + vs[i];
-            elVerseSel.appendChild(opt);
-          }
+          elChapSel.value = currentChapter; recalculateChapterTotals(); elVerseSel.innerHTML = '';
+          getAllowedVerses(currentBook, currentChapter).forEach((v) => { const o = document.createElement('option'); o.value = v; o.textContent = 'Ст. ' + v; elVerseSel.appendChild(o); });
         }
-        if (verseChanged) {
-          elVerseSel.value = currentVerse;
-          currentWords = getVerseWordsCached(currentBook, currentChapter, currentVerse);
-        }
-
-        updateProgressBars();
-        updateStatusBar();
+        if (verseChanged) { elVerseSel.value = currentVerse; currentWords = getVerseWordsCached(currentBook, currentChapter, currentVerse); }
+        updateProgressBars(); updateStatusBar();
       }
 
-      // --- ЕДИНЫЙ СОВЕТСКИЙ ПРИБОР ---
-      function getActiveSpeedWpm() {
-        return displayMode === 'WORDS' ? wordsWpm : tickerWpm;
-      }
-
-      function setActiveSpeedWpm(val) {
-        if (displayMode === 'WORDS') wordsWpm = val;
-        else tickerWpm = val;
-      }
-
-      function isActiveAutoRunning() {
-        return displayMode === 'WORDS' ? wordsAutoRunning : tickerAutoRunning;
-      }
+      function getActiveSpeedWpm() { return displayMode === 'WORDS' ? wordsWpm : tickerWpm; }
+      function setActiveSpeedWpm(val) { if (displayMode === 'WORDS') wordsWpm = val; else tickerWpm = val; }
+      function isActiveAutoRunning() { return displayMode === 'WORDS' ? wordsAutoRunning : tickerAutoRunning; }
 
       function toggleActiveAutoRunning() {
-        if (displayMode === 'WORDS') {
-          wordsAutoRunning = !wordsAutoRunning;
-          wordsAccum = 0;
-          wordsLastTime = performance.now();
-        } else if (displayMode === 'TICKER') {
-          tickerAutoRunning = !tickerAutoRunning;
-        }
-        updateSovietGaugeUI();
-        updateStatusBar();
+        if (displayMode === 'WORDS') { wordsAutoRunning = !wordsAutoRunning; wordsAccum = 0; wordsLastTime = performance.now(); }
+        else if (displayMode === 'TICKER') { tickerAutoRunning = !tickerAutoRunning; }
+        updateSovietGaugeUI(); updateStatusBar();
       }
 
       function updateSovietGaugeUI() {
-        const wpm = getActiveSpeedWpm();
-        const running = isActiveAutoRunning();
+        const wpm = getActiveSpeedWpm(), running = isActiveAutoRunning();
         elGaugeWpmVal.textContent = String(wpm);
-        const t = (wpm - SPEED_MIN_WPM) / (SPEED_MAX_WPM - SPEED_MIN_WPM);
-        const deg = -82 + t * 164;
+        const deg = -82 + ((wpm - SPEED_MIN_WPM) / (SPEED_MAX_WPM - SPEED_MIN_WPM)) * 164;
         elGaugeNeedle.style.transform = 'rotate(' + deg.toFixed(1) + 'deg)';
-
         elTickerInvertBtn.style.display = displayMode === 'TICKER' ? 'inline-flex' : 'none';
         elTickerInvertBtn.classList.toggle('active', tickerInverted);
-
-        if (running) {
-          elSpeedPlayBtn.innerHTML = SVG_PAUSE;
-          elSpeedPlayBtn.classList.add('running');
-        } else {
-          elSpeedPlayBtn.innerHTML = SVG_PLAY;
-          elSpeedPlayBtn.classList.remove('running');
-        }
+        elSpeedPlayBtn.innerHTML = running ? SVG_PAUSE : SVG_PLAY;
+        elSpeedPlayBtn.classList.toggle('running', running);
       }
 
-      // --- iOS-РУЛЕТКА СКОРОСТИ ---
       function buildIosSpeedRuler() {
-        elIosRulerTrack.innerHTML = '';
-        rulerTickEls = [];
+        elIosRulerTrack.innerHTML = ''; rulerTickEls = [];
         for (let w = SPEED_MIN_WPM; w <= SPEED_MAX_WPM; w += SPEED_STEP_WPM) {
-          const tick = document.createElement('div');
-          const isMajor = (w % 50 === 0);
+          const tick = document.createElement('div'), isMajor = (w % 50 === 0);
           tick.className = 'ios-tick' + (isMajor ? ' major' : '');
-          if (isMajor) {
-            const num = document.createElement('span');
-            num.className = 'ios-tick-num';
-            num.textContent = String(w);
-            tick.appendChild(num);
-          }
-          const bar = document.createElement('div');
-          bar.className = 'ios-tick-bar';
-          tick.appendChild(bar);
-          elIosRulerTrack.appendChild(tick);
-          rulerTickEls.push({ wpm: w, el: tick });
+          if (isMajor) { const num = document.createElement('span'); num.className = 'ios-tick-num'; num.textContent = String(w); tick.appendChild(num); }
+          const bar = document.createElement('div'); bar.className = 'ios-tick-bar'; tick.appendChild(bar);
+          elIosRulerTrack.appendChild(tick); rulerTickEls.push({ wpm: w, el: tick });
         }
       }
 
@@ -2884,116 +1742,61 @@
         rulerOffset = -(idx * RULER_TICK_PX + RULER_TICK_PX * 0.5);
         elIosRulerTrack.style.transition = smooth ? 'transform 0.14s ease-out' : 'none';
         elIosRulerTrack.style.transform = 'translate3d(' + rulerOffset + 'px, 0, 0)';
-        highlightRulerTick(idx);
-      }
-
-      function highlightRulerTick(activeIdx) {
         elIosBigWpm.textContent = String(rulerTempWpm);
-        for (let i = 0; i < rulerTickEls.length; i++) {
-          rulerTickEls[i].el.classList.toggle('selected', i === activeIdx);
-        }
+        for (let i = 0; i < rulerTickEls.length; i++) rulerTickEls[i].el.classList.toggle('selected', i === idx);
       }
 
-      function openIosSpeedPicker() {
-        elIosBackdrop.classList.add('open');
-        setRulerPositionFromWpm(getActiveSpeedWpm(), false);
-      }
-
-      function closeIosSpeedPicker() {
-        elIosBackdrop.classList.remove('open');
-      }
-
-      function handleRulerStart(clientX) {
-        rulerDragging = true;
-        rulerStartX = clientX;
-        rulerStartOffset = rulerOffset;
-        elIosRulerTrack.style.transition = 'none';
-      }
-
-      function handleRulerMove(clientX) {
+      function openIosSpeedPicker() { elIosBackdrop.classList.add('open'); setRulerPositionFromWpm(getActiveSpeedWpm(), false); }
+      function closeIosSpeedPicker() { elIosBackdrop.classList.remove('open'); }
+      function handleRulerStart(x) { rulerDragging = true; rulerStartX = x; rulerStartOffset = rulerOffset; elIosRulerTrack.style.transition = 'none'; }
+      function handleRulerMove(x) {
         if (!rulerDragging) return;
-        const dx = clientX - rulerStartX;
         const maxIdx = rulerTickEls.length - 1;
-        const minOff = -(maxIdx * RULER_TICK_PX + RULER_TICK_PX * 0.5);
-        const maxOff = -(RULER_TICK_PX * 0.5);
-        rulerOffset = Math.max(minOff, Math.min(maxOff, rulerStartOffset + dx));
+        rulerOffset = Math.max(-(maxIdx * RULER_TICK_PX + RULER_TICK_PX * 0.5), Math.min(-(RULER_TICK_PX * 0.5), rulerStartOffset + (x - rulerStartX)));
         elIosRulerTrack.style.transform = 'translate3d(' + rulerOffset + 'px, 0, 0)';
-
         const idx = Math.max(0, Math.min(maxIdx, Math.round((-rulerOffset - RULER_TICK_PX * 0.5) / RULER_TICK_PX)));
         rulerTempWpm = SPEED_MIN_WPM + idx * SPEED_STEP_WPM;
-        highlightRulerTick(idx);
+        elIosBigWpm.textContent = String(rulerTempWpm);
+        for (let i = 0; i < rulerTickEls.length; i++) rulerTickEls[i].el.classList.toggle('selected', i === idx);
       }
+      function handleRulerEnd() { if (!rulerDragging) return; rulerDragging = false; setRulerPositionFromWpm(rulerTempWpm, true); }
 
-      function handleRulerEnd() {
-        if (!rulerDragging) return;
-        rulerDragging = false;
-        setRulerPositionFromWpm(rulerTempWpm, true);
-      }
-
-      elIosRulerViewport.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (e.touches.length) handleRulerStart(e.touches[0].clientX);
-      }, { passive: false });
-      elIosRulerViewport.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (e.touches.length) handleRulerMove(e.touches[0].clientX);
-      }, { passive: false });
-      elIosRulerViewport.addEventListener('touchend', () => handleRulerEnd());
-
+      elIosRulerViewport.addEventListener('touchstart', (e) => { e.preventDefault(); if (e.touches.length) handleRulerStart(e.touches[0].clientX); }, { passive: false });
+      elIosRulerViewport.addEventListener('touchmove', (e) => { e.preventDefault(); if (e.touches.length) handleRulerMove(e.touches[0].clientX); }, { passive: false });
+      elIosRulerViewport.addEventListener('touchend', handleRulerEnd);
       elIosRulerViewport.addEventListener('mousedown', (e) => handleRulerStart(e.clientX));
       window.addEventListener('mousemove', (e) => { if (rulerDragging) handleRulerMove(e.clientX); });
-      window.addEventListener('mouseup', () => handleRulerEnd());
+      window.addEventListener('mouseup', handleRulerEnd);
 
       elSovietGaugeBtn.addEventListener('click', openIosSpeedPicker);
-      elIosBackdrop.addEventListener('click', (e) => {
-        if (e.target === elIosBackdrop) closeIosSpeedPicker();
-      });
-      elIosConfirmBtn.addEventListener('click', () => {
-        setActiveSpeedWpm(rulerTempWpm);
-        updateSovietGaugeUI();
-        updateStatusBar();
-        closeIosSpeedPicker();
-      });
-
+      elIosBackdrop.addEventListener('click', (e) => { if (e.target === elIosBackdrop) closeIosSpeedPicker(); });
+      elIosConfirmBtn.addEventListener('click', () => { setActiveSpeedWpm(rulerTempWpm); updateSovietGaugeUI(); updateStatusBar(); closeIosSpeedPicker(); });
       elSpeedPlayBtn.addEventListener('click', toggleActiveAutoRunning);
+      elTickerInvertBtn.addEventListener('click', () => { tickerInverted = !tickerInverted; updateSovietGaugeUI(); updateStatusBar(); });
 
-      elTickerInvertBtn.addEventListener('click', () => {
-        tickerInverted = !tickerInverted;
-        updateSovietGaugeUI();
-        updateStatusBar();
-      });
-
-      // --- ОТРИСОВКА ---
       function getPlanShortTag() {
         if (!planActive) return '';
         const sec = getActivePlanSection();
-        const secLbl = (sec && planSections.length > 1) ? (' • ' + sec.label) : '';
-        return 'День ' + planDayNum + secLbl;
+        return 'День ' + planDayNum + ((sec && planSections.length > 1) ? (' • ' + sec.label) : '');
       }
 
       function updateProgressBars() {
-        const bookTitle = booksNames[currentBook] || 'Книга';
-        const pTag = getPlanShortTag();
+        const bookTitle = booksNames[currentBook] || 'Книга', pTag = getPlanShortTag();
         if (displayMode === 'BLOCKS') {
           elBlockProgBox.style.display = 'flex';
           const passed = (chapterBlockOffsets[currentVerse] || 0) + currentBlockIdx;
-          const ratio = chapterTotalBlocks <= 1 ? 1 : passed / (chapterTotalBlocks - 1);
-          const pct = Math.max(0, Math.min(100, ratio * 100));
+          const pct = Math.max(0, Math.min(100, (chapterTotalBlocks <= 1 ? 1 : passed / (chapterTotalBlocks - 1)) * 100));
           elBlockProgFill.style.width = pct + '%';
-          elBlockProgLbl.textContent = 'Глава ' + currentChapter + ' — ' + Math.round(pct) + '%  (' + (passed + 1) + ' / ' + chapterTotalBlocks + ' бл.)';
+          elBlockProgLbl.textContent = 'Глава ' + currentChapter + ' — ' + Math.round(pct) + '% (' + (passed + 1) + '/' + chapterTotalBlocks + ')';
         } else if (displayMode === 'WORDS' || displayMode === 'TICKER') {
           elBlockProgBox.style.display = 'none';
-          elHudRef.textContent = bookTitle + ' ' + currentChapter + ':' + currentVerse + (pTag ? '  •  ' + pTag : '');
-
+          elHudRef.textContent = bookTitle + ' ' + currentChapter + ':' + currentVerse + (pTag ? ' • ' + pTag : '');
           const passedCh = (chapterWordOffsets[currentVerse] || 0) + currentWordIdx;
-          const ratioCh = chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1);
-          const pctCh = Math.max(0, Math.min(100, ratioCh * 100));
+          const pctCh = Math.max(0, Math.min(100, (chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1)) * 100));
           elHudChFill.style.width = pctCh + '%';
           elHudChLbl.textContent = 'Гл. ' + currentChapter + ' — ' + Math.round(pctCh) + '% (' + (passedCh + 1) + '/' + chapterTotalWords + ')';
-
           const totalV = Math.max(1, currentWords.length);
-          const ratioV = totalV <= 1 ? 1 : currentWordIdx / (totalV - 1);
-          const pctV = Math.max(0, Math.min(100, ratioV * 100));
+          const pctV = Math.max(0, Math.min(100, (totalV <= 1 ? 1 : currentWordIdx / (totalV - 1)) * 100));
           elHudVFill.style.width = pctV + '%';
           elHudVLbl.textContent = 'Ст. ' + currentVerse + ' — ' + Math.round(pctV) + '% (' + (currentWordIdx + 1) + '/' + totalV + ')';
         } else {
@@ -3002,315 +1805,147 @@
       }
 
       function collectWordWindow(radius) {
-        const leftItems = [];
-        let lb = currentBook, lc = currentChapter, lv = currentVerse;
-        let lwIdx = currentWordIdx - 1;
-        let lWords = currentWords;
-        let hitStart = false;
-
-        while (leftItems.length < radius) {
-          if (lwIdx >= 0) {
-            leftItems.push({
-              text: lWords[lwIdx],
-              vtag: lwIdx === 0 ? String(lv) : '',
-              subGate: lwIdx === 0 ? getSubBoundaryLabelAt(lb, lc, lv) : ''
-            });
-            lwIdx--;
-          } else {
-            const prev = getPrevVerseRef(lb, lc, lv);
-            if (!prev) { hitStart = true; break; }
-            lb = prev.b; lc = prev.c; lv = prev.v;
-            lWords = getVerseWordsCached(lb, lc, lv);
-            lwIdx = lWords.length - 1;
-          }
+        const left = [], right = [];
+        let lb = currentBook, lc = currentChapter, lv = currentVerse, lwIdx = currentWordIdx - 1, lWords = currentWords, hitStart = false;
+        while (left.length < radius) {
+          if (lwIdx >= 0) { left.push({ text: lWords[lwIdx], vtag: lwIdx === 0 ? String(lv) : '', subGate: lwIdx === 0 ? getSubBoundaryLabelAt(lb, lc, lv) : '' }); lwIdx--; }
+          else { const prev = getPrevVerseRef(lb, lc, lv); if (!prev) { hitStart = true; break; } lb = prev.b; lc = prev.c; lv = prev.v; lWords = getVerseWordsCached(lb, lc, lv); lwIdx = lWords.length - 1; }
         }
         if (!hitStart && lwIdx < 0 && !getPrevVerseRef(lb, lc, lv)) hitStart = true;
-        leftItems.reverse();
+        left.reverse();
 
-        const rightItems = [];
-        let rb = currentBook, rc = currentChapter, rv = currentVerse;
-        let rwIdx = currentWordIdx + 1;
-        let rWords = currentWords;
-        let hitEnd = false;
-
-        while (rightItems.length < radius) {
-          if (rwIdx < rWords.length) {
-            rightItems.push({
-              text: rWords[rwIdx],
-              vtag: rwIdx === 0 ? String(rv) : '',
-              subGate: rwIdx === 0 ? getSubBoundaryLabelAt(rb, rc, rv) : ''
-            });
-            rwIdx++;
-          } else {
-            const next = getNextVerseRef(rb, rc, rv);
-            if (!next) { hitEnd = true; break; }
-            rb = next.b; rc = next.c; rv = next.v;
-            rWords = getVerseWordsCached(rb, rc, rv);
-            rwIdx = 0;
-          }
+        let rb = currentBook, rc = currentChapter, rv = currentVerse, rwIdx = currentWordIdx + 1, rWords = currentWords, hitEnd = false;
+        while (right.length < radius) {
+          if (rwIdx < rWords.length) { right.push({ text: rWords[rwIdx], vtag: rwIdx === 0 ? String(rv) : '', subGate: rwIdx === 0 ? getSubBoundaryLabelAt(rb, rc, rv) : '' }); rwIdx++; }
+          else { const next = getNextVerseRef(rb, rc, rv); if (!next) { hitEnd = true; break; } rb = next.b; rc = next.c; rv = next.v; rWords = getVerseWordsCached(rb, rc, rv); rwIdx = 0; }
         }
         if (!hitEnd && rwIdx >= rWords.length && !getNextVerseRef(rb, rc, rv)) hitEnd = true;
 
-        return {
-          left: leftItems,
-          active: currentWords[currentWordIdx] || '—',
-          activeVtag: currentWordIdx === 0 ? String(currentVerse) : '',
-          activeSubGate: currentWordIdx === 0 ? getSubBoundaryLabelAt(currentBook, currentChapter, currentVerse) : '',
-          right: rightItems,
-          hitStart: hitStart,
-          hitEnd: hitEnd
-        };
+        return { left, active: currentWords[currentWordIdx] || '—', activeVtag: currentWordIdx === 0 ? String(currentVerse) : '', activeSubGate: currentWordIdx === 0 ? getSubBoundaryLabelAt(currentBook, currentChapter, currentVerse) : '', right, hitStart, hitEnd };
       }
 
       function renderContinuousWordStream() {
-        const win = collectWordWindow(WORD_WINDOW_RADIUS);
-        const frag = document.createDocumentFragment();
-
+        const win = collectWordWindow(WORD_WINDOW_RADIUS), frag = document.createDocumentFragment();
         if (planActive && win.hitStart) frag.appendChild(createNeonGateEl('start', ''));
-
-        for (let i = 0; i < win.left.length; i++) {
-          const item = win.left[i];
+        win.left.forEach((item) => {
           if (item.subGate) frag.appendChild(createNeonGateEl('mid', item.subGate));
-          if (item.vtag) {
-            const t = document.createElement('span');
-            t.className = 'stream-vtag';
-            t.textContent = item.vtag;
-            frag.appendChild(t);
-          }
-          const s = document.createElement('span');
-          s.className = 'stream-word read';
-          s.textContent = item.text;
-          frag.appendChild(s);
-        }
-
+          if (item.vtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = item.vtag; frag.appendChild(t); }
+          const s = document.createElement('span'); s.className = 'stream-word read'; s.textContent = item.text; frag.appendChild(s);
+        });
         if (win.activeSubGate) frag.appendChild(createNeonGateEl('mid', win.activeSubGate));
-        if (win.activeVtag) {
-          const t = document.createElement('span');
-          t.className = 'stream-vtag';
-          t.textContent = win.activeVtag;
-          frag.appendChild(t);
-        }
-        const activeEl = document.createElement('span');
-        activeEl.className = 'stream-word active';
-        activeEl.textContent = win.active;
-        frag.appendChild(activeEl);
-
-        for (let i = 0; i < win.right.length; i++) {
-          const item = win.right[i];
+        if (win.activeVtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = win.activeVtag; frag.appendChild(t); }
+        const activeEl = document.createElement('span'); activeEl.className = 'stream-word active'; activeEl.textContent = win.active; frag.appendChild(activeEl);
+        win.right.forEach((item) => {
           if (item.subGate) frag.appendChild(createNeonGateEl('mid', item.subGate));
-          if (item.vtag) {
-            const t = document.createElement('span');
-            t.className = 'stream-vtag';
-            t.textContent = item.vtag;
-            frag.appendChild(t);
-          }
-          const s = document.createElement('span');
-          s.className = 'stream-word next';
-          s.textContent = item.text;
-          frag.appendChild(s);
-        }
-
+          if (item.vtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = item.vtag; frag.appendChild(t); }
+          const s = document.createElement('span'); s.className = 'stream-word next'; s.textContent = item.text; frag.appendChild(s);
+        });
         if (planActive && win.hitEnd) frag.appendChild(createNeonGateEl('end', ''));
-
-        elWordTape.innerHTML = '';
-        elWordTape.appendChild(frag);
-
-        const activeCenter = activeEl.offsetLeft + activeEl.offsetWidth * 0.5;
-        elWordTape.style.transform = 'translate3d(' + (-activeCenter) + 'px, -50%, 0)';
+        elWordTape.innerHTML = ''; elWordTape.appendChild(frag);
+        elWordTape.style.transform = 'translate3d(' + (-(activeEl.offsetLeft + activeEl.offsetWidth * 0.5)) + 'px, -50%, 0)';
       }
 
       function updateStatusBar() {
-        const zoomPct = Math.round(canvasZoom * 100);
-        const pTag = getPlanShortTag();
-        const planInfo = pTag ? (pTag + '  •  ') : '';
-        if (displayMode === 'BLOCKS') {
-          elStatusBar.textContent = planInfo + 'Блок ' + (currentBlockIdx + 1) + '/' + currentBlocks.length + ' (Ст. ' + currentVerse + ')  •  Зум ' + zoomPct + '%';
-        } else if (displayMode === 'WORDS') {
-          const autoSt = wordsAutoRunning ? ('Авто ' + wordsWpm + ' сл/мин') : ('Тап слева/справа (' + wordsWpm + ' сл/мин)');
-          elStatusBar.textContent = planInfo + autoSt + '  •  Зум ' + zoomPct + '%';
-        } else if (displayMode === 'TICKER') {
-          const invHint = tickerInverted ? 'Инверсия ⇄' : 'Справа → / Слева ←';
-          const st = tickerAutoRunning ? ('Авто ' + tickerWpm + ' сл/мин') : (invHint + ' (' + tickerWpm + ' сл/мин)');
-          elStatusBar.textContent = planInfo + st + '  •  Зум ' + zoomPct + '%';
-        } else if (displayMode === 'VERSES') {
-          elStatusBar.textContent = planInfo + 'Стих ' + currentVerse + '  •  Зум ' + zoomPct + '%';
-        } else {
-          elStatusBar.textContent = planInfo + 'Глава ' + currentChapter + '  •  Свайп вверх/вниз для чтения';
-        }
+        const zoomPct = Math.round(canvasZoom * 100), pTag = getPlanShortTag(), info = pTag ? (pTag + ' • ') : '';
+        if (displayMode === 'BLOCKS') elStatusBar.textContent = info + 'Блок ' + (currentBlockIdx + 1) + '/' + currentBlocks.length + ' (Ст. ' + currentVerse + ') • Зум ' + zoomPct + '%';
+        else if (displayMode === 'WORDS') elStatusBar.textContent = info + (wordsAutoRunning ? ('Авто ' + wordsWpm + ' сл/мин') : ('Тап слева/справа (' + wordsWpm + ' сл/мин)')) + ' • Зум ' + zoomPct + '%';
+        else if (displayMode === 'TICKER') elStatusBar.textContent = info + (tickerAutoRunning ? ('Авто ' + tickerWpm + ' сл/мин') : ((tickerInverted ? 'Инверсия ⇄' : 'Справа → / Слева ←') + ' (' + tickerWpm + ' сл/мин)')) + ' • Зум ' + zoomPct + '%';
+        else if (displayMode === 'VERSES') elStatusBar.textContent = info + 'Стих ' + currentVerse + ' • Зум ' + zoomPct + '%';
+        else elStatusBar.textContent = info + 'Глава ' + currentChapter + ' • Свайп вверх/вниз';
       }
 
       function refreshView() {
         const bookTitle = booksNames[currentBook] || 'Книга';
         const vObj = (bibleData[currentBook] && bibleData[currentBook][currentChapter]) ? bibleData[currentBook][currentChapter] : {};
         const vList = getAllowedVerses(currentBook, currentChapter);
-
-        const isChapter = displayMode === 'CHAPTERS';
-        const isWords = displayMode === 'WORDS';
-        const isTicker = displayMode === 'TICKER';
+        const isChapter = displayMode === 'CHAPTERS', isWords = displayMode === 'WORDS', isTicker = displayMode === 'TICKER';
 
         elWorkspace.style.display = isChapter ? 'none' : 'block';
         elChapScroll.style.display = isChapter ? 'block' : 'none';
         elCenterBtn.style.display = isChapter ? 'none' : 'inline-flex';
-
         elCardStack.style.display = (!isChapter && !isWords && !isTicker) ? 'flex' : 'none';
         elWordStreamRoot.style.display = isWords ? 'block' : 'none';
         elTickerStreamRoot.style.display = isTicker ? 'block' : 'none';
         elWordHud.style.display = (isWords || isTicker) ? 'flex' : 'none';
         elSpeedDock.style.display = (isWords || isTicker) ? 'flex' : 'none';
 
-        const wsW = elWorkspace.clientWidth || window.innerWidth;
-        const cardWidth = Math.min(Math.max(300, wsW - 28), 640);
-        elCardStack.style.width = cardWidth + 'px';
-
+        elCardStack.style.width = Math.min(Math.max(300, (elWorkspace.clientWidth || window.innerWidth) - 28), 640) + 'px';
         elTextCard.classList.remove('bound-start', 'bound-end', 'bound-mid');
 
         if (displayMode === 'BLOCKS') {
-          const blockStr = currentBlocks[currentBlockIdx] || '—';
-          const atPlanStart = planActive && isAtPlanLineStartVerse() && currentBlockIdx === 0;
-          const atPlanEnd = planActive && isAtPlanLineEndVerse() && currentBlockIdx === currentBlocks.length - 1;
+          const atStart = planActive && isAtPlanLineStartVerse() && currentBlockIdx === 0;
+          const atEnd = planActive && isAtPlanLineEndVerse() && currentBlockIdx === currentBlocks.length - 1;
           const subLbl = (planActive && currentBlockIdx === 0) ? getSubBoundaryLabelAt(currentBook, currentChapter, currentVerse) : '';
-          const sec = getActivePlanSection();
-          const secTitle = sec ? sec.label : ('День ' + planDayNum);
-
-          if (atPlanStart) elTextCard.classList.add('bound-start');
-          else if (atPlanEnd) elTextCard.classList.add('bound-end');
+          const sec = getActivePlanSection(), secTitle = sec ? sec.label : ('День ' + planDayNum);
+          if (atStart) elTextCard.classList.add('bound-start');
+          else if (atEnd) elTextCard.classList.add('bound-end');
           else if (subLbl) elTextCard.classList.add('bound-mid');
+          let badge = '';
+          if (atStart) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • ' + escapeHtml(secTitle) + '</span></div>';
+          else if (atEnd) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • ' + escapeHtml(secTitle) + '</span></div>';
+          else if (subLbl) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill mid">● ' + escapeHtml(subLbl) + '</span></div>';
 
-          let boundBadgeHtml = '';
-          if (atPlanStart) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • ' + escapeHtml(secTitle) + '</span></div>';
-          else if (atPlanEnd) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • ' + escapeHtml(secTitle) + '</span></div>';
-          else if (subLbl) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill mid">● ' + escapeHtml(subLbl) + '</span></div>';
+          const dots = currentBlocks.map((_, i) => i === currentBlockIdx ? '<span class="dot-active">●</span>' : (i < currentBlockIdx ? '<span class="dot-done">•</span>' : '<span class="dot-todo">•</span>')).join(' ');
+          const ctx = currentBlocks.map((b, i) => '<span class="' + (i === currentBlockIdx ? 'ctx-active' : (i < currentBlockIdx ? 'ctx-done' : 'ctx-todo')) + '">' + escapeHtml(b) + '</span>').join(' ');
+          const adj = [], prevRef = getPrevVerseRef(currentBook, currentChapter, currentVerse), nextRef = getNextVerseRef(currentBook, currentChapter, currentVerse);
+          if (prevRef && prevRef.b === currentBook && prevRef.c === currentChapter) adj.push('<div>' + prevRef.v + '. ' + cleanVerseHtml(vObj[prevRef.v]) + '</div>');
+          if (nextRef && nextRef.b === currentBook && nextRef.c === currentChapter) adj.push('<div>' + nextRef.v + '. ' + cleanVerseHtml(vObj[nextRef.v]) + '</div>');
 
-          const dotsHtml = currentBlocks.map((_, i) => {
-            if (i === currentBlockIdx) return '<span class="dot-active">●</span>';
-            if (i < currentBlockIdx) return '<span class="dot-done">•</span>';
-            return '<span class="dot-todo">•</span>';
-          }).join(' ');
-
-          const ctxHtml = currentBlocks.map((b, i) => {
-            const esc = escapeHtml(b);
-            if (i === currentBlockIdx) return '<span class="ctx-active">' + esc + '</span>';
-            if (i < currentBlockIdx) return '<span class="ctx-done">' + esc + '</span>';
-            return '<span class="ctx-todo">' + esc + '</span>';
-          }).join(' ');
-
-          const adjParts = [];
-          const prevRef = getPrevVerseRef(currentBook, currentChapter, currentVerse);
-          const nextRef = getNextVerseRef(currentBook, currentChapter, currentVerse);
-          if (prevRef && prevRef.b === currentBook && prevRef.c === currentChapter) {
-            adjParts.push('<div>' + prevRef.v + '. ' + cleanVerseHtml(vObj[prevRef.v]) + '</div>');
-          }
-          if (nextRef && nextRef.b === currentBook && nextRef.c === currentChapter) {
-            adjParts.push('<div>' + nextRef.v + '. ' + cleanVerseHtml(vObj[nextRef.v]) + '</div>');
-          }
-
-          elTextCard.innerHTML =
-            boundBadgeHtml +
-            '<div class="block-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div>' +
-            '<div class="block-main">' + escapeHtml(blockStr) + '</div>' +
-            '<div class="block-dots">' + dotsHtml + '</div>' +
-            '<div class="block-divider"></div>' +
-            '<div class="block-context">' + ctxHtml + '</div>' +
-            (adjParts.length ? '<div class="block-adj">' + adjParts.join('') + '</div>' : '');
+          elTextCard.innerHTML = badge + '<div class="block-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="block-main">' + escapeHtml(currentBlocks[currentBlockIdx] || '—') + '</div><div class="block-dots">' + dots + '</div><div class="block-divider"></div><div class="block-context">' + ctx + '</div>' + (adj.length ? '<div class="block-adj">' + adj.join('') + '</div>' : '');
         } else if (displayMode === 'WORDS') {
-          renderContinuousWordStream();
-          updateSovietGaugeUI();
+          renderContinuousWordStream(); updateSovietGaugeUI();
         } else if (displayMode === 'TICKER') {
-          rebuildTickerFromCurrent();
-          updateSovietGaugeUI();
+          rebuildTickerFromCurrent(); updateSovietGaugeUI();
         } else if (displayMode === 'VERSES') {
-          const atPlanStart = planActive && isAtPlanLineStartVerse();
-          const atPlanEnd = planActive && isAtPlanLineEndVerse();
+          const atStart = planActive && isAtPlanLineStartVerse(), atEnd = planActive && isAtPlanLineEndVerse();
           const subLbl = planActive ? getSubBoundaryLabelAt(currentBook, currentChapter, currentVerse) : '';
-          const sec = getActivePlanSection();
-          const secTitle = sec ? sec.label : ('День ' + planDayNum);
-
-          if (atPlanStart) elTextCard.classList.add('bound-start');
-          else if (atPlanEnd) elTextCard.classList.add('bound-end');
+          const sec = getActivePlanSection(), secTitle = sec ? sec.label : ('День ' + planDayNum);
+          if (atStart) elTextCard.classList.add('bound-start');
+          else if (atEnd) elTextCard.classList.add('bound-end');
           else if (subLbl) elTextCard.classList.add('bound-mid');
-
-          let boundBadgeHtml = '';
-          if (atPlanStart) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • ' + escapeHtml(secTitle) + '</span></div>';
-          else if (atPlanEnd) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • ' + escapeHtml(secTitle) + '</span></div>';
-          else if (subLbl) boundBadgeHtml = '<div class="bound-pill-wrap"><span class="card-bound-pill mid">● ' + escapeHtml(subLbl) + '</span></div>';
-
-          const raw = vObj[currentVerse] || '';
-          elTextCard.innerHTML =
-            boundBadgeHtml +
-            '<div class="verse-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div>' +
-            '<div class="verse-body">' + cleanVerseHtml(raw) + '</div>';
+          let badge = '';
+          if (atStart) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • ' + escapeHtml(secTitle) + '</span></div>';
+          else if (atEnd) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • ' + escapeHtml(secTitle) + '</span></div>';
+          else if (subLbl) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill mid">● ' + escapeHtml(subLbl) + '</span></div>';
+          elTextCard.innerHTML = badge + '<div class="verse-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="verse-body">' + cleanVerseHtml(vObj[currentVerse] || '') + '</div>';
         } else if (displayMode === 'CHAPTERS') {
           let html = '<div class="ch-title">' + escapeHtml(bookTitle) + ' — Глава ' + currentChapter + '</div>';
-          const line = getActivePlanLineObj();
-          const firstLineV = (line && line.verses.length) ? line.verses[0] : null;
-          const lastLineV = (line && line.verses.length) ? line.verses[line.verses.length - 1] : null;
-
-          if (planActive && firstLineV && firstLineV.b === currentBook && firstLineV.c === currentChapter) {
-            html += '<div class="ch-neon-banner start"></div>';
-          }
-          for (let i = 0; i < vList.length; i++) {
-            const v = vList[i];
+          const line = getActivePlanLineObj(), firstV = (line && line.verses.length) ? line.verses[0] : null, lastV = (line && line.verses.length) ? line.verses[line.verses.length - 1] : null;
+          if (planActive && firstV && firstV.b === currentBook && firstV.c === currentChapter) html += '<div class="ch-neon-banner start"></div>';
+          vList.forEach((v) => {
             const subLbl = planActive ? getSubBoundaryLabelAt(currentBook, currentChapter, v) : '';
-            if (subLbl) {
-              html += '<div class="ch-sub-divider">' + escapeHtml(subLbl) + '</div>';
-            }
-            const blocks = splitIntoSemanticBlocks(vObj[v] || '');
-            const joined = blocks.map(escapeHtml).join('<span class="ch-dot">·</span>');
-            html += '<div class="ch-verse"><span class="ch-vnum">' + v + '</span>' + joined + '</div>';
-          }
-          if (planActive && lastLineV && lastLineV.b === currentBook && lastLineV.c === currentChapter) {
-            html += '<div class="ch-neon-banner end"></div>';
-          }
-          html +=
-            '<div class="ch-nav-row">' +
-              '<button type="button" id="ch-prev-btn">← Пред. глава</button>' +
-              '<button type="button" id="ch-next-btn">След. глава →</button>' +
-            '</div>';
-          elChapContainer.innerHTML = html;
-          elChapScroll.scrollTop = 0;
+            if (subLbl) html += '<div class="ch-sub-divider">' + escapeHtml(subLbl) + '</div>';
+            html += '<div class="ch-verse"><span class="ch-vnum">' + v + '</span>' + splitIntoSemanticBlocks(vObj[v] || '').map(escapeHtml).join('<span class="ch-dot">·</span>') + '</div>';
+          });
+          if (planActive && lastV && lastV.b === currentBook && lastV.c === currentChapter) html += '<div class="ch-neon-banner end"></div>';
+          html += '<div class="ch-nav-row"><button type="button" id="ch-prev-btn">← Пред. глава</button><button type="button" id="ch-next-btn">След. глава →</button></div>';
+          elChapContainer.innerHTML = html; elChapScroll.scrollTop = 0;
           document.getElementById('ch-prev-btn').onclick = () => stepBackward();
           document.getElementById('ch-next-btn').onclick = () => stepForward();
         }
-
         if (!isChapter) updateProgressBars();
         updateStatusBar();
       }
 
-      // --- КАМЕРА (ЗУМ И ПЕРЕМЕЩЕНИЕ ДВУМЯ ПАЛЬЦАМИ) ---
-      function getMinZoomForMode() {
-        if (displayMode === 'TICKER') return TICKER_MIN_ZOOM;
-        if (displayMode === 'WORDS') return WORD_MIN_ZOOM;
-        return 0.35;
-      }
-
-      function getMaxZoomForMode() {
-        if (displayMode === 'WORDS' || displayMode === 'TICKER') return WORD_MAX_ZOOM;
-        return 5.0;
-      }
+      function getMinZoomForMode() { return displayMode === 'TICKER' ? TICKER_MIN_ZOOM : (displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35); }
+      function getMaxZoomForMode() { return (displayMode === 'WORDS' || displayMode === 'TICKER') ? WORD_MAX_ZOOM : 5.0; }
 
       function applyCamera() {
         elCanvasRoot.style.transform = 'translate3d(' + canvasPanX + 'px, ' + canvasPanY + 'px, 0) scale(' + canvasZoom + ')';
-        if (displayMode === 'TICKER') {
-          fillTickerBuffers();
-          elTickerTape.style.transform = 'translate3d(' + tickerScrollX + 'px, -50%, 0)';
-        }
+        if (displayMode === 'TICKER') { fillTickerBuffers(); elTickerTape.style.transform = 'translate3d(' + tickerScrollX + 'px, -50%, 0)'; }
         updateStatusBar();
       }
 
       function centerCamera(resetZoom) {
         if (resetZoom) canvasZoom = 1.0;
         requestAnimationFrame(() => {
-          const wsW = elWorkspace.clientWidth;
-          const wsH = elWorkspace.clientHeight;
+          const wsW = elWorkspace.clientWidth, wsH = elWorkspace.clientHeight;
           if (displayMode === 'WORDS' || displayMode === 'TICKER') {
             const hudH = elWordHud.offsetHeight || 0;
-            canvasPanX = wsW * 0.5;
-            canvasPanY = hudH + (wsH - hudH) * 0.5;
+            canvasPanX = wsW * 0.5; canvasPanY = hudH + (wsH - hudH) * 0.5;
           } else {
-            const stackW = elCardStack.offsetWidth * canvasZoom;
-            const stackH = elCardStack.offsetHeight * canvasZoom;
-            canvasPanX = (wsW - stackW) * 0.5;
-            canvasPanY = Math.max(14, (wsH - stackH) * 0.45);
+            canvasPanX = (wsW - elCardStack.offsetWidth * canvasZoom) * 0.5;
+            canvasPanY = Math.max(14, (wsH - elCardStack.offsetHeight * canvasZoom) * 0.45);
           }
           applyCamera();
         });
@@ -3319,44 +1954,25 @@
       function triggerTapFlash(side) {
         if (displayMode === 'TICKER') return;
         const el = side === 'right' ? elFlashRight : elFlashLeft;
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), 140);
+        el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 140);
       }
 
-      function getTickerDirForSide(isRightHalf) {
-        const baseDir = isRightHalf ? 1 : -1;
-        return tickerInverted ? -baseDir : baseDir;
-      }
+      function getTickerDirForSide(isRight) { const base = isRight ? 1 : -1; return tickerInverted ? -base : base; }
 
-      // --- СЕНСОРНОЕ УПРАВЛЕНИЕ ---
-      let singleStartX = 0, singleStartY = 0, singleStartTime = 0;
-      let wasMultiTouch = false;
-      let pinchPrevDist = 0, pinchPrevMidX = 0, pinchPrevMidY = 0;
-
-      function isInteractiveTarget(target) {
-        return Boolean(target && target.closest && target.closest('button, select, input, #restore-bar-btn'));
-      }
+      let singleStartX = 0, singleStartY = 0, singleStartTime = 0, wasMultiTouch = false, pinchPrevDist = 0, pinchPrevMidX = 0, pinchPrevMidY = 0;
+      function isInteractiveTarget(target) { return Boolean(target && target.closest && target.closest('button, select, input, #restore-bar-btn')); }
 
       elWorkspace.addEventListener('touchstart', (e) => {
         if (isInteractiveTarget(e.target)) return;
         e.preventDefault();
-
         if (e.touches.length === 1 && !wasMultiTouch) {
           const rect = elWorkspace.getBoundingClientRect();
-          const relX = e.touches[0].clientX - rect.left;
-          singleStartX = e.touches[0].clientX;
-          singleStartY = e.touches[0].clientY;
-          singleStartTime = performance.now();
-
-          if (displayMode === 'TICKER') {
-            manualTickerDir = getTickerDirForSide(relX >= rect.width * 0.5);
-          }
+          singleStartX = e.touches[0].clientX; singleStartY = e.touches[0].clientY; singleStartTime = performance.now();
+          if (displayMode === 'TICKER') manualTickerDir = getTickerDirForSide((e.touches[0].clientX - rect.left) >= rect.width * 0.5);
         } else if (e.touches.length === 2) {
-          wasMultiTouch = true;
-          manualTickerDir = 0;
-          const t0 = e.touches[0], t1 = e.touches[1];
+          wasMultiTouch = true; manualTickerDir = 0;
+          const t0 = e.touches[0], t1 = e.touches[1], rect = elWorkspace.getBoundingClientRect();
           pinchPrevDist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
-          const rect = elWorkspace.getBoundingClientRect();
           pinchPrevMidX = ((t0.clientX + t1.clientX) * 0.5) - rect.left;
           pinchPrevMidY = ((t0.clientY + t1.clientY) * 0.5) - rect.top;
         }
@@ -3365,82 +1981,48 @@
       elWorkspace.addEventListener('touchmove', (e) => {
         if (isInteractiveTarget(e.target)) return;
         e.preventDefault();
-
         if (e.touches.length === 2) {
-          wasMultiTouch = true;
-          manualTickerDir = 0;
-          const t0 = e.touches[0], t1 = e.touches[1];
+          wasMultiTouch = true; manualTickerDir = 0;
+          const t0 = e.touches[0], t1 = e.touches[1], rect = elWorkspace.getBoundingClientRect();
           const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
-          const rect = elWorkspace.getBoundingClientRect();
-          const midX = ((t0.clientX + t1.clientX) * 0.5) - rect.left;
-          const midY = ((t0.clientY + t1.clientY) * 0.5) - rect.top;
-
+          const midX = ((t0.clientX + t1.clientX) * 0.5) - rect.left, midY = ((t0.clientY + t1.clientY) * 0.5) - rect.top;
           if (pinchPrevDist > 0) {
-            const factor = dist / pinchPrevDist;
-            const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * factor));
-
-            const worldX = (pinchPrevMidX - canvasPanX) / canvasZoom;
-            const worldY = (pinchPrevMidY - canvasPanY) / canvasZoom;
-
-            canvasZoom = newZoom;
-            canvasPanX = midX - worldX * canvasZoom;
-            canvasPanY = midY - worldY * canvasZoom;
+            const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * (dist / pinchPrevDist)));
+            const wx = (pinchPrevMidX - canvasPanX) / canvasZoom, wy = (pinchPrevMidY - canvasPanY) / canvasZoom;
+            canvasZoom = newZoom; canvasPanX = midX - wx * canvasZoom; canvasPanY = midY - wy * canvasZoom;
             applyCamera();
           }
-          pinchPrevDist = dist;
-          pinchPrevMidX = midX;
-          pinchPrevMidY = midY;
+          pinchPrevDist = dist; pinchPrevMidX = midX; pinchPrevMidY = midY;
         }
       }, { passive: false });
 
       elWorkspace.addEventListener('touchend', (e) => {
         if (isInteractiveTarget(e.target)) return;
         e.preventDefault();
-
         if (e.touches.length === 0) {
           manualTickerDir = 0;
           if (!wasMultiTouch && displayMode !== 'TICKER') {
             const t = e.changedTouches[0];
-            const moved = Math.hypot(t.clientX - singleStartX, t.clientY - singleStartY);
-            const dt = performance.now() - singleStartTime;
-            if (moved < 24 && dt < 450) {
+            if (Math.hypot(t.clientX - singleStartX, t.clientY - singleStartY) < 24 && (performance.now() - singleStartTime) < 450) {
               const rect = elWorkspace.getBoundingClientRect();
-              const relX = t.clientX - rect.left;
-              if (relX >= rect.width * 0.5) {
-                triggerTapFlash('right');
-                stepForward();
-              } else {
-                triggerTapFlash('left');
-                stepBackward();
-              }
+              if ((t.clientX - rect.left) >= rect.width * 0.5) { triggerTapFlash('right'); stepForward(); }
+              else { triggerTapFlash('left'); stepBackward(); }
             }
           }
-          wasMultiTouch = false;
-          pinchPrevDist = 0;
+          wasMultiTouch = false; pinchPrevDist = 0;
         }
       }, { passive: false });
 
-      elWorkspace.addEventListener('touchcancel', () => {
-        manualTickerDir = 0;
-        wasMultiTouch = false;
-        pinchPrevDist = 0;
-      });
+      elWorkspace.addEventListener('touchcancel', () => { manualTickerDir = 0; wasMultiTouch = false; pinchPrevDist = 0; });
 
-      // Мышь и клавиатура (на ПК)
       let mousePanning = false, mousePrevX = 0, mousePrevY = 0;
       elWorkspace.addEventListener('wheel', (e) => {
         if (displayMode === 'CHAPTERS') return;
         e.preventDefault();
-        const factor = e.deltaY < 0 ? 1.1 : (1 / 1.1);
-        const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * factor));
-        const rect = elWorkspace.getBoundingClientRect();
-        const mx = e.clientX - rect.left;
-        const my = e.clientY - rect.top;
-        const wx = (mx - canvasPanX) / canvasZoom;
-        const wy = (my - canvasPanY) / canvasZoom;
-        canvasZoom = newZoom;
-        canvasPanX = mx - wx * canvasZoom;
-        canvasPanY = my - wy * canvasZoom;
+        const newZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom * (e.deltaY < 0 ? 1.1 : (1 / 1.1))));
+        const rect = elWorkspace.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        const wx = (mx - canvasPanX) / canvasZoom, wy = (my - canvasPanY) / canvasZoom;
+        canvasZoom = newZoom; canvasPanX = mx - wx * canvasZoom; canvasPanY = my - wy * canvasZoom;
         applyCamera();
       }, { passive: false });
 
@@ -3451,153 +2033,83 @@
           manualTickerDir = getTickerDirForSide((e.clientX - rect.left) >= rect.width * 0.5);
           return;
         }
-        mousePanning = true;
-        mousePrevX = e.clientX;
-        mousePrevY = e.clientY;
+        mousePanning = true; mousePrevX = e.clientX; mousePrevY = e.clientY;
       });
-      window.addEventListener('mousemove', (e) => {
-        if (!mousePanning) return;
-        canvasPanX += e.clientX - mousePrevX;
-        canvasPanY += e.clientY - mousePrevY;
-        mousePrevX = e.clientX;
-        mousePrevY = e.clientY;
-        applyCamera();
-      });
-      window.addEventListener('mouseup', () => {
-        mousePanning = false;
-        manualTickerDir = 0;
-      });
+      window.addEventListener('mousemove', (e) => { if (!mousePanning) return; canvasPanX += e.clientX - mousePrevX; canvasPanY += e.clientY - mousePrevY; mousePrevX = e.clientX; mousePrevY = e.clientY; applyCamera(); });
+      window.addEventListener('mouseup', () => { mousePanning = false; manualTickerDir = 0; });
 
       window.addEventListener('keydown', (e) => {
         if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
-        if (e.code === 'Space') {
-          if (displayMode === 'WORDS' || displayMode === 'TICKER') {
-            e.preventDefault();
-            toggleActiveAutoRunning();
-          }
-        } else if (e.code === 'ArrowRight') {
-          e.preventDefault();
-          if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(true);
-          else stepForward();
-        } else if (e.code === 'ArrowLeft') {
-          e.preventDefault();
-          if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(false);
-          else stepBackward();
-        } else if (e.code === 'KeyR' && !e.ctrlKey && displayMode !== 'CHAPTERS') {
-          e.preventDefault();
-          centerCamera(true);
-        }
+        if (e.code === 'Space' && (displayMode === 'WORDS' || displayMode === 'TICKER')) { e.preventDefault(); toggleActiveAutoRunning(); }
+        else if (e.code === 'ArrowRight') { e.preventDefault(); if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(true); else stepForward(); }
+        else if (e.code === 'ArrowLeft') { e.preventDefault(); if (displayMode === 'TICKER') keyTickerDir = getTickerDirForSide(false); else stepBackward(); }
+        else if (e.code === 'KeyR' && !e.ctrlKey && displayMode !== 'CHAPTERS') { e.preventDefault(); centerCamera(true); }
       });
+      window.addEventListener('keyup', (e) => { if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') keyTickerDir = 0; });
 
-      window.addEventListener('keyup', (e) => {
-        if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') keyTickerDir = 0;
-      });
-
-      // --- ГЛАВНЫЙ ЦИКЛ АНИМАЦИИ ---
       function mainAnimLoop(now) {
         if (displayMode === 'WORDS' && wordsAutoRunning) {
           if (!wordsLastTime) wordsLastTime = now;
-          const dt = Math.min(0.1, (now - wordsLastTime) / 1000);
+          wordsAccum += Math.min(0.1, (now - wordsLastTime) / 1000);
           wordsLastTime = now;
-          wordsAccum += dt;
           const interval = 60.0 / Math.max(10, wordsWpm);
           if (wordsAccum >= interval) {
             wordsAccum -= interval;
-            if (!stepForward()) {
-              wordsAutoRunning = false;
-              updateSovietGaugeUI();
-              updateStatusBar();
-            }
+            if (!stepForward()) { wordsAutoRunning = false; updateSovietGaugeUI(); updateStatusBar(); }
           }
-        } else {
-          wordsLastTime = now;
-        }
+        } else wordsLastTime = now;
 
         if (displayMode === 'TICKER') {
           if (!tickerLastTime) tickerLastTime = now;
           const dt = Math.min(0.05, (now - tickerLastTime) / 1000);
           tickerLastTime = now;
-
           const dir = manualTickerDir !== 0 ? manualTickerDir : (keyTickerDir !== 0 ? keyTickerDir : (tickerAutoRunning ? 1 : 0));
           if (dir !== 0 && tickerItems.length) {
-            const pxPerSec = (tickerWpm / 60.0) * tickerAvgWordPx;
-            tickerScrollX -= dir * pxPerSec * dt;
-
-            const first = tickerItems[0];
-            const last = tickerItems[tickerItems.length - 1];
+            tickerScrollX -= dir * ((tickerWpm / 60.0) * tickerAvgWordPx) * dt;
+            const first = tickerItems[0], last = tickerItems[tickerItems.length - 1];
             const atStart = !getPrevWordPos(first.b, first.c, first.v, first.wIdx);
             const atEnd = !getNextWordPos(last.b, last.c, last.v, last.wIdx);
-
             const maxStartX = -(tickerStartGateW + first.width * 0.5);
             const minEndX = -(tickerStartGateW + tickerTotalWidth - last.width * 0.5);
-
             if (atStart && tickerScrollX > maxStartX) tickerScrollX = maxStartX;
             if (atEnd && tickerScrollX < minEndX) {
               tickerScrollX = minEndX;
-              if (tickerAutoRunning) {
-                tickerAutoRunning = false;
-                updateSovietGaugeUI();
-                updateStatusBar();
-              }
+              if (tickerAutoRunning) { tickerAutoRunning = false; updateSovietGaugeUI(); updateStatusBar(); }
             }
-
             fillTickerBuffers();
             elTickerTape.style.transform = 'translate3d(' + tickerScrollX + 'px, -50%, 0)';
             syncCurrentFromTickerCenter();
           }
-        } else {
-          tickerLastTime = now;
-        }
+        } else tickerLastTime = now;
 
         requestAnimationFrame(mainAnimLoop);
       }
       requestAnimationFrame(mainAnimLoop);
 
-      // --- СОБЫТИЯ ИНТЕРФЕЙСА ---
       elBookSel.addEventListener('change', () => {
         currentBook = Number(elBookSel.value);
         if (planActive) {
-          const line = getActivePlanLineObj();
-          const firstInBook = line ? line.verses.find((x) => x.b === currentBook) : null;
-          if (firstInBook) {
-            currentChapter = firstInBook.c;
-            currentVerse = firstInBook.v;
-          }
-        } else {
-          currentChapter = 1;
-          currentVerse = 1;
-        }
-        currentBlockIdx = 0;
-        currentWordIdx = 0;
-        populateChapterSelector();
-        refreshView();
+          const line = getActivePlanLineObj(), f = line ? line.verses.find((x) => x.b === currentBook) : null;
+          if (f) { currentChapter = f.c; currentVerse = f.v; }
+        } else { currentChapter = 1; currentVerse = 1; }
+        currentBlockIdx = 0; currentWordIdx = 0; populateChapterSelector(); refreshView();
       });
 
       elChapSel.addEventListener('change', () => {
         currentChapter = Number(elChapSel.value);
         const vList = getAllowedVerses(currentBook, currentChapter);
-        currentVerse = vList.length ? vList[0] : 1;
-        currentBlockIdx = 0;
-        currentWordIdx = 0;
-        recalculateChapterTotals();
-        populateVerseSelector();
-        refreshView();
+        currentVerse = vList.length ? vList[0] : 1; currentBlockIdx = 0; currentWordIdx = 0;
+        recalculateChapterTotals(); populateVerseSelector(); refreshView();
       });
 
       elVerseSel.addEventListener('change', () => {
-        currentVerse = Number(elVerseSel.value);
-        currentBlockIdx = 0;
-        currentWordIdx = 0;
-        rebuildCurrentVerseUnits();
-        refreshView();
+        currentVerse = Number(elVerseSel.value); currentBlockIdx = 0; currentWordIdx = 0;
+        rebuildCurrentVerseUnits(); refreshView();
       });
 
       elModeSel.addEventListener('change', () => {
         displayMode = elModeSel.value;
-        wordsAutoRunning = false;
-        tickerAutoRunning = false;
-        manualTickerDir = 0;
-        keyTickerDir = 0;
+        wordsAutoRunning = false; tickerAutoRunning = false; manualTickerDir = 0; keyTickerDir = 0;
         closeIosSpeedPicker();
         canvasZoom = Math.max(getMinZoomForMode(), Math.min(getMaxZoomForMode(), canvasZoom));
         refreshView();
@@ -3607,69 +2119,43 @@
       elPlanBtn.addEventListener('click', openPlanModal);
       elPlanCloseBtn.addEventListener('click', closePlanModal);
       elPlanExitBtn.addEventListener('click', deactivatePlanMode);
-      elPlanModalBackdrop.addEventListener('click', (e) => {
-        if (e.target === elPlanModalBackdrop) closePlanModal();
-      });
-
+      elPlanModalBackdrop.addEventListener('click', (e) => { if (e.target === elPlanModalBackdrop) closePlanModal(); });
       elPlanTab35.addEventListener('click', () => { planModalTab = '35'; renderPlanDaysList(); });
       elPlanTab20.addEventListener('click', () => { planModalTab = '20'; renderPlanDaysList(); });
       elPlanTab365s.addEventListener('click', () => { planModalTab = '365s'; renderPlanDaysList(); });
       elPlanTab365c.addEventListener('click', () => { planModalTab = '365c'; renderPlanDaysList(); });
-
-      elPlanJumpGo.addEventListener('click', () => {
-        const val = parseInt(elPlanJumpInput.value, 10);
-        if (!isNaN(val) && val >= 1 && val <= 365) {
-          activatePlanDay(planModalTab, val);
-        }
-      });
-      elPlanJumpInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') elPlanJumpGo.click();
-      });
+      elPlanJumpGo.addEventListener('click', () => { const v = parseInt(elPlanJumpInput.value, 10); if (!isNaN(v) && v >= 1 && v <= 365) activatePlanDay(planModalTab, v); });
+      elPlanJumpInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') elPlanJumpGo.click(); });
 
       elCenterBtn.addEventListener('click', () => centerCamera(true));
-
       function setTopBarCollapsed(collapsed) {
         elTopBar.classList.toggle('collapsed', collapsed);
         elCollapseBtn.textContent = collapsed ? '▼' : '▲';
         syncViewportLayout();
         if (displayMode !== 'CHAPTERS') centerCamera(false);
       }
-
-      elCollapseBtn.addEventListener('click', () => {
-        setTopBarCollapsed(!elTopBar.classList.contains('collapsed'));
-      });
-
-      elRestoreBarBtn.addEventListener('click', () => {
-        setTopBarCollapsed(false);
-      });
+      elCollapseBtn.addEventListener('click', () => setTopBarCollapsed(!elTopBar.classList.contains('collapsed')));
+      elRestoreBarBtn.addEventListener('click', () => setTopBarCollapsed(false));
 
       function handleResizeOrRotate() {
         syncViewportLayout();
-        if (displayMode !== 'CHAPTERS') {
-          if (displayMode !== 'TICKER') refreshView();
-          centerCamera(false);
-        }
+        if (displayMode !== 'CHAPTERS') { if (displayMode !== 'TICKER') refreshView(); centerCamera(false); }
       }
-
       window.addEventListener('resize', handleResizeOrRotate);
       window.addEventListener('orientationchange', () => setTimeout(handleResizeOrRotate, 150));
 
-      // --- ЗАГРУЗКА БАЗЫ ---
       async function init() {
         syncViewportLayout();
         buildIosSpeedRuler();
         updatePlanButtonUI();
         try {
-          elLoaderText.textContent = 'Загрузка базы Писания RST+...';
           const resp = await fetch('./bible.json');
           if (!resp.ok) throw new Error('HTTP ' + resp.status);
-          elLoaderText.textContent = 'Индексация 66 книг...';
           const data = await resp.json();
           booksOrder = (data.order || []).map(Number).sort((a, z) => a - z);
           booksNames = data.books || {};
           bibleData = data.verses || {};
           buildNavigationIndex();
-          buildYearlyPlans();
           populateBookSelector();
           elModeSel.value = displayMode;
           updateSovietGaugeUI();
@@ -3680,7 +2166,7 @@
             navigator.serviceWorker.register('./sw.js').catch(() => {});
           }
         } catch (err) {
-          showFatalError('Не удалось загрузить bible.json: ' + (err.message || err));
+          elLoaderText.textContent = 'Ошибка загрузки bible.json: ' + (err.message || err);
         }
       }
 
