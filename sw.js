@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bible-rst-pwa-v11';
+const CACHE_NAME = 'bible-rst-pwa-v12';
 const ASSETS = [
   './',
   './index.html',
