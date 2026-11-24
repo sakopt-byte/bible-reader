@@ -12,7 +12,7 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
   <title>Библия RST+ Скорочтение</title>
-  <script type="text/javascript" src="https://me.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=FCrbv-KaxWw6ai5kKrUAq3f4BwQ-jFpcVPgD7TSO3QtPBUBgANLHNkiWlUW_sCrd8ZxihDmo4s_Ndz7XUl761uVPUav2TxGcm3Odq59gRW1J8fd3mZ4q2HOcS_76u5qn6TXJsfLdZZhIge-nh-GxG2tVUcFiKgmCA-Ct3E25lb04PdCZp53jQA0ViH36yxA7ZNLmUwmU7m7wOjPoDH51o9hsioWP0DaWu0ghbrFhxGppgNI8ULTC0vsULz_KDOJHhSI3j1dfKQv9d-_PequNBDAdbmYYESBGw8n6PxrDSYgKJl_50Eh8WkvkDQdFFYgvpTHVI3yGBR5ic34J41cYfj3fBzW9H8cBkd3SbFC3spa3IMMtqff5MJM770cnz0HIVCv2AZWBAZpbRS8HIN3ko2ozyBevXWw3uLwF31ojeCmnIeoirdgkioYjBhCZvpqu2OEC74vFKDlJRUHq2ucdjIua_4MUkcgHcFH_Udm81R3EJM0UWvvY4WrczN6oB0hR-UJD3r06T1oMLCb-ZDq63EUs6pzNgErCbU821FNY_uuEhQ3R8kpLFQT3Qt8X3ZSAdy21kyiY9W132Ov73kMFKIErZGChebxUIgfhCctDVJ4Mnf0APiuZuEsqX0c2BzXqqkGdr_qSFfCV_3Zx6EmAk3VE1ltEJ835Lf0yEJMqBu-vbToNnKzXzHgFdv-TZtYacALrogT5DbeCz26xruH80Y3o0pn1Zv_NMFwMbuJO3auixdo903PlYrTRb-U0-xYkBQKk4YJf11j4uIJdu_km008p_JNoib44bBmuwrkK6GEy-qTsyhbPpUsquEq5VIvogYb83aXQn6FViMgS4GAXF1F15CJhfW4Iplu_5pXfKm0keqdq2o8urgtvOtEBGdrYAFfX0WJu33_fi-JG4BN85w" charset="UTF-8"></script><style>
+  <script type="text/javascript" src="https://me.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=bqfADn-GtWPlt0htcHovX8P-9tbEJh-7dSMf8-ncph_3JW7RoZ0hWUVmpE2CWizCEQuib2pH1Dx2-Yy7DoLgbXYl0Iqu4aQiJnsQd2rb4_itswVJs61yoI3j_dIQBusOBraayFzTPvnEk2aMV5jUCxNLrUpQXaKUClT7R2qNRNu29YOOIfdGV3l31vAeYJyASmCDKcT5ha9iTxEgP0XEj0T6PyMN_AyzweSGFsmURzNYM4Y7uAWBGD03QKYbXw_A2YrpbC4gWNr3XacgqW6ez9z6zKkZjVBg-TPNvHddvkLsogqsgTd6PYyQu6EiPBU551bADUDzZNdp3GU2XDVvnkZzt4uwzQHRs3iHBCc9XTVFFFqg0BnzxE8wBw5u8ron3vlEig48aMBxEOn_cSlGzbQrKYwiUPkcGjXe1DERQkMDs3JoxZ3SdrKWDiLmlFbz-GOzo7sX6IV3WVQDb37WTc4Jtj7AizFYNUz4UqFWz-iTBHGXsTd6lnLewmCGevkQ-E3FPS2R9ddK5ypyD6RySjDQPU3MH-WLqQolO3My8b7BFQ-hRs_RtcAriM8aNQHwFZVyQCQvSL3JqDYzabShcw61I91wzyKT6vej4qG_brY9_buwGtiFo5Lcnvcq58y2fY61HHGUV5HGmPjNsMW1CE1g-31SfVoIo-wYDZaHJUw0L9fdq8KAkqK3Tcj8wagCD5Y9BoVtPfZ-JA6zzMWgWlc-E6e02mnAy_p907cMYm7x_2BMNj2G_-sMeNxCxTnahLxGlSKQYsavd1A5b3r0mDq8nugtzPj9Nq1FI5rjMRhZuAuXxLb5P8W6W5G-sTU0EvL2oEssi9Om7gBKS9TBzQ-ArkPSzvCcNkzTfdOH8Hs3kpFMp7rztqhbqeRc2SVBjjJt3eU0sqez7lyEcx69MQ" charset="UTF-8"></script><style>
     :root {
       --bg: #121417;
       --panel: #1A1D22;
@@ -1480,6 +1480,8 @@
         elLoaderActions.style.display = 'flex';
       }
 
+      // Глобальный перехватчик ошибок убран, чтобы не мешать системным окнам iOS
+
       // Блокируем системный pinch-zoom Safari на iOS
       document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
       document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
@@ -1502,12 +1504,7 @@
         window.location.href = './index.html?refresh=' + Date.now();
       });
 
-      // Регистрация Service Worker (не блокирует запуск)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(() => {});
-        });
-      }
+      // Service Worker регистрируется после загрузки текста (в init), чтобы не дублировать трафик
 
       // --- ИКОНКИ ---
       const SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
@@ -3679,6 +3676,9 @@
           elLoader.style.display = 'none';
           refreshView();
           centerCamera(true);
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+          }
         } catch (err) {
           showFatalError('Не удалось загрузить bible.json: ' + (err.message || err));
         }

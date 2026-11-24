@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bible-rst-pwa-v9';
+const CACHE_NAME = 'bible-rst-pwa-v10';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -31,8 +31,6 @@ self.addEventListener('fetch', (event) => {
 
   const isHtml = event.request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('.html');
 
-  // Для HTML: сначала сеть (таймаут 3 сек), при офлайне — кэш.
-  // Это гарантирует, что обновления всегда подтягиваются и кэш никогда не «залипает».
   if (isHtml) {
     event.respondWith(
       new Promise((resolve) => {
@@ -68,7 +66,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Для bible.json, иконок и манифеста: сначала кэш (мгновенный старт офлайн), иначе сеть.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
