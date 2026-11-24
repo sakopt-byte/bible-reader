@@ -1480,14 +1480,6 @@
         elLoaderActions.style.display = 'flex';
       }
 
-      window.addEventListener('error', (e) => {
-        showFatalError('Ошибка скрипта: ' + (e.message || 'неизвестная ошибка'));
-      });
-      window.addEventListener('unhandledrejection', (e) => {
-        const reason = e.reason ? (e.reason.message || String(e.reason)) : 'ошибка загрузки';
-        showFatalError('Ошибка: ' + reason);
-      });
-
       // Блокируем системный pinch-zoom Safari на iOS
       document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
       document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
