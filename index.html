@@ -45,7 +45,7 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      height: var(--app-h, 100vh);
       overflow: hidden;
       background: var(--bg);
       color: var(--text);
@@ -56,9 +56,9 @@
     #app {
       position: fixed;
       top: 0;
-      right: 0;
-      bottom: 0;
       left: 0;
+      right: 0;
+      height: var(--app-h, 100vh);
       display: flex;
       flex-direction: column;
       background: var(--bg);
@@ -69,7 +69,7 @@
     #top-bar {
       background: var(--panel);
       border-bottom: 1px solid var(--border);
-      padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
+      padding-top: calc(env(safe-area-inset-top, 0px) + var(--top-extra, 18px));
       padding-left: calc(env(safe-area-inset-left, 0px) + 10px);
       padding-right: calc(env(safe-area-inset-right, 0px) + 10px);
       padding-bottom: 8px;
@@ -991,8 +991,21 @@
       const elFlashLeft = document.getElementById('flash-left');
       const elFlashRight = document.getElementById('flash-right');
 
-      function syncViewportLayout() {
-        const isCompactLandscape = window.innerWidth > window.innerHeight && window.innerHeight <= 540;
+        function syncViewportLayout() {
+        const w = window.innerWidth;
+        let h = window.innerHeight;
+        const isLandscape = w > h;
+        if (window.navigator.standalone === true) {
+          const trueScreenH = isLandscape
+            ? Math.min(window.screen.width, window.screen.height)
+            : Math.max(window.screen.width, window.screen.height);
+          if (trueScreenH > h && (trueScreenH - h) <= 120) h = trueScreenH;
+        }
+        document.documentElement.style.setProperty('--app-h', h + 'px');
+        const hasIslandRatio = !isLandscape && (h / Math.max(1, w) > 2.0);
+        document.documentElement.style.setProperty('--top-extra', (isLandscape ? 6 : (hasIslandRatio ? 22 : 12)) + 'px');
+
+        const isCompactLandscape = isLandscape && h <= 540;
         document.body.classList.toggle('landscape-compact', isCompactLandscape);
         if (!isCompactLandscape) document.body.classList.remove('bar-hidden');
         else document.body.classList.toggle('bar-hidden', elTopBar.classList.contains('collapsed'));
