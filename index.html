@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#1A1D22">
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon-180.png">
   <title>Библия RST+ Скорочтение</title>
   <style>
     :root {
@@ -32,6 +32,7 @@
       --neon-green: #22E584;
       --neon-red: #FF3B5C;
       --neon-mid: #5FA8D3;
+      --verse-neon: #E8B450;
     }
 
     * {
@@ -64,6 +65,21 @@
       background: var(--bg);
       overflow: hidden;
     }
+
+    /* --- КНОПКА «ОТМЕТИТЬ ПРОЧТЕНИЕ» --- */
+    .mark-wrap { text-align: center; }
+    .mark-btn {
+      pointer-events: auto;
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 40px; padding: 0 18px; margin-top: 14px;
+      border-radius: 8px; border: 1.5px solid var(--neon-green);
+      background: rgba(34, 229, 132, 0.12); color: var(--neon-green);
+      font-size: 14px; font-weight: 700; white-space: nowrap; cursor: pointer;
+      box-shadow: 0 0 12px rgba(34, 229, 132, 0.2);
+    }
+    .mark-btn.on { background: var(--neon-green); color: #0E1A14; box-shadow: 0 0 14px rgba(34, 229, 132, 0.4); }
+    .mark-btn.wide { width: 100%; }
+    .neon-gate .mark-btn { margin-top: 10px; height: 32px; min-width: 170px; padding: 0 12px; font-size: 12.5px; }
 
     /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
     #top-bar {
@@ -251,9 +267,27 @@
     #card-stack { display: flex; flex-direction: column; gap: 10px; width: 340px; }
     #block-progress-box { display: flex; flex-direction: column; gap: 4px; }
     .prog-label { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
-    .prog-track { width: 100%; height: 7px; background: #1F242C; border-radius: 4px; overflow: hidden; }
-    .prog-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 4px; transition: width 0.16s ease-out; }
-    .prog-fill.verse-fill { background: var(--verse-bar); }
+    .prog-group { display: flex; flex-direction: column; gap: 4px; }
+    /* Блочный (ретро) прогресс-бар: ячейки-квадраты, число ячеек считается в JS (--cells), заполнено --n */
+    .prog-track {
+      --cells: 30;
+      position: relative;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, #262C36 calc(100% - 2px), transparent 0) 0 0 / calc(100% / var(--cells)) 100%;
+    }
+    .prog-fill {
+      --n: 0;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) calc(100% - 2px), transparent 0) 0 0 / calc(100% / var(--cells)) 100%;
+      -webkit-clip-path: inset(0 calc(100% - (var(--n) / var(--cells)) * 100%) 0 0);
+      clip-path: inset(0 calc(100% - (var(--n) / var(--cells)) * 100%) 0 0);
+    }
+    .prog-fill.verse-fill { background-image: linear-gradient(90deg, var(--verse-bar) calc(100% - 2px), transparent 0); }
+    #word-hud .prog-track { height: 8px; }
 
     #text-card {
       position: relative;
@@ -331,13 +365,28 @@
     .stream-word.read { color: var(--word-read); }
     .stream-word.next { color: var(--word-next); }
     .stream-word.active { font-size: 46px; font-weight: 700; color: var(--word-active); margin: 0 14px; text-shadow: 0 0 18px rgba(212, 163, 89, 0.25); }
-    .stream-vtag { display: inline-block; font-size: 11px; color: var(--verse-tag); vertical-align: super; margin-right: -4px; margin-left: 6px; transform: translateY(-9px); }
+    /* Маркер начала стиха: тонкая тёплая неоновая «вешка» с флажком-номером */
+    .vmark { display: inline-flex; align-items: flex-start; flex-shrink: 0; height: 56px; margin: 0 6px 0 14px; }
+    .vmark-line {
+      width: 2px; height: 100%; border-radius: 2px;
+      background: linear-gradient(180deg, transparent 0%, var(--verse-neon) 20%, var(--verse-neon) 80%, transparent 100%);
+      filter: drop-shadow(0 0 4px rgba(232, 180, 80, 0.65));
+      opacity: 0.85;
+    }
+    .vmark-num {
+      margin-left: 5px; margin-top: 2px;
+      font-size: 13px; font-weight: 800; line-height: 1; letter-spacing: 0.2px;
+      color: #E6BB6A; text-shadow: 0 0 8px rgba(232, 180, 80, 0.5);
+      font-variant-numeric: tabular-nums;
+    }
+    .ticker-item .vmark { height: 64px; margin: 0 10px 0 2px; }
+    .ticker-item .vmark-num { font-size: 17px; margin-left: 6px; }
 
     /* --- БЕГУЩАЯ СТРОКА --- */
     #ticker-stream-root { position: absolute; top: 0; left: 0; display: none; }
     #ticker-tape { position: absolute; top: 0; left: 0; display: flex; align-items: center; white-space: nowrap; will-change: transform; }
     .ticker-item { display: inline-flex; align-items: center; padding-right: 16px; font-size: 36px; font-weight: 500; line-height: 1.15; color: var(--text); }
-    .ticker-vtag { font-size: 14px; font-weight: 700; color: var(--accent); opacity: 0.72; margin-right: 7px; transform: translateY(-10px); }
+    
 
     /* --- HUD ПРОГРЕССА --- */
     #word-hud {
@@ -502,7 +551,22 @@
     #plan-jump-go { height: 34px; padding: 0 14px; background: rgba(212, 163, 89, 0.18); border-color: var(--accent); color: var(--accent-bright); font-size: 13px; font-weight: 600; }
 
     #plan-days-list { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-    .plan-day-card { width: 100%; height: auto; padding: 10px 12px; background: #1A1E25; border: 1px solid #282E38; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; }
+    .plan-day-card { width: 100%; padding: 10px 12px; background: #1A1E25; border: 1px solid #282E38; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+    .plan-day-main { flex: 1 1 0; min-width: 0; height: auto; padding: 0; background: none; border: 0; border-radius: 0; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; color: inherit; }
+    .plan-day-card.done { border-color: rgba(34, 229, 132, 0.4); }
+    .plan-day-card.done .plan-day-info { opacity: 0.6; }
+    .mark-box { flex: 0 0 auto; width: 34px; height: 34px; padding: 0; border-radius: 5px; border: 2px solid #3A4250; background: #12151A; color: var(--neon-green); font-size: 18px; font-weight: 800; line-height: 1; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+    .mark-box.on { border-color: var(--neon-green); background: rgba(34, 229, 132, 0.16); box-shadow: 0 0 8px rgba(34, 229, 132, 0.25); }
+    .mark-box.part { border-color: var(--accent); color: var(--accent-bright); }
+    .mark-chips { flex: 1 0 100%; display: flex; flex-wrap: wrap; gap: 6px; }
+    .mark-chip { height: 30px; padding: 0 9px; border-radius: 5px; background: #12151A; border: 1px solid #2F3643; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
+    .mark-chip.on { border-color: var(--neon-green); background: rgba(34, 229, 132, 0.14); color: var(--neon-green); }
+    #plan-footer { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 10px 14px; background: var(--panel); border-top: 1px solid var(--border); }
+    .plan-footer-info { font-size: 12.5px; color: var(--muted); }
+    .plan-footer-actions { display: flex; gap: 8px; }
+    .plan-footer-actions button { height: 32px; padding: 0 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .plan-footer-actions button:disabled { opacity: 0.4; cursor: default; }
+    .plan-footer-actions .danger { background: rgba(184, 59, 68, 0.22); border-color: rgba(255, 59, 92, 0.5); color: #FF6B84; }
     .plan-day-card.active { border-color: var(--neon-green); background: rgba(34, 229, 132, 0.08); }
     .plan-day-num { width: 48px; height: 46px; border-radius: 10px; background: #12151A; border: 1px solid #2C333F; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
     .plan-day-card.active .plan-day-num { border-color: var(--neon-green); color: var(--neon-green); }
@@ -624,7 +688,7 @@
     body.landscape-compact #word-hud .hud-section { flex: 1 1 0; gap: 3px; }
     body.landscape-compact #hud-ref { font-size: 12px; }
     body.landscape-compact #hud-ch-lbl, body.landscape-compact #hud-v-lbl { font-size: 11px; }
-    body.landscape-compact #word-hud .prog-track { height: 4px !important; }
+    body.landscape-compact #word-hud .prog-track { height: 6px; }
     body.landscape-compact #speed-dock { padding: 5px calc(env(safe-area-inset-right, 0px) + 12px) max(env(safe-area-inset-bottom, 0px), 6px) calc(env(safe-area-inset-left, 0px) + 12px); gap: 10px; }
     body.landscape-compact #ticker-invert-btn { width: 36px; height: 36px; }
     body.landscape-compact #ticker-invert-btn svg { width: 17px; height: 17px; }
@@ -715,15 +779,21 @@
           <div class="hud-row">
             <span id="hud-v-lbl">Ст. 1 — 0%</span>
           </div>
-          <div class="prog-track" style="height:5px;"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
+          <div class="prog-track"><div id="hud-v-fill" class="prog-fill verse-fill"></div></div>
         </div>
       </div>
 
       <div id="canvas-root">
         <div id="card-stack">
           <div id="block-progress-box">
-            <div id="block-prog-lbl" class="prog-label">Глава 1 — 0%</div>
-            <div class="prog-track"><div id="block-prog-fill" class="prog-fill"></div></div>
+            <div id="block-ch-box" class="prog-group">
+              <div id="block-prog-lbl" class="prog-label">Глава 1 — 0%</div>
+              <div class="prog-track"><div id="block-prog-fill" class="prog-fill"></div></div>
+            </div>
+            <div id="block-sec-box" class="prog-group" style="display:none;">
+              <div id="block-sec-lbl" class="prog-label">Подход — 0%</div>
+              <div class="prog-track"><div id="block-sec-fill" class="prog-fill verse-fill"></div></div>
+            </div>
           </div>
           <div id="text-card"></div>
         </div>
@@ -793,6 +863,7 @@
         <button id="plan-jump-go" type="button">Открыть</button>
       </div>
       <div id="plan-days-list"></div>
+      <div id="plan-footer"></div>
     </div>
   </div>
 
@@ -959,6 +1030,11 @@
       const elHudChFill = document.getElementById('hud-ch-fill');
       const elHudVLbl = document.getElementById('hud-v-lbl');
       const elHudVFill = document.getElementById('hud-v-fill');
+      const elBlockChBox = document.getElementById('block-ch-box');
+      const elBlockSecBox = document.getElementById('block-sec-box');
+      const elBlockSecLbl = document.getElementById('block-sec-lbl');
+      const elBlockSecFill = document.getElementById('block-sec-fill');
+      const elPlanFooter = document.getElementById('plan-footer');
 
       const elSpeedDock = document.getElementById('speed-dock');
       const elTickerInvertBtn = document.getElementById('ticker-invert-btn');
@@ -1213,6 +1289,214 @@
       function isAtPlanLineStartVerse() { const l = getActivePlanLineObj(); if (!l || !l.verses.length) return false; const f = l.verses[0]; return currentBook === f.b && currentChapter === f.c && currentVerse === f.v; }
       function isAtPlanLineEndVerse() { const l = getActivePlanLineObj(); if (!l || !l.verses.length) return false; const e = l.verses[l.verses.length - 1]; return currentBook === e.b && currentChapter === e.c && currentVerse === e.v; }
 
+      /* ===== ОТМЕТКИ О ПРОЧТЕНИИ (localStorage, работают офлайн) ===== */
+      const MARKS_KEY = 'bible-rst-marks-v1';
+      const STATE_KEY = 'bible-rst-state-v1';
+      const PLAN_TOTAL_DAYS = { '35': 35, '20': 20, '365s': 365, '365c': 365 };
+      const PLAN_TITLES = { '35': '35 дней', '20': '20 дней', '365s': 'Год (прямой)', '365c': 'Год (ВЗ + НЗ)' };
+      const PLAN_MARK_IDS = { '35': ['p1', 'p2', 'wisdom'], '20': ['p1', 'p2', 'p3', 'p4'], '365s': ['day'], '365c': ['ot', 'nt'] };
+      const PLAN_MARK_SHORT = {
+        '35': { p1: 'Подх. 1', p2: 'Подх. 2', wisdom: 'Мудр.' },
+        '20': { p1: 'Подх. 1', p2: 'Подх. 2', p3: 'Подх. 3', p4: 'Подх. 4' },
+        '365c': { ot: 'ВЗ', nt: 'НЗ' }
+      };
+      let marks = {};
+      let planResetConfirm = false;
+
+      function loadMarks() {
+        marks = {};
+        try {
+          const raw = localStorage.getItem(MARKS_KEY);
+          const obj = raw ? JSON.parse(raw) : null;
+          if (!obj || typeof obj !== 'object') return;
+          Object.keys(PLAN_MARK_IDS).forEach((t) => {
+            const srcT = obj[t];
+            if (!srcT || typeof srcT !== 'object') return;
+            marks[t] = {};
+            Object.keys(srcT).forEach((d) => {
+              const arr = Array.isArray(srcT[d]) ? srcT[d].filter((id) => PLAN_MARK_IDS[t].includes(id)) : [];
+              if (arr.length) marks[t][d] = arr;
+            });
+          });
+        } catch (e) { marks = {}; }
+      }
+      function saveMarks() { try { localStorage.setItem(MARKS_KEY, JSON.stringify(marks)); } catch (e) {} }
+      function getDayMarks(type, day) { return (marks[type] && marks[type][day]) ? marks[type][day] : []; }
+      function isMarked(type, day, id) { return getDayMarks(type, day).includes(id); }
+      function dayMarkState(type, day) {
+        const cur = getDayMarks(type, day);
+        if (!cur.length) return 0;
+        return cur.length >= PLAN_MARK_IDS[type].length ? 2 : 1;
+      }
+      function countDaysRead(type) { let n = 0; Object.keys(marks[type] || {}).forEach((d) => { if (dayMarkState(type, d) === 2) n++; }); return n; }
+      function countAnyMarks(type) { return Object.keys(marks[type] || {}).length; }
+
+      function setMarks(type, day, ids, on) {
+        const cur = new Set(getDayMarks(type, day));
+        ids.forEach((id) => { if (on) cur.add(id); else cur.delete(id); });
+        if (!marks[type]) marks[type] = {};
+        if (cur.size) marks[type][day] = PLAN_MARK_IDS[type].filter((id) => cur.has(id));
+        else delete marks[type][day];
+        onMarksChanged();
+      }
+      function toggleDayMark(type, day) { setMarks(type, day, PLAN_MARK_IDS[type], dayMarkState(type, day) !== 2); }
+      function toggleSectionMark(type, day, id) { setMarks(type, day, [id], !isMarked(type, day, id)); }
+
+      function isSectionMarked(sec) {
+        if (!planActive || !sec || !sec.markIds || !sec.markIds.length) return false;
+        return sec.markIds.every((id) => isMarked(planType, planDayNum, id));
+      }
+      function toggleActiveSectionMark() {
+        const sec = getActivePlanSection();
+        if (!planActive || !sec || !sec.markIds || !sec.markIds.length) return;
+        setMarks(planType, planDayNum, sec.markIds, !isSectionMarked(sec));
+      }
+
+      function applyMarkBtnState(btn) {
+        const on = isSectionMarked(getActivePlanSection());
+        btn.classList.toggle('on', on);
+        btn.textContent = on ? '✓ Прочитано (снять)' : 'Отметить прочтение';
+      }
+      function refreshMarkButtons() { document.querySelectorAll('.mark-btn').forEach(applyMarkBtnState); }
+      function markButtonHtml(wide) { return '<div class="mark-wrap"><button type="button" class="mark-btn' + (wide ? ' wide' : '') + '"></button></div>'; }
+      function sectionPillText(sec) { return (isSectionMarked(sec) ? '✓ ' : '') + sec.label; }
+
+      function onMarksChanged() {
+        saveMarks();
+        refreshMarkButtons();
+        if (planActive) {
+          updatePlanButtonUI();
+          const pills = elPlanSectionBar.querySelectorAll('.section-pill');
+          pills.forEach((p, i) => { if (planSections[i]) p.textContent = sectionPillText(planSections[i]); });
+        }
+        if (elPlanModalBackdrop.classList.contains('open')) { syncPlanListMarks(); renderPlanFooter(); }
+      }
+
+      function updateDayCard(card) {
+        const day = Number(card.dataset.day), type = planModalTab, st = dayMarkState(type, day);
+        card.classList.toggle('done', st === 2);
+        const box = card.querySelector('.day-mark');
+        box.classList.toggle('on', st === 2);
+        box.classList.toggle('part', st === 1);
+        box.textContent = st === 2 ? '✓' : (st === 1 ? '–' : '');
+        box.setAttribute('aria-pressed', st === 2 ? 'true' : 'false');
+        card.querySelectorAll('.mark-chip').forEach((chip) => {
+          const on = isMarked(type, day, chip.dataset.sid);
+          chip.classList.toggle('on', on);
+          chip.textContent = (on ? '✓ ' : '') + chip.dataset.lbl;
+        });
+      }
+      function syncPlanListMarks() { elPlanDaysList.querySelectorAll('.plan-day-card').forEach(updateDayCard); }
+
+      function renderPlanFooter() {
+        const type = planModalTab;
+        elPlanFooter.innerHTML = '';
+        const info = document.createElement('div'); info.className = 'plan-footer-info';
+        const actions = document.createElement('div'); actions.className = 'plan-footer-actions';
+        const mkBtn = (text, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = text; if (cls) b.className = cls; return b; };
+        if (planResetConfirm) {
+          info.textContent = 'Сбросить все отметки графика «' + PLAN_TITLES[type] + '»?';
+          const yes = mkBtn('Да, сбросить', 'danger'), no = mkBtn('Отмена');
+          yes.addEventListener('click', () => { marks[type] = {}; planResetConfirm = false; onMarksChanged(); });
+          no.addEventListener('click', () => { planResetConfirm = false; renderPlanFooter(); });
+          actions.appendChild(yes); actions.appendChild(no);
+        } else {
+          info.textContent = 'Прочитано дней: ' + countDaysRead(type) + ' из ' + PLAN_TOTAL_DAYS[type];
+          const reset = mkBtn('Сбросить отметки');
+          reset.disabled = countAnyMarks(type) === 0;
+          reset.addEventListener('click', () => { planResetConfirm = true; renderPlanFooter(); });
+          actions.appendChild(reset);
+        }
+        elPlanFooter.appendChild(info); elPlanFooter.appendChild(actions);
+      }
+
+      /* ===== СОХРАНЕНИЕ / ВОССТАНОВЛЕНИЕ ПОЗИЦИИ ===== */
+      let saveStateTimer = 0;
+      function scheduleSaveState() { clearTimeout(saveStateTimer); saveStateTimer = setTimeout(saveStateNow, 500); }
+      function saveStateNow() {
+        clearTimeout(saveStateTimer);
+        if (!booksOrder.length) return;
+        try {
+          localStorage.setItem(STATE_KEY, JSON.stringify({
+            mode: displayMode, wordsWpm, tickerWpm, tickerInverted,
+            book: currentBook, chapter: currentChapter, verse: currentVerse, wordIdx: currentWordIdx, blockIdx: currentBlockIdx,
+            plan: planActive ? { type: planType, day: planDayNum, sec: planActiveSectionId } : null
+          }));
+        } catch (e) {}
+      }
+      function restoreState() {
+        let s = null;
+        try { s = JSON.parse(localStorage.getItem(STATE_KEY) || 'null'); } catch (e) { s = null; }
+        if (!s || typeof s !== 'object') return;
+        const clampWpm = (x, d) => (Number.isFinite(x) ? Math.max(SPEED_MIN_WPM, Math.min(SPEED_MAX_WPM, Math.round(x / SPEED_STEP_WPM) * SPEED_STEP_WPM)) : d);
+        wordsWpm = clampWpm(s.wordsWpm, wordsWpm);
+        tickerWpm = clampWpm(s.tickerWpm, tickerWpm);
+        tickerInverted = !!s.tickerInverted;
+        if (['WORDS', 'BLOCKS', 'TICKER', 'VERSES', 'CHAPTERS'].includes(s.mode)) displayMode = s.mode;
+        if (s.plan && PLAN_MARK_IDS[s.plan.type] && Number.isInteger(s.plan.day) && s.plan.day >= 1 && s.plan.day <= PLAN_TOTAL_DAYS[s.plan.type]) {
+          activatePlanDay(s.plan.type, s.plan.day);
+          if (planActive && planSections.some((x) => x.id === s.plan.sec)) planActiveSectionId = s.plan.sec;
+        }
+        const hasVerse = !!(bibleData[s.book] && bibleData[s.book][s.chapter] && bibleData[s.book][s.chapter][s.verse] !== undefined);
+        const line = getActivePlanLineObj();
+        const inRange = !planActive || !!(line && line.indexMap.has(s.book + '_' + s.chapter + '_' + s.verse));
+        if (hasVerse && inRange) {
+          currentBook = Number(s.book); currentChapter = Number(s.chapter); currentVerse = Number(s.verse);
+          currentWordIdx = Math.max(0, Number(s.wordIdx) || 0); currentBlockIdx = Math.max(0, Number(s.blockIdx) || 0);
+        } else if (planActive && line && line.verses.length) {
+          const f = line.verses[0]; currentBook = f.b; currentChapter = f.c; currentVerse = f.v; currentWordIdx = 0; currentBlockIdx = 0;
+        }
+        renderPlanSectionBar();
+        populateBookSelector();
+      }
+      function resetToDefaults() {
+        try { localStorage.removeItem(STATE_KEY); } catch (e) {}
+        planActive = false; planDayNum = 0; planSections = []; planActiveSectionId = '';
+        displayMode = 'WORDS';
+        currentBook = booksOrder[0] || 10; currentChapter = 1; currentVerse = 1; currentBlockIdx = 0; currentWordIdx = 0;
+        updatePlanButtonUI(); renderPlanSectionBar(); populateBookSelector();
+      }
+
+      /* ===== ПРОГРЕСС ПОДХОДА ===== */
+      function ensureSectionStats(sec) {
+        if (sec.stats) return sec.stats;
+        const vs = sec.rangeData.verses, prefix = new Array(vs.length);
+        let acc = 0;
+        for (let i = 0; i < vs.length; i++) { prefix[i] = acc; acc += getVerseWordsCached(vs[i].b, vs[i].c, vs[i].v).length; }
+        sec.stats = { prefix, total: Math.max(1, acc) };
+        return sec.stats;
+      }
+      function getSectionProgress(wordPos) {
+        const sec = getActivePlanSection();
+        if (!planActive || !sec || !sec.rangeData.verses.length) return null;
+        const idx = sec.rangeData.indexMap.get(currentBook + '_' + currentChapter + '_' + currentVerse);
+        if (idx === undefined) return null;
+        const st = ensureSectionStats(sec);
+        const passed = st.prefix[idx] + Math.max(0, wordPos);
+        const pct = st.total <= 1 ? 100 : Math.max(0, Math.min(100, (passed / (st.total - 1)) * 100));
+        return { sec, passed, total: st.total, pct };
+      }
+      function sectionLabel(sp) { return sp.sec.label + ' — ' + Math.round(sp.pct) + '% (' + (Math.floor(sp.passed) + 1) + '/' + sp.total + ')'; }
+
+      function setBar(fillEl, pct) {
+        const track = fillEl.parentNode, w = track.clientWidth;
+        if (w > 0) {
+          const h = track.clientHeight || 10;
+          track.style.setProperty('--cells', String(Math.max(10, Math.round(w / (h + 2)))));
+        }
+        const cells = Number(track.style.getPropertyValue('--cells')) || 30;
+        let n = pct >= 100 ? cells : Math.floor((pct / 100) * cells);
+        if (pct > 0 && n < 1) n = 1;
+        fillEl.style.setProperty('--n', String(n));
+      }
+
+      function createVerseMark(num) {
+        const m = document.createElement('span');
+        m.className = 'vmark';
+        m.innerHTML = '<span class="vmark-line"></span><span class="vmark-num">' + escapeHtml(num) + '</span>';
+        return m;
+      }
+
       function renderPlanSectionBar() {
         if (!planActive || planSections.length <= 1) { elPlanSectionBar.style.display = 'none'; elPlanSectionBar.innerHTML = ''; return; }
         elPlanSectionBar.style.display = 'flex';
@@ -1222,7 +1506,7 @@
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'section-pill' + (sec.isWisdom ? ' wisdom-pill' : '') + (sec.id === planActiveSectionId ? ' active' : '');
-          btn.textContent = sec.label;
+          btn.textContent = sectionPillText(sec);
           btn.addEventListener('click', () => selectPlanSection(sec.id));
           elPlanSectionBar.appendChild(btn);
         }
@@ -1253,10 +1537,10 @@
           const rWis = buildLineRangeData(wisSeq, STD_BOOK_IDS[entry.w[0]], entry.w[1], entry.w[2], STD_BOOK_IDS[entry.w[3]], entry.w[4], entry.w[5], true);
           const mainBounds = new Map();
           mainBounds.set(STD_BOOK_IDS[entry.p2[0]] + '_' + entry.p2[1] + '_' + entry.p2[2], 'ПОДХОД 2');
-          sections.push({ id:'p1', label:'Подход 1', isWisdom:false, rangeData:rP1, subBoundaries:new Map() });
-          sections.push({ id:'p2', label:'Подход 2', isWisdom:false, rangeData:rP2, subBoundaries:new Map() });
-          sections.push({ id:'all_main', label:'Вся осн.', isWisdom:false, rangeData:rAllMain, subBoundaries:mainBounds });
-          sections.push({ id:'wisdom', label:'Мудрость', isWisdom:true, rangeData:rWis, subBoundaries:new Map() });
+          sections.push({ id:'p1', label:'Подход 1', isWisdom:false, rangeData:rP1, subBoundaries:new Map(), markIds:['p1'] });
+          sections.push({ id:'p2', label:'Подход 2', isWisdom:false, rangeData:rP2, subBoundaries:new Map(), markIds:['p2'] });
+          sections.push({ id:'all_main', label:'Вся осн.', isWisdom:false, rangeData:rAllMain, subBoundaries:mainBounds, markIds:['p1','p2'] });
+          sections.push({ id:'wisdom', label:'Мудрость', isWisdom:true, rangeData:rWis, subBoundaries:new Map(), markIds:['wisdom'] });
         } else if (type === '20') {
           const entry = READING_PLAN_20.find((d) => d.day === dayNum);
           if (!entry) return;
@@ -1264,24 +1548,24 @@
           for (let i = 0; i < entry.p.length; i++) {
             const seg = entry.p[i];
             const rd = buildLineRangeData(booksOrder, STD_BOOK_IDS[seg[0]], seg[1], seg[2], STD_BOOK_IDS[seg[3]], seg[4], seg[5], false);
-            sections.push({ id:'p' + (i + 1), label:'Подход ' + (i + 1), isWisdom:false, rangeData:rd, subBoundaries:new Map() });
+            sections.push({ id:'p' + (i + 1), label:'Подход ' + (i + 1), isWisdom:false, rangeData:rd, subBoundaries:new Map(), markIds:['p' + (i + 1)] });
             if (i > 0) allBounds.set(STD_BOOK_IDS[seg[0]] + '_' + seg[1] + '_' + seg[2], 'ПОДХОД ' + (i + 1));
           }
           const fSeg = entry.p[0], lSeg = entry.p[entry.p.length - 1];
           const rAllDay = buildLineRangeData(booksOrder, STD_BOOK_IDS[fSeg[0]], fSeg[1], fSeg[2], STD_BOOK_IDS[lSeg[3]], lSeg[4], lSeg[5], false);
-          sections.push({ id:'all_day', label:'Весь день', isWisdom:false, rangeData:rAllDay, subBoundaries:allBounds });
+          sections.push({ id:'all_day', label:'Весь день', isWisdom:false, rangeData:rAllDay, subBoundaries:allBounds, markIds:['p1','p2','p3','p4'] });
         } else if (type === '365s') {
           const entry = READING_PLAN_365_STRAIGHT.find((d) => d.day === dayNum);
           if (!entry) return;
           const rd = buildLineRangeData(booksOrder, entry.r[0], entry.r[1], entry.r[2], entry.r[3], entry.r[4], entry.r[5], false);
-          sections.push({ id:'day', label:'День', isWisdom:false, rangeData:rd, subBoundaries:new Map() });
+          sections.push({ id:'day', label:'День', isWisdom:false, rangeData:rd, subBoundaries:new Map(), markIds:['day'] });
         } else if (type === '365c') {
           const entry = READING_PLAN_365_COMBO.find((d) => d.day === dayNum);
           if (!entry) return;
           const rOT = buildLineRangeData(booksOrder, entry.ot[0], entry.ot[1], entry.ot[2], entry.ot[3], entry.ot[4], entry.ot[5], false);
           const rNT = buildLineRangeData(booksOrder, entry.nt[0], entry.nt[1], entry.nt[2], entry.nt[3], entry.nt[4], entry.nt[5], false);
-          sections.push({ id:'ot', label:'Ветхий Завет', isWisdom:false, rangeData:rOT, subBoundaries:new Map() });
-          sections.push({ id:'nt', label:'Новый Завет', isWisdom:true, rangeData:rNT, subBoundaries:new Map() });
+          sections.push({ id:'ot', label:'Ветхий Завет', isWisdom:false, rangeData:rOT, subBoundaries:new Map(), markIds:['ot'] });
+          sections.push({ id:'nt', label:'Новый Завет', isWisdom:true, rangeData:rNT, subBoundaries:new Map(), markIds:['nt'] });
         }
         if (!sections.length) return;
         planActive = true; planType = type; planModalTab = type; planDayNum = dayNum;
@@ -1304,7 +1588,7 @@
         if (planActive) {
           elPlanBtn.classList.add('active');
           const totalD = (planType === '365s' || planType === '365c') ? '365' : planType;
-          elPlanBtn.textContent = 'Д' + planDayNum + '/' + totalD;
+          elPlanBtn.textContent = 'Д' + planDayNum + '/' + totalD + (dayMarkState(planType, planDayNum) === 2 ? ' ✓' : '');
           elPlanExitBtn.style.display = 'inline-flex';
         } else {
           elPlanBtn.classList.remove('active');
@@ -1322,33 +1606,56 @@
         if (isYearly) ensureYearlyPlans();
         elPlanJumpRow.style.display = isYearly ? 'flex' : 'none';
         elPlanDaysList.innerHTML = '';
+        planResetConfirm = false;
 
         const frag = document.createDocumentFragment();
         let list = READING_PLAN_35;
         if (planModalTab === '20') list = READING_PLAN_20;
         else if (planModalTab === '365s') list = READING_PLAN_365_STRAIGHT;
         else if (planModalTab === '365c') list = READING_PLAN_365_COMBO;
+        const markIds = PLAN_MARK_IDS[planModalTab], shortMap = PLAN_MARK_SHORT[planModalTab] || {};
 
         for (let i = 0; i < list.length; i++) {
           const item = list[i];
           const isCurrent = planActive && planType === planModalTab && planDayNum === item.day;
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'plan-day-card' + (isCurrent ? ' active' : '');
+          const card = document.createElement('div');
+          card.className = 'plan-day-card' + (isCurrent ? ' active' : '');
+          card.dataset.day = String(item.day);
+          const main = document.createElement('button');
+          main.type = 'button'; main.className = 'plan-day-main';
           const dayStr = isYearly ? String(item.day) : String(item.day).padStart(2, '0');
           if (planModalTab === '35') {
-            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">Осн.</span>' + escapeHtml(item.ml) + '</div><div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>' + escapeHtml(item.wl) + '</div></div>';
+            main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">Осн.</span>' + escapeHtml(item.ml) + '</div><div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>' + escapeHtml(item.wl) + '</div></div>';
           } else if (planModalTab === '20') {
-            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div><div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div></div>';
+            main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div><div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div></div>';
           } else if (planModalTab === '365s') {
-            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div></div>';
+            main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div></div>';
           } else {
-            btn.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">ВЗ</span>' + escapeHtml(item.otl) + '</div><div class="plan-line-row nt"><span class="plan-line-badge">НЗ</span>' + escapeHtml(item.ntl) + '</div></div>';
+            main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">ВЗ</span>' + escapeHtml(item.otl) + '</div><div class="plan-line-row nt"><span class="plan-line-badge">НЗ</span>' + escapeHtml(item.ntl) + '</div></div>';
           }
-          btn.addEventListener('click', () => activatePlanDay(planModalTab, item.day));
-          frag.appendChild(btn);
+          card.appendChild(main);
+
+          const box = document.createElement('button');
+          box.type = 'button'; box.className = 'mark-box day-mark';
+          box.setAttribute('aria-label', 'Отметить день как прочитанный');
+          card.appendChild(box);
+
+          if (markIds.length > 1) {
+            const chips = document.createElement('div');
+            chips.className = 'mark-chips';
+            markIds.forEach((id) => {
+              const chip = document.createElement('button');
+              chip.type = 'button'; chip.className = 'mark-chip';
+              chip.dataset.sid = id; chip.dataset.lbl = shortMap[id] || id;
+              chips.appendChild(chip);
+            });
+            card.appendChild(chips);
+          }
+          updateDayCard(card);
+          frag.appendChild(card);
         }
         elPlanDaysList.appendChild(frag);
+        renderPlanFooter();
         const activeCard = elPlanDaysList.querySelector('.plan-day-card.active');
         if (activeCard) activeCard.scrollIntoView({ block: 'center' });
         else elPlanDaysList.scrollTop = 0;
@@ -1598,6 +1905,12 @@
         gate.className = 'neon-gate ' + type;
         const lbl = customLabel || (type === 'start' ? 'СТАРТ' : 'ФИНИШ');
         gate.innerHTML = '<span class="neon-gate-line"></span><span class="neon-gate-tag">' + escapeHtml(lbl) + '</span>';
+        if (type === 'end' && !customLabel && planActive) {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'mark-btn';
+          applyMarkBtnState(btn);
+          gate.appendChild(btn);
+        }
         return gate;
       }
 
@@ -1612,9 +1925,7 @@
         if (pos.wIdx === 0) {
           const subLbl = getSubBoundaryLabelAt(pos.b, pos.c, pos.v);
           if (subLbl) span.appendChild(createNeonGateEl('mid', subLbl));
-          const tag = document.createElement('span');
-          tag.className = 'ticker-vtag'; tag.textContent = String(pos.v);
-          span.appendChild(tag);
+          span.appendChild(createVerseMark(String(pos.v)));
         }
         span.appendChild(document.createTextNode(pos.text));
         return span;
@@ -1735,6 +2046,7 @@
         elTickerInvertBtn.classList.toggle('active', tickerInverted);
         elSpeedPlayBtn.innerHTML = running ? SVG_PAUSE : SVG_PLAY;
         elSpeedPlayBtn.classList.toggle('running', running);
+        scheduleSaveState();
       }
 
       function buildIosSpeedRuler() {
@@ -1797,21 +2109,39 @@
         const bookTitle = booksNames[currentBook] || 'Книга', pTag = getPlanShortTag();
         if (displayMode === 'BLOCKS') {
           elBlockProgBox.style.display = 'flex';
+          elBlockChBox.style.display = 'flex';
           const passed = (chapterBlockOffsets[currentVerse] || 0) + currentBlockIdx;
           const pct = Math.max(0, Math.min(100, (chapterTotalBlocks <= 1 ? 1 : passed / (chapterTotalBlocks - 1)) * 100));
-          elBlockProgFill.style.width = pct + '%';
+          setBar(elBlockProgFill, pct);
           elBlockProgLbl.textContent = 'Глава ' + currentChapter + ' — ' + Math.round(pct) + '% (' + (passed + 1) + '/' + chapterTotalBlocks + ')';
+          const wl = currentWords.length, bl = Math.max(1, currentBlocks.length);
+          const sp = getSectionProgress((wl - 1) * (bl <= 1 ? 1 : currentBlockIdx / (bl - 1)));
+          elBlockSecBox.style.display = sp ? 'flex' : 'none';
+          if (sp) { setBar(elBlockSecFill, sp.pct); elBlockSecLbl.textContent = sectionLabel(sp); }
         } else if (displayMode === 'WORDS' || displayMode === 'TICKER') {
           elBlockProgBox.style.display = 'none';
           elHudRef.textContent = bookTitle + ' ' + currentChapter + ':' + currentVerse + (pTag ? ' • ' + pTag : '');
           const passedCh = (chapterWordOffsets[currentVerse] || 0) + currentWordIdx;
           const pctCh = Math.max(0, Math.min(100, (chapterTotalWords <= 1 ? 1 : passedCh / (chapterTotalWords - 1)) * 100));
-          elHudChFill.style.width = pctCh + '%';
+          setBar(elHudChFill, pctCh);
           elHudChLbl.textContent = 'Гл. ' + currentChapter + ' — ' + Math.round(pctCh) + '% (' + (passedCh + 1) + '/' + chapterTotalWords + ')';
-          const totalV = Math.max(1, currentWords.length);
-          const pctV = Math.max(0, Math.min(100, (totalV <= 1 ? 1 : currentWordIdx / (totalV - 1)) * 100));
-          elHudVFill.style.width = pctV + '%';
-          elHudVLbl.textContent = 'Ст. ' + currentVerse + ' — ' + Math.round(pctV) + '% (' + (currentWordIdx + 1) + '/' + totalV + ')';
+          const sp = getSectionProgress(currentWordIdx);
+          if (sp) {
+            // в режиме графика вместо прогресса стиха показываем прогресс выбранного подхода
+            setBar(elHudVFill, sp.pct);
+            elHudVLbl.textContent = sectionLabel(sp);
+          } else {
+            const totalV = Math.max(1, currentWords.length);
+            const pctV = Math.max(0, Math.min(100, (totalV <= 1 ? 1 : currentWordIdx / (totalV - 1)) * 100));
+            setBar(elHudVFill, pctV);
+            elHudVLbl.textContent = 'Ст. ' + currentVerse + ' — ' + Math.round(pctV) + '% (' + (currentWordIdx + 1) + '/' + totalV + ')';
+          }
+        } else if (displayMode === 'VERSES') {
+          const sp = getSectionProgress(Math.max(0, currentWords.length - 1));
+          elBlockProgBox.style.display = sp ? 'flex' : 'none';
+          elBlockChBox.style.display = 'none';
+          elBlockSecBox.style.display = sp ? 'flex' : 'none';
+          if (sp) { setBar(elBlockSecFill, sp.pct); elBlockSecLbl.textContent = sectionLabel(sp); }
         } else {
           elBlockProgBox.style.display = 'none';
         }
@@ -1842,15 +2172,15 @@
         if (planActive && win.hitStart) frag.appendChild(createNeonGateEl('start', ''));
         win.left.forEach((item) => {
           if (item.subGate) frag.appendChild(createNeonGateEl('mid', item.subGate));
-          if (item.vtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = item.vtag; frag.appendChild(t); }
+          if (item.vtag) frag.appendChild(createVerseMark(item.vtag));
           const s = document.createElement('span'); s.className = 'stream-word read'; s.textContent = item.text; frag.appendChild(s);
         });
         if (win.activeSubGate) frag.appendChild(createNeonGateEl('mid', win.activeSubGate));
-        if (win.activeVtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = win.activeVtag; frag.appendChild(t); }
+        if (win.activeVtag) frag.appendChild(createVerseMark(win.activeVtag));
         const activeEl = document.createElement('span'); activeEl.className = 'stream-word active'; activeEl.textContent = win.active; frag.appendChild(activeEl);
         win.right.forEach((item) => {
           if (item.subGate) frag.appendChild(createNeonGateEl('mid', item.subGate));
-          if (item.vtag) { const t = document.createElement('span'); t.className = 'stream-vtag'; t.textContent = item.vtag; frag.appendChild(t); }
+          if (item.vtag) frag.appendChild(createVerseMark(item.vtag));
           const s = document.createElement('span'); s.className = 'stream-word next'; s.textContent = item.text; frag.appendChild(s);
         });
         if (planActive && win.hitEnd) frag.appendChild(createNeonGateEl('end', ''));
@@ -1904,7 +2234,7 @@
           if (prevRef && prevRef.b === currentBook && prevRef.c === currentChapter) adj.push('<div>' + prevRef.v + '. ' + cleanVerseHtml(vObj[prevRef.v]) + '</div>');
           if (nextRef && nextRef.b === currentBook && nextRef.c === currentChapter) adj.push('<div>' + nextRef.v + '. ' + cleanVerseHtml(vObj[nextRef.v]) + '</div>');
 
-          elTextCard.innerHTML = badge + '<div class="block-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="block-main">' + escapeHtml(currentBlocks[currentBlockIdx] || '—') + '</div><div class="block-dots">' + dots + '</div><div class="block-divider"></div><div class="block-context">' + ctx + '</div>' + (adj.length ? '<div class="block-adj">' + adj.join('') + '</div>' : '');
+          elTextCard.innerHTML = badge + '<div class="block-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="block-main">' + escapeHtml(currentBlocks[currentBlockIdx] || '—') + '</div><div class="block-dots">' + dots + '</div><div class="block-divider"></div><div class="block-context">' + ctx + '</div>' + (adj.length ? '<div class="block-adj">' + adj.join('') + '</div>' : '') + (atEnd ? markButtonHtml(false) : '');
         } else if (displayMode === 'WORDS') {
           renderContinuousWordStream(); updateSovietGaugeUI();
         } else if (displayMode === 'TICKER') {
@@ -1920,7 +2250,7 @@
           if (atStart) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill start">● Старт • ' + escapeHtml(secTitle) + '</span></div>';
           else if (atEnd) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill end">● Финиш • ' + escapeHtml(secTitle) + '</span></div>';
           else if (subLbl) badge = '<div class="bound-pill-wrap"><span class="card-bound-pill mid">● ' + escapeHtml(subLbl) + '</span></div>';
-          elTextCard.innerHTML = badge + '<div class="verse-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="verse-body">' + cleanVerseHtml(vObj[currentVerse] || '') + '</div>';
+          elTextCard.innerHTML = badge + '<div class="verse-ref">' + escapeHtml(bookTitle) + ' ' + currentChapter + ':' + currentVerse + '</div><div class="verse-body">' + cleanVerseHtml(vObj[currentVerse] || '') + '</div>' + (atEnd ? markButtonHtml(false) : '');
         } else if (displayMode === 'CHAPTERS') {
           let html = '<div class="ch-title">' + escapeHtml(bookTitle) + ' — Глава ' + currentChapter + '</div>';
           const line = getActivePlanLineObj(), firstV = (line && line.verses.length) ? line.verses[0] : null, lastV = (line && line.verses.length) ? line.verses[line.verses.length - 1] : null;
@@ -1930,7 +2260,7 @@
             if (subLbl) html += '<div class="ch-sub-divider">' + escapeHtml(subLbl) + '</div>';
             html += '<div class="ch-verse"><span class="ch-vnum">' + v + '</span>' + splitIntoSemanticBlocks(vObj[v] || '').map(escapeHtml).join('<span class="ch-dot">·</span>') + '</div>';
           });
-          if (planActive && lastV && lastV.b === currentBook && lastV.c === currentChapter) html += '<div class="ch-neon-banner end"></div>';
+          if (planActive && lastV && lastV.b === currentBook && lastV.c === currentChapter) html += '<div class="ch-neon-banner end"></div>' + markButtonHtml(true);
           html += '<div class="ch-nav-row"><button type="button" id="ch-prev-btn">← Пред. глава</button><button type="button" id="ch-next-btn">След. глава →</button></div>';
           elChapContainer.innerHTML = html; elChapScroll.scrollTop = 0;
           document.getElementById('ch-prev-btn').onclick = () => stepBackward();
@@ -1938,6 +2268,8 @@
         }
         if (!isChapter) updateProgressBars();
         updateStatusBar();
+        refreshMarkButtons();
+        scheduleSaveState();
       }
 
       function getMinZoomForMode() { return displayMode === 'TICKER' ? TICKER_MIN_ZOOM : (displayMode === 'WORDS' ? WORD_MIN_ZOOM : 0.35); }
@@ -2140,6 +2472,28 @@
       elPlanJumpGo.addEventListener('click', () => { const v = parseInt(elPlanJumpInput.value, 10); if (!isNaN(v) && v >= 1 && v <= 365) activatePlanDay(planModalTab, v); });
       elPlanJumpInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') elPlanJumpGo.click(); });
 
+      elPlanDaysList.addEventListener('click', (e) => {
+        const card = e.target.closest('.plan-day-card');
+        if (!card) return;
+        const day = Number(card.dataset.day);
+        const chip = e.target.closest('.mark-chip');
+        if (chip) { toggleSectionMark(planModalTab, day, chip.dataset.sid); return; }
+        if (e.target.closest('.day-mark')) { toggleDayMark(planModalTab, day); return; }
+        if (e.target.closest('.plan-day-main')) activatePlanDay(planModalTab, day);
+      });
+
+      // кнопки «Отметить прочтение» (в карточках, в воротах «Финиш», в режиме глав)
+      document.addEventListener('click', (e) => {
+        const b = e.target.closest ? e.target.closest('.mark-btn') : null;
+        if (!b) return;
+        e.preventDefault();
+        toggleActiveSectionMark();
+      });
+
+      // iOS может убить PWA в любой момент — сохраняем позицию при уходе в фон
+      window.addEventListener('pagehide', saveStateNow);
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveStateNow(); });
+
       elCenterBtn.addEventListener('click', () => centerCamera(true));
       function setTopBarCollapsed(collapsed) {
         elTopBar.classList.toggle('collapsed', collapsed);
@@ -2169,7 +2523,9 @@
           booksNames = data.books || {};
           bibleData = data.verses || {};
           buildNavigationIndex();
+          loadMarks();
           populateBookSelector();
+          try { restoreState(); } catch (e) { resetToDefaults(); }
           elModeSel.value = displayMode;
           updateSovietGaugeUI();
           elLoader.style.display = 'none';
@@ -2178,6 +2534,8 @@
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(() => {});
           }
+          // просим браузер не вычищать локальные данные (отметки, позиция) при нехватке места
+          if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
         } catch (err) {
           elLoaderText.textContent = 'Ошибка загрузки bible.json: ' + (err.message || err);
         }
