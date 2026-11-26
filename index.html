@@ -66,6 +66,32 @@
       overflow: hidden;
     }
 
+    /* --- СВОИ ГРАФИКИ --- */
+    .plan-tab-btn.custom { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 8px; }
+    .plan-tab-btn.add { grid-column: 1 / -1; border-style: dashed; color: var(--accent-bright); }
+    .plan-footer-actions .danger-soft { color: #FF6B84; border-color: rgba(255, 59, 92, 0.4); }
+    #custom-plan-backdrop { position: fixed; inset: 0; z-index: 80; display: none; align-items: center; justify-content: center; padding: 14px; background: rgba(0, 0, 0, 0.72); }
+    #custom-plan-backdrop.open { display: flex; }
+    #custom-plan-modal { width: min(460px, 100%); max-height: 100%; display: flex; flex-direction: column; background: #14171C; border: 1px solid #2E3440; border-radius: 20px; overflow: hidden; }
+    #custom-plan-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); font-size: 17px; font-weight: 700; }
+    #custom-plan-head button { width: 34px; height: 34px; padding: 0; }
+    #custom-plan-body { flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .cp-field { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; color: var(--muted); }
+    .cp-field input, .cp-field select { width: 100%; height: 40px; font-size: 16px; user-select: text; -webkit-user-select: text; }
+    .cp-field input { background: #121417; border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 0 10px; }
+    .cp-row2 { display: flex; gap: 10px; }
+    .cp-row2 > * { flex: 1 1 0; min-width: 0; }
+    .cp-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .cp-seg button { height: 36px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .cp-seg button.on { border-color: var(--accent); color: var(--accent-bright); background: rgba(212, 163, 89, 0.12); }
+    #cp-preview { background: #12151A; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.55; color: var(--text); }
+    #cp-preview .dim { color: var(--muted); }
+    #cp-error { color: #FF6B84; font-size: 12.5px; }
+    .cp-actions { display: flex; gap: 8px; padding: 12px 16px; background: var(--panel); border-top: 1px solid var(--border); }
+    .cp-actions button { height: 40px; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0 16px; }
+    #cp-create { flex: 1; background: rgba(34, 229, 132, 0.14); border-color: var(--neon-green); color: var(--neon-green); }
+    #cp-create:disabled { opacity: 0.4; cursor: default; }
+
     /* --- КНОПКА «ОТМЕТИТЬ ПРОЧТЕНИЕ» --- */
     .mark-wrap { text-align: center; }
     .mark-btn {
@@ -541,7 +567,7 @@
     #plan-exit-btn { display: none; height: 30px; padding: 0 10px; background: rgba(184, 59, 68, 0.22); border-color: rgba(255, 59, 92, 0.5); color: #FF6B84; font-size: 12.5px; font-weight: 600; }
     #plan-close-btn { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); font-size: 16px; }
 
-    .plan-tabs-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); }
+    .plan-tabs-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); max-height: 150px; flex: 0 0 auto; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .plan-tab-btn { height: 32px; border-radius: 8px; background: #12151A; border: 1px solid #2A303B; color: var(--muted); font-size: 12.5px; font-weight: 600; cursor: pointer; }
     .plan-tab-btn.active { background: rgba(212, 163, 89, 0.16); border-color: var(--accent); color: var(--accent-bright); }
 
@@ -856,6 +882,7 @@
         <button id="plan-tab-20" class="plan-tab-btn" type="button">20 дней</button>
         <button id="plan-tab-365s" class="plan-tab-btn" type="button">Год (прямой)</button>
         <button id="plan-tab-365c" class="plan-tab-btn" type="button">Год (ВЗ + НЗ)</button>
+        <div id="plan-custom-tabs" style="display:contents;"></div>
       </div>
       <div id="plan-jump-row">
         <label for="plan-jump-input">Перейти к дню:</label>
@@ -864,6 +891,42 @@
       </div>
       <div id="plan-days-list"></div>
       <div id="plan-footer"></div>
+    </div>
+  </div>
+
+  <div id="custom-plan-backdrop">
+    <div id="custom-plan-modal">
+      <div id="custom-plan-head"><span>Свой график чтения</span><button id="cp-close" type="button" aria-label="Закрыть">✕</button></div>
+      <div id="custom-plan-body">
+        <label class="cp-field"><span>Название (необязательно)</span><input id="cp-name" type="text" maxlength="40" placeholder="Например: НЗ за месяц"></label>
+        <label class="cp-field"><span>Что читать</span>
+          <select id="cp-scope">
+            <option value="all">Вся Библия</option>
+            <option value="ot">Ветхий Завет</option>
+            <option value="nt">Новый Завет</option>
+            <option value="range">Свои книги…</option>
+          </select>
+        </label>
+        <div id="cp-range-row" class="cp-row2" style="display:none;">
+          <label class="cp-field"><span>С книги</span><select id="cp-from"></select></label>
+          <label class="cp-field"><span>По книгу</span><select id="cp-to"></select></label>
+        </div>
+        <div class="cp-field"><span>Как задать объём чтения</span>
+          <div class="cp-seg"><button id="cp-mode-days" type="button" class="on">По сроку (дней)</button><button id="cp-mode-time" type="button">По времени в день</button></div>
+        </div>
+        <label class="cp-field" id="cp-days-row"><span>Срок, дней (1–730)</span><input id="cp-days" type="number" inputmode="numeric" min="1" max="730" value="90"></label>
+        <div id="cp-time-row" class="cp-row2" style="display:none;">
+          <label class="cp-field"><span>Минут в день</span><input id="cp-minutes" type="number" inputmode="numeric" min="1" max="600" value="30"></label>
+          <label class="cp-field"><span>Скорость, сл/мин</span><input id="cp-wpm" type="number" inputmode="numeric" min="30" max="800" value="250"></label>
+        </div>
+        <div class="cp-row2">
+          <label class="cp-field"><span>Прочитать (перечитывание)</span><select id="cp-passes"></select></label>
+          <label class="cp-field"><span>Подходов в день</span><select id="cp-sittings"></select></label>
+        </div>
+        <div id="cp-preview"></div>
+        <div id="cp-error"></div>
+      </div>
+      <div class="cp-actions"><button id="cp-create" type="button">Создать график</button><button id="cp-cancel" type="button">Отмена</button></div>
     </div>
   </div>
 
@@ -1301,7 +1364,7 @@
         '365c': { ot: 'ВЗ', nt: 'НЗ' }
       };
       let marks = {};
-      let planResetConfirm = false;
+      let planFooterMode = '';
 
       function loadMarks() {
         marks = {};
@@ -1309,12 +1372,14 @@
           const raw = localStorage.getItem(MARKS_KEY);
           const obj = raw ? JSON.parse(raw) : null;
           if (!obj || typeof obj !== 'object') return;
-          Object.keys(PLAN_MARK_IDS).forEach((t) => {
+          Object.keys(obj).forEach((t) => {
+            const idsT = planMarkIds(t);
+            if (!idsT) return;
             const srcT = obj[t];
             if (!srcT || typeof srcT !== 'object') return;
             marks[t] = {};
             Object.keys(srcT).forEach((d) => {
-              const arr = Array.isArray(srcT[d]) ? srcT[d].filter((id) => PLAN_MARK_IDS[t].includes(id)) : [];
+              const arr = Array.isArray(srcT[d]) ? srcT[d].filter((id) => idsT.includes(id)) : [];
               if (arr.length) marks[t][d] = arr;
             });
           });
@@ -1326,7 +1391,7 @@
       function dayMarkState(type, day) {
         const cur = getDayMarks(type, day);
         if (!cur.length) return 0;
-        return cur.length >= PLAN_MARK_IDS[type].length ? 2 : 1;
+        return cur.length >= planMarkIds(type).length ? 2 : 1;
       }
       function countDaysRead(type) { let n = 0; Object.keys(marks[type] || {}).forEach((d) => { if (dayMarkState(type, d) === 2) n++; }); return n; }
       function countAnyMarks(type) { return Object.keys(marks[type] || {}).length; }
@@ -1335,11 +1400,11 @@
         const cur = new Set(getDayMarks(type, day));
         ids.forEach((id) => { if (on) cur.add(id); else cur.delete(id); });
         if (!marks[type]) marks[type] = {};
-        if (cur.size) marks[type][day] = PLAN_MARK_IDS[type].filter((id) => cur.has(id));
+        if (cur.size) marks[type][day] = planMarkIds(type).filter((id) => cur.has(id));
         else delete marks[type][day];
         onMarksChanged();
       }
-      function toggleDayMark(type, day) { setMarks(type, day, PLAN_MARK_IDS[type], dayMarkState(type, day) !== 2); }
+      function toggleDayMark(type, day) { setMarks(type, day, planMarkIds(type), dayMarkState(type, day) !== 2); }
       function toggleSectionMark(type, day, id) { setMarks(type, day, [id], !isMarked(type, day, id)); }
 
       function isSectionMarked(sec) {
@@ -1389,23 +1454,34 @@
       function syncPlanListMarks() { elPlanDaysList.querySelectorAll('.plan-day-card').forEach(updateDayCard); }
 
       function renderPlanFooter() {
-        const type = planModalTab;
+        const type = planModalTab, custom = getCustomPlan(type);
         elPlanFooter.innerHTML = '';
         const info = document.createElement('div'); info.className = 'plan-footer-info';
         const actions = document.createElement('div'); actions.className = 'plan-footer-actions';
         const mkBtn = (text, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = text; if (cls) b.className = cls; return b; };
-        if (planResetConfirm) {
-          info.textContent = 'Сбросить все отметки графика «' + PLAN_TITLES[type] + '»?';
+        if (planFooterMode === 'reset') {
+          info.textContent = 'Сбросить все отметки графика «' + planTitle(type) + '»?';
           const yes = mkBtn('Да, сбросить', 'danger'), no = mkBtn('Отмена');
-          yes.addEventListener('click', () => { marks[type] = {}; planResetConfirm = false; onMarksChanged(); });
-          no.addEventListener('click', () => { planResetConfirm = false; renderPlanFooter(); });
+          yes.addEventListener('click', () => { marks[type] = {}; planFooterMode = ''; onMarksChanged(); });
+          no.addEventListener('click', () => { planFooterMode = ''; renderPlanFooter(); });
+          actions.appendChild(yes); actions.appendChild(no);
+        } else if (planFooterMode === 'delete' && custom) {
+          info.textContent = 'Удалить график «' + custom.name + '» вместе со всеми его отметками? Это действие нельзя отменить.';
+          const yes = mkBtn('Да, удалить', 'danger'), no = mkBtn('Отмена');
+          yes.addEventListener('click', () => deleteCustomPlan(type));
+          no.addEventListener('click', () => { planFooterMode = ''; renderPlanFooter(); });
           actions.appendChild(yes); actions.appendChild(no);
         } else {
-          info.textContent = 'Прочитано дней: ' + countDaysRead(type) + ' из ' + PLAN_TOTAL_DAYS[type];
+          info.textContent = 'Прочитано дней: ' + countDaysRead(type) + ' из ' + planTotalDays(type);
           const reset = mkBtn('Сбросить отметки');
           reset.disabled = countAnyMarks(type) === 0;
-          reset.addEventListener('click', () => { planResetConfirm = true; renderPlanFooter(); });
+          reset.addEventListener('click', () => { planFooterMode = 'reset'; renderPlanFooter(); });
           actions.appendChild(reset);
+          if (custom) {
+            const del = mkBtn('Удалить график', 'danger-soft');
+            del.addEventListener('click', () => { planFooterMode = 'delete'; renderPlanFooter(); });
+            actions.appendChild(del);
+          }
         }
         elPlanFooter.appendChild(info); elPlanFooter.appendChild(actions);
       }
@@ -1433,7 +1509,7 @@
         tickerWpm = clampWpm(s.tickerWpm, tickerWpm);
         tickerInverted = !!s.tickerInverted;
         if (['WORDS', 'BLOCKS', 'TICKER', 'VERSES', 'CHAPTERS'].includes(s.mode)) displayMode = s.mode;
-        if (s.plan && PLAN_MARK_IDS[s.plan.type] && Number.isInteger(s.plan.day) && s.plan.day >= 1 && s.plan.day <= PLAN_TOTAL_DAYS[s.plan.type]) {
+        if (s.plan && planMarkIds(s.plan.type) && Number.isInteger(s.plan.day) && s.plan.day >= 1 && s.plan.day <= planTotalDays(s.plan.type)) {
           activatePlanDay(s.plan.type, s.plan.day);
           if (planActive && planSections.some((x) => x.id === s.plan.sec)) planActiveSectionId = s.plan.sec;
         }
@@ -1495,6 +1571,311 @@
         m.className = 'vmark';
         m.innerHTML = '<span class="vmark-line"></span><span class="vmark-num">' + escapeHtml(num) + '</span>';
         return m;
+      }
+
+      /* ===== СВОИ ГРАФИКИ ЧТЕНИЯ ===== */
+      const CUSTOM_PLANS_KEY = 'bible-rst-custom-plans-v1';
+      const MAX_CUSTOM_PLANS = 20;
+      const CUSTOM_MAX_DAYS = 730;
+      let customPlans = [];
+      let cpMode = 'days';
+      const scopeStatsCache = {};
+
+      function isCustomType(t) { return typeof t === 'string' && t.indexOf('c:') === 0; }
+      function getCustomPlan(t) { return isCustomType(t) ? (customPlans.find((p) => 'c:' + p.id === t) || null) : null; }
+      function planTotalDays(t) { const c = getCustomPlan(t); return c ? c.days : (PLAN_TOTAL_DAYS[t] || 0); }
+      function planTitle(t) { const c = getCustomPlan(t); return c ? c.name : (PLAN_TITLES[t] || ''); }
+      function planMarkIds(t) {
+        const c = getCustomPlan(t);
+        if (c) {
+          if (c.sittings <= 1) return ['day'];
+          const a = []; for (let i = 1; i <= c.sittings; i++) a.push('p' + i);
+          return a;
+        }
+        return PLAN_MARK_IDS[t] || null;
+      }
+      function planMarkShort(t) {
+        const c = getCustomPlan(t);
+        if (!c) return PLAN_MARK_SHORT[t] || {};
+        const m = {};
+        if (c.sittings > 1) for (let i = 1; i <= c.sittings; i++) m['p' + i] = 'Подх. ' + i;
+        return m;
+      }
+
+      function loadCustomPlans() {
+        customPlans = [];
+        try {
+          const raw = localStorage.getItem(CUSTOM_PLANS_KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(arr)) return;
+          arr.forEach((p) => {
+            if (!p || typeof p !== 'object') return;
+            const sc = p.scope || {};
+            const kind = ['all', 'ot', 'nt', 'range'].includes(sc.kind) ? sc.kind : null;
+            const days = Math.floor(p.days), passes = Math.floor(p.passes), sit = Math.floor(p.sittings);
+            if (!kind || !/^[a-z0-9]+$/.test(String(p.id)) || !(days >= 1 && days <= CUSTOM_MAX_DAYS) || !(passes >= 1 && passes <= 10) || !(sit >= 1 && sit <= 6)) return;
+            customPlans.push({ id: String(p.id), name: String(p.name || 'Свой график').slice(0, 40), scope: { kind, from: Number(sc.from) || 0, to: Number(sc.to) || 0 }, days, passes, sittings: sit });
+          });
+        } catch (e) { customPlans = []; }
+      }
+      function saveCustomPlans() {
+        try {
+          localStorage.setItem(CUSTOM_PLANS_KEY, JSON.stringify(customPlans.map((p) => ({ id: p.id, name: p.name, scope: p.scope, days: p.days, passes: p.passes, sittings: p.sittings }))));
+        } catch (e) {}
+      }
+
+      function getScopeBooksFor(sc) {
+        if (sc.kind === 'ot') return booksOrder.filter((b) => b < 470);
+        if (sc.kind === 'nt') return booksOrder.filter((b) => b >= 470);
+        if (sc.kind === 'range') {
+          const i = booksOrder.indexOf(sc.from), j = booksOrder.indexOf(sc.to);
+          if (i < 0 || j < 0) return [];
+          return booksOrder.slice(Math.min(i, j), Math.max(i, j) + 1);
+        }
+        return booksOrder.slice();
+      }
+      function getScopeBooks(plan) { return getScopeBooksFor(plan.scope); }
+      function scopeTitle(sc) {
+        if (sc.kind === 'ot') return 'Ветхий Завет';
+        if (sc.kind === 'nt') return 'Новый Завет';
+        if (sc.kind === 'range') {
+          const bs = getScopeBooksFor(sc);
+          if (!bs.length) return 'Книги';
+          return bs.length === 1 ? (booksNames[bs[0]] || '') : (booksNames[bs[0]] || '') + ' – ' + (booksNames[bs[bs.length - 1]] || '');
+        }
+        return 'Вся Библия';
+      }
+      function getScopeStats(sc) {
+        const key = sc.kind + ':' + sc.from + ':' + sc.to;
+        if (scopeStatsCache[key]) return scopeStatsCache[key];
+        let units = 0, words = 0;
+        getScopeBooksFor(sc).forEach((b) => {
+          (bookChaptersSorted[b] || []).forEach((c) => {
+            ((chapterVersesSorted[b] && chapterVersesSorted[b][c]) || []).forEach((v) => {
+              units++;
+              const s = cleanPlainText(bibleData[b][c][v]);
+              if (s) words += s.split(' ').length;
+            });
+          });
+        });
+        scopeStatsCache[key] = { units, words };
+        return scopeStatsCache[key];
+      }
+
+      // Делит последовательность (выбранные книги × число кругов) на подходы с примерно равным объёмом текста.
+      function buildCustomPlanDays(plan) {
+        if (plan._days) return plan._days;
+        const books = getScopeBooks(plan), units = [];
+        books.forEach((b) => {
+          (bookChaptersSorted[b] || []).forEach((c) => {
+            ((chapterVersesSorted[b] && chapterVersesSorted[b][c]) || []).forEach((v) => {
+              units.push({ b, c, v, w: Math.max(12, String(bibleData[b][c][v] || '').length) });
+            });
+          });
+        });
+        const n = units.length, passes = plan.passes, sit = plan.sittings, nDays = plan.days, S = nDays * sit, total = n * passes;
+        if (!n || S > total || nDays < passes) throw new Error('bad params');
+        const pre = new Float64Array(n + 1);
+        for (let i = 0; i < n; i++) pre[i + 1] = pre[i] + units[i].w;
+        const W = pre[n];
+        const P = (i) => Math.floor(i / n) * W + pre[i % n];
+        const ends = [];
+        let start = 0;
+        for (let k = 0; k < S; k++) {
+          let e;
+          if (k === S - 1) e = total - 1;
+          else {
+            const target = ((k + 1) * W * passes) / S;
+            let lo = start + 1, hi = total;
+            while (lo < hi) { const mid = (lo + hi) >> 1; if (P(mid) >= target) hi = mid; else lo = mid + 1; }
+            let j = lo;
+            if (j - 1 > start && Math.abs(P(j - 1) - target) < Math.abs(P(j) - target)) j = j - 1;
+            e = Math.max(j - 1, start);
+            e = Math.min(e, total - 1 - (S - 1 - k));
+          }
+          ends.push([start, e]);
+          start = e + 1;
+        }
+        const keyOf = (u) => u.b + '_' + u.c + '_' + u.v;
+        const addB = (map, key, label) => { map.set(key, map.has(key) ? map.get(key) + ' · ' + label : label); };
+        const days = [];
+        for (let d = 0; d < nDays; d++) {
+          const segs = [], dayMap = new Map();
+          for (let i = 0; i < sit; i++) {
+            const [a, z] = ends[d * sit + i];
+            if (z - a + 1 > n) throw new Error('segment too long');
+            const ua = units[a % n], uz = units[z % n];
+            const wrap = Math.floor(z / n) > Math.floor(a / n);
+            const segMap = new Map();
+            if (wrap) { const lab = 'КРУГ ' + (Math.floor(z / n) + 1); addB(segMap, keyOf(units[0]), lab); addB(dayMap, keyOf(units[0]), lab); }
+            if (i > 0) {
+              addB(dayMap, keyOf(ua), 'ПОДХОД ' + (i + 1));
+              if (a % n === 0) addB(dayMap, keyOf(ua), 'КРУГ ' + (Math.floor(a / n) + 1));
+            }
+            segs.push({ r: [ua.b, ua.c, ua.v, uz.b, uz.c, uz.v], bounds: Array.from(segMap.entries()), a, z });
+          }
+          const aF = segs[0].a, zL = segs[segs.length - 1].z;
+          if (zL - aF + 1 > n) throw new Error('day too long');
+          const uF = units[aF % n], uL = units[zL % n];
+          const dayWrap = Math.floor(zL / n) > Math.floor(aF / n);
+          let ml = formatBookRangeLabel(uF.b, uF.c, uF.v, uL.b, uL.c, uL.v, false);
+          if (dayWrap) ml += ' ↻';
+          let sub = '';
+          if (sit > 1) {
+            let prevB = -1;
+            const starts = segs.map((sg) => {
+              const nm = (sg.r[0] === prevB) ? (sg.r[1] + ':' + sg.r[2]) : ((booksNames[sg.r[0]] || '') + ' ' + sg.r[1] + ':' + sg.r[2]);
+              prevB = sg.r[0];
+              return nm;
+            });
+            sub = sit + ' подх.: ' + starts.join(' • ');
+          }
+          days.push({ day: d + 1, ml, sub, segs, dayR: [uF.b, uF.c, uF.v, uL.b, uL.c, uL.v], dayBounds: Array.from(dayMap.entries()) });
+        }
+        plan._days = days;
+        return days;
+      }
+
+      /* --- вкладки графиков в окне «График чтения» --- */
+      function renderCustomTabs() {
+        const host = document.getElementById('plan-custom-tabs');
+        host.innerHTML = '';
+        customPlans.forEach((p) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'plan-tab-btn custom' + (planModalTab === 'c:' + p.id ? ' active' : '');
+          b.dataset.type = 'c:' + p.id;
+          b.textContent = p.name;
+          host.appendChild(b);
+        });
+        const add = document.createElement('button');
+        add.type = 'button'; add.className = 'plan-tab-btn add'; add.dataset.add = '1';
+        add.textContent = '＋ Создать свой график';
+        host.appendChild(add);
+        const bar = host.parentNode, act = host.querySelector('.active');
+        if (act) bar.scrollTop = Math.max(0, act.getBoundingClientRect().top - bar.getBoundingClientRect().top + bar.scrollTop - 40);
+        else if (!planModalTab || !isCustomType(planModalTab)) bar.scrollTop = 0;
+      }
+
+      function deleteCustomPlan(type) {
+        const plan = getCustomPlan(type);
+        if (!plan) return;
+        if (planActive && planType === type) {
+          planActive = false; planDayNum = 0; planSections = []; planActiveSectionId = '';
+          tickerAutoRunning = false; wordsAutoRunning = false;
+          updatePlanButtonUI(); renderPlanSectionBar(); populateBookSelector(); updateSovietGaugeUI(); refreshView();
+          if (displayMode !== 'CHAPTERS') centerCamera(false);
+        }
+        customPlans = customPlans.filter((p) => p !== plan);
+        delete marks[type];
+        saveCustomPlans(); saveMarks();
+        planFooterMode = '';
+        planModalTab = '35';
+        renderPlanDaysList();
+      }
+
+      /* --- окно создания графика --- */
+      const $cp = (id) => document.getElementById(id);
+      const fmtNum = (x) => Math.round(x).toLocaleString('ru-RU');
+      function plural(n, a, b, c) { const m = n % 100, k = n % 10; return (m > 10 && m < 20) ? c : (k === 1 ? a : (k >= 2 && k <= 4 ? b : c)); }
+
+      function readCustomForm() {
+        const kind = $cp('cp-scope').value;
+        const scope = { kind, from: kind === 'range' ? Number($cp('cp-from').value) : 0, to: kind === 'range' ? Number($cp('cp-to').value) : 0 };
+        const passes = Number($cp('cp-passes').value), sittings = Number($cp('cp-sittings').value);
+        const st = getScopeStats(scope);
+        if (!st.units) return { error: 'Выберите книги для чтения.' };
+        let wpm = Number($cp('cp-wpm').value), days;
+        if (cpMode === 'days') {
+          days = Math.floor(Number($cp('cp-days').value));
+          wpm = wordsWpm;
+          if (!(days >= 1)) return { error: 'Укажите срок: от 1 дня.' };
+        } else {
+          const min = Number($cp('cp-minutes').value);
+          if (!(min >= 1) || !(wpm >= 30 && wpm <= 800)) return { error: 'Укажите минуты (от 1) и скорость (30–800 сл/мин).' };
+          days = Math.ceil((st.words * passes) / (min * wpm));
+        }
+        if (days > CUSTOM_MAX_DAYS) return { error: 'Получается ' + days + ' дн. — максимум ' + CUSTOM_MAX_DAYS + '. Увеличьте время в день или уменьшите объём.' };
+        if (days < passes) return { error: 'Дней должно быть не меньше, чем кругов чтения.' };
+        if (days * sittings > st.units * passes) return { error: 'Слишком много подходов для такого небольшого объёма.' };
+        return { scope, passes, sittings, days, st, wpm };
+      }
+
+      function updateCustomPreview() {
+        const f = readCustomForm(), prev = $cp('cp-preview'), err = $cp('cp-error');
+        if (f.error) { prev.innerHTML = '<span class="dim">—</span>'; err.textContent = f.error; $cp('cp-create').disabled = true; return null; }
+        err.textContent = '';
+        $cp('cp-create').disabled = false;
+        const perDay = (f.st.words * f.passes) / f.days, perSit = perDay / f.sittings;
+        let h = '<div><span class="dim">Объём:</span> ' + fmtNum(f.st.words) + ' слов' + (f.passes > 1 ? ' × ' + f.passes + ' ' + plural(f.passes, 'раз', 'раза', 'раз') : '') + '</div>';
+        h += '<div><span class="dim">Срок:</span> <b>' + f.days + ' ' + plural(f.days, 'день', 'дня', 'дней') + '</b></div>';
+        h += '<div><span class="dim">В день:</span> ≈ ' + fmtNum(perDay) + ' слов · ≈ ' + Math.max(1, Math.round(perDay / f.wpm)) + ' мин при ' + f.wpm + ' сл/мин</div>';
+        if (f.sittings > 1) h += '<div><span class="dim">Подход:</span> ≈ ' + fmtNum(perSit) + ' слов · ≈ ' + Math.max(1, Math.round(perSit / f.wpm)) + ' мин</div>';
+        prev.innerHTML = h;
+        return f;
+      }
+
+      function setCpMode(m) {
+        cpMode = m;
+        $cp('cp-mode-days').classList.toggle('on', m === 'days');
+        $cp('cp-mode-time').classList.toggle('on', m === 'time');
+        $cp('cp-days-row').style.display = m === 'days' ? 'flex' : 'none';
+        $cp('cp-time-row').style.display = m === 'time' ? 'flex' : 'none';
+        updateCustomPreview();
+      }
+
+      let cpInited = false;
+      function initCustomCreator() {
+        if (cpInited) return;
+        cpInited = true;
+        const opts = booksOrder.map((b) => '<option value="' + b + '">' + escapeHtml(booksNames[b] || ('Кн.' + b)) + '</option>').join('');
+        $cp('cp-from').innerHTML = opts; $cp('cp-to').innerHTML = opts;
+        let po = '';
+        for (let i = 1; i <= 10; i++) po += '<option value="' + i + '">' + (i === 1 ? 'один раз (без перечитывания)' : i + ' ' + plural(i, 'раз', 'раза', 'раз') + ' подряд') + '</option>';
+        $cp('cp-passes').innerHTML = po;
+        let so = '';
+        for (let i = 1; i <= 6; i++) so += '<option value="' + i + '">' + (i === 1 ? '1 (без деления)' : i + ' ' + plural(i, 'подход', 'подхода', 'подходов')) + '</option>';
+        $cp('cp-sittings').innerHTML = so;
+        $cp('cp-scope').addEventListener('change', () => { $cp('cp-range-row').style.display = $cp('cp-scope').value === 'range' ? 'flex' : 'none'; updateCustomPreview(); });
+        ['cp-from', 'cp-to', 'cp-passes', 'cp-sittings'].forEach((id) => $cp(id).addEventListener('change', updateCustomPreview));
+        ['cp-days', 'cp-minutes', 'cp-wpm'].forEach((id) => $cp(id).addEventListener('input', updateCustomPreview));
+        $cp('cp-mode-days').addEventListener('click', () => setCpMode('days'));
+        $cp('cp-mode-time').addEventListener('click', () => setCpMode('time'));
+        $cp('cp-close').addEventListener('click', closeCustomCreator);
+        $cp('cp-cancel').addEventListener('click', closeCustomCreator);
+        $cp('cp-create').addEventListener('click', createCustomPlanFromForm);
+      }
+      function openCustomCreator() {
+        initCustomCreator();
+        if (customPlans.length >= MAX_CUSTOM_PLANS) { alert('Можно создать не более ' + MAX_CUSTOM_PLANS + ' своих графиков. Удалите ненужные.'); return; }
+        $cp('cp-name').value = '';
+        $cp('cp-scope').value = 'all'; $cp('cp-range-row').style.display = 'none';
+        $cp('cp-from').value = String(booksOrder[0]); $cp('cp-to').value = String(booksOrder[booksOrder.length - 1]);
+        $cp('cp-days').value = '90'; $cp('cp-minutes').value = '30'; $cp('cp-wpm').value = String(wordsWpm);
+        $cp('cp-passes').value = '1'; $cp('cp-sittings').value = '1';
+        $cp('custom-plan-backdrop').classList.add('open');
+        setCpMode('days');
+        $cp('custom-plan-body').scrollTop = 0;
+      }
+      function closeCustomCreator() { $cp('custom-plan-backdrop').classList.remove('open'); }
+
+      function createCustomPlanFromForm() {
+        const f = updateCustomPreview();
+        if (!f) return;
+        if (customPlans.length >= MAX_CUSTOM_PLANS) return;
+        const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        let name = $cp('cp-name').value.trim().slice(0, 40);
+        if (!name) name = scopeTitle(f.scope) + ' · ' + f.days + ' дн.' + (f.passes > 1 ? ' ×' + f.passes : '');
+        const plan = { id, name, scope: f.scope, days: f.days, passes: f.passes, sittings: f.sittings };
+        try { buildCustomPlanDays(plan); } catch (e) {
+          $cp('cp-error').textContent = 'Не удалось построить график с такими параметрами. Измените срок, число кругов или подходов.';
+          return;
+        }
+        customPlans.push(plan);
+        saveCustomPlans();
+        planModalTab = 'c:' + id;
+        closeCustomCreator();
+        renderPlanDaysList();
       }
 
       function renderPlanSectionBar() {
@@ -1566,6 +1947,23 @@
           const rNT = buildLineRangeData(booksOrder, entry.nt[0], entry.nt[1], entry.nt[2], entry.nt[3], entry.nt[4], entry.nt[5], false);
           sections.push({ id:'ot', label:'Ветхий Завет', isWisdom:false, rangeData:rOT, subBoundaries:new Map(), markIds:['ot'] });
           sections.push({ id:'nt', label:'Новый Завет', isWisdom:true, rangeData:rNT, subBoundaries:new Map(), markIds:['nt'] });
+        } else if (isCustomType(type)) {
+          const plan = getCustomPlan(type);
+          if (!plan) return;
+          let cdays;
+          try { cdays = buildCustomPlanDays(plan); } catch (e) { return; }
+          const entry = cdays[dayNum - 1];
+          if (!entry) return;
+          const seq = getScopeBooks(plan);
+          entry.segs.forEach((sg, i) => {
+            const rd = buildLineRangeData(seq, sg.r[0], sg.r[1], sg.r[2], sg.r[3], sg.r[4], sg.r[5], true);
+            const sid = plan.sittings > 1 ? 'p' + (i + 1) : 'day';
+            sections.push({ id:sid, label: plan.sittings > 1 ? 'Подход ' + (i + 1) : 'День', isWisdom:false, rangeData:rd, subBoundaries:new Map(sg.bounds), markIds:[sid] });
+          });
+          if (plan.sittings > 1) {
+            const rdAll = buildLineRangeData(seq, entry.dayR[0], entry.dayR[1], entry.dayR[2], entry.dayR[3], entry.dayR[4], entry.dayR[5], true);
+            sections.push({ id:'all_day', label:'Весь день', isWisdom:false, rangeData:rdAll, subBoundaries:new Map(entry.dayBounds), markIds:entry.segs.map((_, i) => 'p' + (i + 1)) });
+          }
         }
         if (!sections.length) return;
         planActive = true; planType = type; planModalTab = type; planDayNum = dayNum;
@@ -1587,7 +1985,7 @@
       function updatePlanButtonUI() {
         if (planActive) {
           elPlanBtn.classList.add('active');
-          const totalD = (planType === '365s' || planType === '365c') ? '365' : planType;
+          const totalD = String(planTotalDays(planType));
           elPlanBtn.textContent = 'Д' + planDayNum + '/' + totalD + (dayMarkState(planType, planDayNum) === 2 ? ' ✓' : '');
           elPlanExitBtn.style.display = 'inline-flex';
         } else {
@@ -1598,22 +1996,28 @@
       }
 
       function renderPlanDaysList() {
+        if (isCustomType(planModalTab) && !getCustomPlan(planModalTab)) planModalTab = '35';
+        renderCustomTabs();
         elPlanTab35.classList.toggle('active', planModalTab === '35');
         elPlanTab20.classList.toggle('active', planModalTab === '20');
         elPlanTab365s.classList.toggle('active', planModalTab === '365s');
         elPlanTab365c.classList.toggle('active', planModalTab === '365c');
         const isYearly = (planModalTab === '365s' || planModalTab === '365c');
         if (isYearly) ensureYearlyPlans();
-        elPlanJumpRow.style.display = isYearly ? 'flex' : 'none';
+        const customTab = isCustomType(planModalTab);
+        const showJump = isYearly || (customTab && planTotalDays(planModalTab) > 40);
+        elPlanJumpRow.style.display = showJump ? 'flex' : 'none';
+        if (showJump) { const mx = planTotalDays(planModalTab); elPlanJumpInput.max = String(mx); elPlanJumpInput.placeholder = '1 – ' + mx; elPlanJumpInput.value = ''; }
         elPlanDaysList.innerHTML = '';
-        planResetConfirm = false;
+        planFooterMode = '';
 
         const frag = document.createDocumentFragment();
         let list = READING_PLAN_35;
         if (planModalTab === '20') list = READING_PLAN_20;
         else if (planModalTab === '365s') list = READING_PLAN_365_STRAIGHT;
         else if (planModalTab === '365c') list = READING_PLAN_365_COMBO;
-        const markIds = PLAN_MARK_IDS[planModalTab], shortMap = PLAN_MARK_SHORT[planModalTab] || {};
+        else if (customTab) { const cp = getCustomPlan(planModalTab); list = []; if (cp) { try { list = buildCustomPlanDays(cp); } catch (e) { list = []; } } }
+        const markIds = planMarkIds(planModalTab) || [], shortMap = planMarkShort(planModalTab);
 
         for (let i = 0; i < list.length; i++) {
           const item = list[i];
@@ -1623,11 +2027,13 @@
           card.dataset.day = String(item.day);
           const main = document.createElement('button');
           main.type = 'button'; main.className = 'plan-day-main';
-          const dayStr = isYearly ? String(item.day) : String(item.day).padStart(2, '0');
+          const dayStr = (isYearly || customTab) ? String(item.day) : String(item.day).padStart(2, '0');
           if (planModalTab === '35') {
             main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row"><span class="plan-line-badge">Осн.</span>' + escapeHtml(item.ml) + '</div><div class="plan-line-row wisdom"><span class="plan-line-badge">Мудр.</span>' + escapeHtml(item.wl) + '</div></div>';
           } else if (planModalTab === '20') {
             main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div><div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div></div>';
+          } else if (customTab) {
+            main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div>' + (item.sub ? '<div class="plan-line-row sub">' + escapeHtml(item.sub) + '</div>' : '') + '</div>';
           } else if (planModalTab === '365s') {
             main.innerHTML = '<div class="plan-day-num"><span>ДЕНЬ</span><span>' + dayStr + '</span></div><div class="plan-day-info"><div class="plan-line-row">' + escapeHtml(item.ml) + '</div></div>';
           } else {
@@ -2469,7 +2875,7 @@
       elPlanTab20.addEventListener('click', () => { planModalTab = '20'; renderPlanDaysList(); });
       elPlanTab365s.addEventListener('click', () => { planModalTab = '365s'; renderPlanDaysList(); });
       elPlanTab365c.addEventListener('click', () => { planModalTab = '365c'; renderPlanDaysList(); });
-      elPlanJumpGo.addEventListener('click', () => { const v = parseInt(elPlanJumpInput.value, 10); if (!isNaN(v) && v >= 1 && v <= 365) activatePlanDay(planModalTab, v); });
+      elPlanJumpGo.addEventListener('click', () => { const v = parseInt(elPlanJumpInput.value, 10); if (!isNaN(v) && v >= 1 && v <= planTotalDays(planModalTab)) activatePlanDay(planModalTab, v); });
       elPlanJumpInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') elPlanJumpGo.click(); });
 
       elPlanDaysList.addEventListener('click', (e) => {
@@ -2480,6 +2886,13 @@
         if (chip) { toggleSectionMark(planModalTab, day, chip.dataset.sid); return; }
         if (e.target.closest('.day-mark')) { toggleDayMark(planModalTab, day); return; }
         if (e.target.closest('.plan-day-main')) activatePlanDay(planModalTab, day);
+      });
+
+      document.getElementById('plan-custom-tabs').addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        if (btn.dataset.add) { openCustomCreator(); return; }
+        if (btn.dataset.type) { planModalTab = btn.dataset.type; renderPlanDaysList(); }
       });
 
       // кнопки «Отметить прочтение» (в карточках, в воротах «Финиш», в режиме глав)
@@ -2523,6 +2936,7 @@
           booksNames = data.books || {};
           bibleData = data.verses || {};
           buildNavigationIndex();
+          loadCustomPlans();
           loadMarks();
           populateBookSelector();
           try { restoreState(); } catch (e) { resetToDefaults(); }
